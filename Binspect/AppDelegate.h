@@ -8,8 +8,14 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface AppDelegate : NSObject <NSApplicationDelegate>
+@class MainWindowController;
 
+@interface AppDelegate : NSObject <NSApplicationDelegate>
+{
+    IBOutlet NSMenu *_menu;
+}
+
+@property (retain) MainWindowController *_mainWindowController;
 
 @end
 

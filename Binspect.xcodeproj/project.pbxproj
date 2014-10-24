@@ -12,6 +12,8 @@
 		D859DABD19F1E39B00137408 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D859DABC19F1E39B00137408 /* Images.xcassets */; };
 		D859DAC019F1E39B00137408 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D859DABE19F1E39B00137408 /* MainMenu.xib */; };
 		D859DACC19F1E39C00137408 /* BinspectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D859DACB19F1E39C00137408 /* BinspectTests.m */; };
+		D87F5C3419FAAA4A00E31BA6 /* MainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = D87F5C3219FAAA4A00E31BA6 /* MainWindowController.m */; };
+		D8A5E00A19FAD3AC00AC11D7 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8A5E00919FAD3AC00AC11D7 /* MainWindow.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +37,9 @@
 		D859DAC519F1E39C00137408 /* BinspectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BinspectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D859DACA19F1E39C00137408 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D859DACB19F1E39C00137408 /* BinspectTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BinspectTests.m; sourceTree = "<group>"; };
+		D87F5C3119FAAA4A00E31BA6 /* MainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainWindowController.h; sourceTree = "<group>"; };
+		D87F5C3219FAAA4A00E31BA6 /* MainWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainWindowController.m; sourceTree = "<group>"; };
+		D8A5E00919FAD3AC00AC11D7 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +85,9 @@
 				D859DABA19F1E39B00137408 /* AppDelegate.m */,
 				D859DABC19F1E39B00137408 /* Images.xcassets */,
 				D859DABE19F1E39B00137408 /* MainMenu.xib */,
+				D87F5C3119FAAA4A00E31BA6 /* MainWindowController.h */,
+				D87F5C3219FAAA4A00E31BA6 /* MainWindowController.m */,
+				D8A5E00919FAD3AC00AC11D7 /* MainWindow.xib */,
 				D859DAB519F1E39B00137408 /* Supporting Files */,
 			);
 			path = Binspect;
@@ -193,6 +201,7 @@
 			files = (
 				D859DABD19F1E39B00137408 /* Images.xcassets in Resources */,
 				D859DAC019F1E39B00137408 /* MainMenu.xib in Resources */,
+				D8A5E00A19FAD3AC00AC11D7 /* MainWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,6 +219,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D87F5C3419FAAA4A00E31BA6 /* MainWindowController.m in Sources */,
 				D859DABB19F1E39B00137408 /* AppDelegate.m in Sources */,
 				D859DAB819F1E39B00137408 /* main.m in Sources */,
 			);
@@ -325,6 +335,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Binspect/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -336,6 +347,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Binspect/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
