@@ -1,6 +1,6 @@
 //
-//  BinaryExplorerTests.m
-//  BinaryExplorerTests
+//  BinspectTests.m
+//  BinspectTests
 //
 //  Created by Joe Savage on 18/10/2014.
 //  Copyright (c) 2014 Joe Savage. All rights reserved.
@@ -9,11 +9,11 @@
 #import <Cocoa/Cocoa.h>
 #import <XCTest/XCTest.h>
 
-@interface BinaryExplorerTests : XCTestCase
+@interface BinspectTests : XCTestCase
 
 @end
 
-@implementation BinaryExplorerTests
+@implementation BinspectTests
 
 - (void)setUp {
     [super setUp];
