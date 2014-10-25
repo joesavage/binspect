@@ -36,6 +36,13 @@
     return [NSString stringWithFormat:@"Binspect — %@", displayName];
 }
 
+- (BOOL)openFile:(NSString *)filename {
+    _filePath = [filename retain];
+    [[self window] setTitle:[self windowTitleForDocumentDisplayName:_filePath]];
+    [self beginApplication];
+    return YES;
+}
+
 - (void)presentOpenDialog {
     NSOpenPanel* openPanel = [NSOpenPanel openPanel];
     
@@ -50,9 +57,7 @@
         NSURL *selection = [openPanel.URLs firstObject];
         [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:selection];
         NSString *path = [[selection path] stringByResolvingSymlinksInPath];
-        _filePath = [path retain];
-        [[self window] setTitle:[self windowTitleForDocumentDisplayName:_filePath]];
-        [self beginApplication];
+        [self openFile:path];
     }
 }
 

@@ -26,12 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Binspect/MainWindowController.m"
-            timestampString = "435925651.946655"
+            timestampString = "435927922.669984"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "37"
-            endingLineNumber = "37"
-            landmarkName = "-windowTitleForDocumentDisplayName:"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
+            landmarkName = "-openFile:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

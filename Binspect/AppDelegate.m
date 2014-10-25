@@ -32,4 +32,8 @@
     _mainWindowController = nil;
 }
 
+- (BOOL) application:(NSApplication *)theApplication openFile:(NSString *)filename {
+    return [_mainWindowController openFile:filename];
+}
+
 @end

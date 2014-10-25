@@ -20,5 +20,6 @@
 - (void)beginApplication;
 - (void)presentOpenDialog;
 - (void)windowWillClose:(NSNotification *)notification;
+- (BOOL)openFile:(NSString *)filename;
 
 @end
