@@ -11,13 +11,14 @@
 @interface MainWindowController : NSWindowController
 {
     NSString *_filePath;
+    NSData   *_data;
     
     IBOutlet NSProgressIndicator *_curvePanelProgressIndicator;
     NSMenu *_menu;
 }
 
-- (id)init;
 - (void)beginApplication;
-- (void)presentOpenDialog:(NSWindow *)window;
+- (void)presentOpenDialog;
+- (void)windowWillClose:(NSNotification *)notification;
 
 @end

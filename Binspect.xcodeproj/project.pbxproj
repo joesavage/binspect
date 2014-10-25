@@ -60,6 +60,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D823965619FBA1CE00DED7D8 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		D859DAA919F1E39B00137408 = {
 			isa = PBXGroup;
 			children = (
@@ -81,6 +88,7 @@
 		D859DAB419F1E39B00137408 /* Binspect */ = {
 			isa = PBXGroup;
 			children = (
+				D823965619FBA1CE00DED7D8 /* Models */,
 				D859DAB919F1E39B00137408 /* AppDelegate.h */,
 				D859DABA19F1E39B00137408 /* AppDelegate.m */,
 				D859DABC19F1E39B00137408 /* Images.xcassets */,
