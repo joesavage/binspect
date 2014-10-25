@@ -41,6 +41,7 @@
     NSData *data = [NSData dataWithContentsOfFile:filename];
     if (data == nil) return NO;
     
+    [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:filename]];
     _filePath = [filename retain];
     _data = [data retain];
     [[self window] setTitle:[self windowTitleForDocumentDisplayName:_filePath]];
@@ -60,7 +61,6 @@
     
     if ([openPanel runModal] == NSModalResponseOK) {
         NSURL *selection = [openPanel.URLs firstObject];
-        [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:selection];
         NSString *path = [[selection path] stringByResolvingSymlinksInPath];
         [self openFile:path];
     }
@@ -72,13 +72,10 @@
     } else {
         // Moves the window to the front of the screen list, within its level, and makes it the key window
         [[self window] makeKeyAndOrderFront:nil];
-        
         [_curvePanelProgressIndicator startAnimation:self];
         
         
-        NSLog(@"%@", _data);
-        
-        // TODO: Pass this data to a model to get data to draw to the curve view with selected algorithms.
+        // TODO: Pass the data to a model to get data to draw to the curve view with selected algorithms.
             
         //[_curvePanelProgressIndicator stopAnimation:self];
     }
