@@ -7,6 +7,8 @@
         <customObject id="-2" userLabel="File's Owner" customClass="MainWindowController">
             <connections>
                 <outlet property="_curvePanelProgressIndicator" destination="ycw-Yr-glK" id="YZR-qd-xMA"/>
+                <outlet property="_openGLView" destination="36G-i2-msl" id="sAi-hb-kJ1"/>
+                <outlet property="_scrollView" destination="Y18-8T-ZYr" id="sMe-Qz-Dwz"/>
                 <outlet property="window" destination="olO-85-8lA" id="mAy-3T-ede"/>
             </connections>
         </customObject>
@@ -27,30 +29,29 @@
                     <visualEffectView fixedFrame="YES" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="Rcc-ZQ-Crz">
                         <rect key="frame" x="581" y="0.0" width="255" height="684"/>
                     </visualEffectView>
-                    <scrollView fixedFrame="YES" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0aI-1F-JZ0">
-                        <rect key="frame" x="0.0" y="0.0" width="582" height="684"/>
-                        <clipView key="contentView" ambiguous="YES" misplaced="YES" id="Eee-Pe-Chs">
+                    <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="ycw-Yr-glK">
+                        <rect key="frame" x="275" y="325" width="32" height="32"/>
+                    </progressIndicator>
+                    <scrollView fixedFrame="YES" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y18-8T-ZYr">
+                        <rect key="frame" x="-1" y="-1" width="580" height="685"/>
+                        <clipView key="contentView" ambiguous="YES" misplaced="YES" id="ova-oG-R6Z">
                             <rect key="frame" x="1" y="1" width="166" height="79"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0zP-We-5uE">
-                                    <rect key="frame" x="0.0" y="0.0" width="166" height="79"/>
-                                </view>
+                                <openGLView fixedFrame="YES" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="36G-i2-msl">
+                                    <rect key="frame" x="0.0" y="0.0" width="578" height="683"/>
+                                </openGLView>
                             </subviews>
-                            <color key="backgroundColor" name="controlLightHighlightColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
-                        <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="0.63253012048192769" horizontal="YES" id="Thw-tr-SUv">
+                        <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="rAa-DV-u3J">
                             <rect key="frame" x="1" y="80" width="166" height="15"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="2Kv-1i-2SM">
+                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="PWM-xX-Ew4">
                             <rect key="frame" x="167" y="1" width="15" height="79"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
-                    <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="ycw-Yr-glK">
-                        <rect key="frame" x="275" y="325" width="32" height="32"/>
-                    </progressIndicator>
                 </subviews>
             </view>
             <toolbar key="toolbar" implicitIdentifier="812CE2D0-7E5B-4291-BA3E-383BE801169F" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="J9P-gJ-GGW">

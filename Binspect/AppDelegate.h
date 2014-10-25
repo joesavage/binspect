@@ -11,9 +11,6 @@
 @class MainWindowController;
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
-{
-    IBOutlet NSMenu *_menu;
-}
 
 @property (retain) MainWindowController *_mainWindowController;
 

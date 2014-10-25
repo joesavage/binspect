@@ -13,8 +13,9 @@
     NSString *_filePath;
     NSData   *_data;
     
+    IBOutlet NSScrollView *_scrollView;
+    IBOutlet NSOpenGLView *_openGLView;
     IBOutlet NSProgressIndicator *_curvePanelProgressIndicator;
-    NSMenu *_menu;
 }
 
 - (void)beginApplication;
