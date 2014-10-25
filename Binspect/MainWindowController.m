@@ -37,7 +37,12 @@
 }
 
 - (BOOL)openFile:(NSString *)filename {
+    // Note: Disk errors /could/ occur here. Also, option 'NSMappedRead' might be useful for big files.
+    NSData *data = [NSData dataWithContentsOfFile:filename];
+    if (data == nil) return NO;
+    
     _filePath = [filename retain];
+    _data = [data retain];
     [[self window] setTitle:[self windowTitleForDocumentDisplayName:_filePath]];
     [self beginApplication];
     return YES;
@@ -68,15 +73,14 @@
         // Moves the window to the front of the screen list, within its level, and makes it the key window
         [[self window] makeKeyAndOrderFront:nil];
         
-        {
-            [_curvePanelProgressIndicator startAnimation:self];
-            _data = [[NSData dataWithContentsOfFile:_filePath] retain]; // Note: Could use option 'NSMappedRead' if file is too large
-                                                               // Second Note: Disk errors /could/ occur here theoretically.
+        [_curvePanelProgressIndicator startAnimation:self];
         
-            // TODO: Pass this data to a model to get data to draw to the curve view with selected algorithms.
+        
+        NSLog(@"%@", _data);
+        
+        // TODO: Pass this data to a model to get data to draw to the curve view with selected algorithms.
             
-            //[_curvePanelProgressIndicator stopAnimation:self];
-        }
+        //[_curvePanelProgressIndicator stopAnimation:self];
     }
 }
 
