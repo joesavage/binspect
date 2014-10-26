@@ -8,11 +8,17 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class CurveView;
+
 @interface WindowController : NSWindowController
 {
     NSString *_filePath;
     NSData   *_data;
     
+    
+    IBOutlet NSSegmentedControl  *_curveTypeSegmentedControl;
+    IBOutlet NSSegmentedControl  *_curveColouringSegmentedControl;
+    IBOutlet CurveView           *_curveView;
     IBOutlet NSProgressIndicator *_curvePanelProgressIndicator;
 }
 

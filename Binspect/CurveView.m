@@ -11,6 +11,17 @@
 
 @implementation CurveView
 
+- (void) redraw { [self drawRect:[self bounds]]; }
+
+- (void) setCurveModeBlank { _curveMode = 0; }
+- (void) setCurveModeHilbert { _curveMode = 1; }
+- (void) setCurveModeZigzag { _curveMode = 2; }
+
+- (void) awakeFromNib {
+    _curveMode = 0;
+    [self drawRect:[self bounds]];
+}
+
 - (void) prepareOpenGL {
     // NSLog(@"Preparing...");
 }
@@ -19,12 +30,11 @@
 {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    drawAnObject();
+    if (_curveMode != 0) [CurveView drawAnObject];
     glFlush();
 }
 
-static void drawAnObject ()
-{
++ (void) drawAnObject {
     glColor3f(1.0f, 0.85f, 0.35f);
     glBegin(GL_TRIANGLES);
     {

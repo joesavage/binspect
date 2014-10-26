@@ -7,6 +7,7 @@
 //
 
 #import "WindowController.h"
+#import "CurveView.h"
 
 @implementation WindowController
 
@@ -69,7 +70,8 @@
         // Moves the window to the front of the screen list, within its level, and makes it the key window
         [[self window] makeKeyAndOrderFront:nil];
         [_curvePanelProgressIndicator startAnimation:self];
-        
+        [_curveView setCurveModeBlank];
+        [_curveView redraw];
         
         // TODO: Pass the data to a model to get data to draw to the curve view with selected algorithms.
         

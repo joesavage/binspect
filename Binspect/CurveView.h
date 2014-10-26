@@ -10,9 +10,13 @@
 
 @interface CurveView : NSOpenGLView
 {
-    
+    NSInteger _curveMode;
 }
 
 - (void) drawRect: (NSRect) bounds;
+- (void) redraw;
+- (void) setCurveModeBlank;
+- (void) setCurveModeHilbert;
+- (void) setCurveModeZigzag;
 
 @end

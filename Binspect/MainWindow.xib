@@ -6,7 +6,10 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="WindowController">
             <connections>
+                <outlet property="_curveColouringSegmentedControl" destination="cMO-nR-gHd" id="YUM-lY-vUt"/>
                 <outlet property="_curvePanelProgressIndicator" destination="ycw-Yr-glK" id="YZR-qd-xMA"/>
+                <outlet property="_curveTypeSegmentedControl" destination="9Ea-d9-axk" id="QFP-Cy-xum"/>
+                <outlet property="_curveView" destination="CBw-Ea-AEE" id="Kug-CM-Wze"/>
                 <outlet property="window" destination="olO-85-8lA" id="mAy-3T-ede"/>
             </connections>
         </customObject>

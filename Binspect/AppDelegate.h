@@ -11,8 +11,9 @@
 @class WindowController;
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
-
-@property (retain) WindowController *_windowController;
+{
+    WindowController *_windowController;
+}
 
 @end
 
