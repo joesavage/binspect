@@ -10,13 +10,19 @@
 
 @interface CurveView : NSOpenGLView
 {
-    NSInteger _curveMode;
+    NSInteger _curveType, _curveColourMode;
 }
 
 - (void) drawRect: (NSRect) bounds;
 - (void) redraw;
-- (void) setCurveModeBlank;
-- (void) setCurveModeHilbert;
-- (void) setCurveModeZigzag;
+
+- (void) setCurveTypeBlank;
+- (void) setCurveTypeHilbert;
+- (void) setCurveTypeZigzag;
+- (void) setCurveColourModeBlank;
+- (void) setCurveColourModeSimilarity;
+- (void) setCurveColourModeEntropy;
+- (void) setCurveColourModeStructural;
+
 
 @end

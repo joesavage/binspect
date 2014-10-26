@@ -13,12 +13,16 @@
 
 - (void) redraw { [self drawRect:[self bounds]]; }
 
-- (void) setCurveModeBlank { _curveMode = 0; }
-- (void) setCurveModeHilbert { _curveMode = 1; }
-- (void) setCurveModeZigzag { _curveMode = 2; }
+- (void) setCurveTypeBlank { _curveType = 0; }
+- (void) setCurveTypeHilbert { _curveType = 1; }
+- (void) setCurveTypeZigzag { _curveType = 2; }
+- (void) setCurveColourModeBlank { _curveColourMode = 0; }
+- (void) setCurveColourModeSimilarity { _curveColourMode = 1; }
+- (void) setCurveColourModeEntropy { _curveColourMode = 2; }
+- (void) setCurveColourModeStructural { _curveColourMode = 3; }
 
 - (void) awakeFromNib {
-    _curveMode = 0;
+    _curveType = 0;
     [self drawRect:[self bounds]];
 }
 
@@ -30,7 +34,7 @@
 {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    if (_curveMode != 0) [CurveView drawAnObject];
+    if (_curveType != 0) [CurveView drawAnObject];
     glFlush();
 }
 
