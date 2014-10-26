@@ -22,6 +22,7 @@
     IBOutlet NSProgressIndicator *_curvePanelProgressIndicator;
 }
 
+- (IBAction) segmentedControlClicked:(id)sender;
 - (void)beginApplication;
 - (void)presentOpenDialog;
 - (void)windowWillClose:(NSNotification *)notification;

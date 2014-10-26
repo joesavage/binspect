@@ -95,6 +95,9 @@
                                     <segment label="Hilbert" selected="YES"/>
                                     <segment label="Zigzag" tag="1"/>
                                 </segments>
+                                <connections>
+                                    <action selector="segmentedControlClicked:" target="-2" id="4Mw-5Q-Teb"/>
+                                </connections>
                             </segmentedCell>
                         </segmentedControl>
                     </toolbarItem>
@@ -113,6 +116,9 @@
                                     <segment label="Structure"/>
                                 </segments>
                             </segmentedCell>
+                            <connections>
+                                <action selector="segmentedControlClicked:" target="-2" id="22Y-UK-waB"/>
+                            </connections>
                         </segmentedControl>
                     </toolbarItem>
                 </allowedToolbarItems>
