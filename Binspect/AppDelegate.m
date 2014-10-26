@@ -15,8 +15,8 @@
 
 @implementation AppDelegate
 
-- (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag {
-    [_windowController beginApplication];
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)hasVisibleWindows {
+    if (!hasVisibleWindows) [_windowController beginApplication];
     return YES; // The application should indeed handle window reopening
 }
 
