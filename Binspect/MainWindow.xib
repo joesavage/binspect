@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="MainWindowController">
+        <customObject id="-2" userLabel="File's Owner" customClass="WindowController">
             <connections>
                 <outlet property="_curvePanelProgressIndicator" destination="ycw-Yr-glK" id="YZR-qd-xMA"/>
                 <outlet property="window" destination="olO-85-8lA" id="mAy-3T-ede"/>
@@ -25,13 +25,13 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <visualEffectView fixedFrame="YES" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="Rcc-ZQ-Crz">
-                        <rect key="frame" x="636" y="0.0" width="200" height="684"/>
+                        <rect key="frame" x="601" y="0.0" width="235" height="684"/>
                     </visualEffectView>
                     <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="ycw-Yr-glK">
-                        <rect key="frame" x="301" y="326" width="32" height="32"/>
+                        <rect key="frame" x="284" y="325" width="32" height="32"/>
                     </progressIndicator>
                     <openGLView fixedFrame="YES" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CBw-Ea-AEE" customClass="CurveView">
-                        <rect key="frame" x="0.0" y="0.0" width="635" height="684"/>
+                        <rect key="frame" x="0.0" y="-1" width="600" height="684"/>
                     </openGLView>
                 </subviews>
             </view>

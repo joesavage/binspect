@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "MainWindowController.h"
+#import "WindowController.h"
 
 @interface AppDelegate ()
 
@@ -15,25 +15,25 @@
 
 @implementation AppDelegate
 
-@synthesize _mainWindowController;
+@synthesize _windowController;
 
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag {
-    [_mainWindowController beginApplication];
+    [_windowController beginApplication];
     return YES; // The application should indeed handle window reopening
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    _mainWindowController = [[MainWindowController alloc] init];
-    [_mainWindowController beginApplication];
+    _windowController = [[WindowController alloc] init];
+    [_windowController beginApplication];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
-    [_mainWindowController release];
-    _mainWindowController = nil;
+    [_windowController release];
+    _windowController = nil;
 }
 
 - (BOOL) application:(NSApplication *)theApplication openFile:(NSString *)filename {
-    return [_mainWindowController openFile:filename];
+    return [_windowController openFile:filename];
 }
 
 @end

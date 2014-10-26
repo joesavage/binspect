@@ -6,13 +6,9 @@
 //  Copyright (c) 2014 Joe Savage. All rights reserved.
 //
 
-#import "MainWindowController.h"
+#import "WindowController.h"
 
-@interface MainWindowController ()
-
-@end
-
-@implementation MainWindowController
+@implementation WindowController
 
 - (id)init {
     self = [super initWithWindowNibName:@"MainWindow"];
@@ -76,8 +72,6 @@
         
         
         // TODO: Pass the data to a model to get data to draw to the curve view with selected algorithms.
-        // Have to subclass NSOpenGLView, telling it to draw via my custom internals when appropriate.
-        // [As for making the scroll view scroll... I have no fucking idea. It seems to work fine with non-view objects (like buttons). Try doing some drawing and see how things work out I guess? Maybe the scrollers are being drawn under the view - I have no idea.]
         
         
         //[_curvePanelProgressIndicator stopAnimation:self];
