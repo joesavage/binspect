@@ -23,7 +23,12 @@
 
 - (void) awakeFromNib {
     _curveType = 0;
-    [self drawRect:[self bounds]];
+}
+
+- (void) dealloc {
+    if (_vertexArray != nil) delete [] _vertexArray;
+    _vertexArray = nil;
+    [super dealloc];
 }
 
 - (void) prepareOpenGL {
@@ -33,27 +38,67 @@
 }
 
 - (void) reshape {
-    // NSLog(@"Reshape!");
+    //NSLog(@"Reshape!");
     CGSize viewSize = [self bounds].size;
-    glViewport(0, 0, viewSize.width, viewSize.height);
+    
+    NSScreen *screen = [NSScreen mainScreen];
+    NSDictionary *description = [screen deviceDescription];
+    NSSize displayPixelSize = [[description objectForKey:NSDeviceSize] sizeValue];
+    CGSize displayPhysicalSize = CGDisplayScreenSize([[description objectForKey:@"NSScreenNumber"] unsignedIntValue]);
+    float pixelDensityFactor = (displayPixelSize.width / displayPhysicalSize.width) * 0.233;
+    
+    CGSize drawBounds;
+    drawBounds.height = (int)(viewSize.height / pixelDensityFactor);
+    drawBounds.width = (int)(viewSize.width / pixelDensityFactor);
+    glPointSize(pixelDensityFactor);
+    
+    
+    // If a reshape operation isn't necessary, don't perform one.
+    if (drawBounds.height == _drawBounds.height && drawBounds.width == _drawBounds.width) return;
+    
+    _drawBounds = drawBounds;
+    if (_vertexArray != nil) delete [] _vertexArray;
+    _vertexArray = nil;
+    _vertexArray = new float[3 * (int)_drawBounds.width * (int)_drawBounds.height];
+    glViewport(0, 0, (int)viewSize.width, (int)viewSize.height);
     glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
+    glOrtho(0.0f, _drawBounds.width, 0.0f, _drawBounds.height, -1.0f, 1.0f);
     glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }
 
 -(void) drawRect: (NSRect) bounds
 {
+    // NSLog(@"Draw!");
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
-    if (_curveType != 0) [CurveView drawAnObject];
+    switch(_curveType) {
+        case 0:
+            break;
+        case 1:
+            glColor3f(1.0f, 0.0f, 0.0f);
+            [self drawAnObject];
+            break;
+        case 2:
+            glColor3f(0.0f, 1.0f, 0.0f);
+            [self drawAnObject];
+            break;
+    }
     glFlush();
 }
 
-+ (void) drawAnObject {
-    glColor3f(1.0f, 0.85f, 0.35f);
-    float vertexArray[] = {0.0f, 0.6f, 0.0f, -0.2f, -0.3f, 0.0f, 0.2f, -0.3f, 0.0f};
-    glVertexPointer(3, GL_FLOAT, 0, vertexArray);
-    glBegin(GL_TRIANGLES);
+- (void) drawAnObject {
+    _vertexArray[0] = _drawBounds.width / 4;
+    _vertexArray[1] = _drawBounds.height / 4;
+    _vertexArray[2] = 0.0f;
+    _vertexArray[3] = _drawBounds.width / 2;
+    _vertexArray[4] = _drawBounds.height / 2;
+    _vertexArray[5] = 0.0f;
+    _vertexArray[6] = (_drawBounds.width / 2) + (_drawBounds.width / 4);
+    _vertexArray[7] = (_drawBounds.height / 2) + (_drawBounds.height / 4);
+    _vertexArray[8] = 0.0f;
+    glVertexPointer(3, GL_FLOAT, 0, _vertexArray);
+    glBegin(GL_POINTS);
     {
         glArrayElement(0);
         glArrayElement(1);

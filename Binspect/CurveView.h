@@ -11,6 +11,8 @@
 @interface CurveView : NSOpenGLView
 {
     NSInteger _curveType, _curveColourMode;
+    CGSize    _drawBounds;
+    float     *_vertexArray;
 }
 
 - (void) drawRect: (NSRect) bounds;
