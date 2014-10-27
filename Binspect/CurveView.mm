@@ -28,23 +28,36 @@
 
 - (void) prepareOpenGL {
     // NSLog(@"Preparing...");
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+}
+
+- (void) reshape {
+    // NSLog(@"Reshape!");
+    CGSize viewSize = [self bounds].size;
+    glViewport(0, 0, viewSize.width, viewSize.height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
 }
 
 -(void) drawRect: (NSRect) bounds
 {
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+    glLoadIdentity();
     if (_curveType != 0) [CurveView drawAnObject];
     glFlush();
 }
 
 + (void) drawAnObject {
     glColor3f(1.0f, 0.85f, 0.35f);
+    float vertexArray[] = {0.0f, 0.6f, 0.0f, -0.2f, -0.3f, 0.0f, 0.2f, -0.3f, 0.0f};
+    glVertexPointer(3, GL_FLOAT, 0, vertexArray);
     glBegin(GL_TRIANGLES);
     {
-        glVertex3f(  0.0,  0.6, 0.0);
-        glVertex3f( -0.2, -0.3, 0.0);
-        glVertex3f(  0.2, -0.3 ,0.0);
+        glArrayElement(0);
+        glArrayElement(1);
+        glArrayElement(2);
     }
     glEnd();
 }
