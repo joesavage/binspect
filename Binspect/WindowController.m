@@ -65,7 +65,6 @@
 
 - (IBAction) segmentedControlClicked:(id)sender {
     [_curveView setCurveTypeBlank];
-    [_curveView redraw];
     
     switch ([_curveTypeSegmentedControl selectedSegment]) {
         case 0:
