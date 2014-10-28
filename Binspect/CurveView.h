@@ -12,7 +12,7 @@
 {
     NSInteger _curveType, _curveColourMode;
     CGSize    _drawBounds;
-    float     *_vertexArray;
+    float     *_vertexArray, *_colourArray;
 }
 
 - (void) drawRect: (NSRect) bounds;

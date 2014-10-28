@@ -22,18 +22,21 @@
 - (void) setCurveColourModeStructural { _curveColourMode = 3; }
 
 - (void) awakeFromNib {
-    _curveType = 0;
+    [self setCurveTypeBlank];
 }
 
 - (void) dealloc {
     if (_vertexArray != nil) delete [] _vertexArray;
     _vertexArray = nil;
+    if (_colourArray != nil) delete [] _colourArray;
+    _colourArray = nil;
     [super dealloc];
 }
 
 - (void) prepareOpenGL {
     // NSLog(@"Preparing...");
     glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
     glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 }
 
@@ -45,21 +48,38 @@
     NSDictionary *description = [screen deviceDescription];
     NSSize displayPixelSize = [[description objectForKey:NSDeviceSize] sizeValue];
     CGSize displayPhysicalSize = CGDisplayScreenSize([[description objectForKey:@"NSScreenNumber"] unsignedIntValue]);
-    float pixelDensityFactor = (displayPixelSize.width / displayPhysicalSize.width) * 0.233;
+    int pixelDensityFactor = (int)(((displayPixelSize.width / displayPhysicalSize.width) * 0.233) + 0.5f);
     
     CGSize drawBounds;
     drawBounds.height = (int)(viewSize.height / pixelDensityFactor);
     drawBounds.width = (int)(viewSize.width / pixelDensityFactor);
     glPointSize(pixelDensityFactor);
     
-    
     // If a reshape operation isn't necessary, don't perform one.
     if (drawBounds.height == _drawBounds.height && drawBounds.width == _drawBounds.width) return;
     
     _drawBounds = drawBounds;
+    
+    // TODO: The size of these should be based on data size alone (and should only change on a data or algorithm change).
     if (_vertexArray != nil) delete [] _vertexArray;
     _vertexArray = nil;
     _vertexArray = new float[3 * (int)_drawBounds.width * (int)_drawBounds.height];
+    if (_colourArray != nil) delete [] _colourArray;
+    _colourArray = nil;
+    _colourArray = new float[3 * (int)_drawBounds.width * (int)_drawBounds.height];
+    
+    for(int i = 0; i < _drawBounds.height; i++) {
+        for(int j = 0; j < _drawBounds.width; j++) {
+            _vertexArray[3 * (int)(_drawBounds.width * i + j)] = j;
+            _vertexArray[3 * (int)(_drawBounds.width * i + j) + 1] = i;
+            _vertexArray[3 * (int)(_drawBounds.width * i + j) + 2] = 0.0f;
+        }
+    }
+    for(int i = 0; i < (3 * _drawBounds.width * _drawBounds.height); i++)
+        _colourArray[i] = rand() / (float)RAND_MAX;
+    glVertexPointer(3, GL_FLOAT, 0, _vertexArray);
+    glColorPointer(3, GL_FLOAT, 0, _colourArray);
+    
     glViewport(0, 0, (int)viewSize.width, (int)viewSize.height);
     glMatrixMode(GL_PROJECTION);
     glOrtho(0.0f, _drawBounds.width, 0.0f, _drawBounds.height, -1.0f, 1.0f);
@@ -72,39 +92,8 @@
     // NSLog(@"Draw!");
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
-    switch(_curveType) {
-        case 0:
-            break;
-        case 1:
-            glColor3f(1.0f, 0.0f, 0.0f);
-            [self drawAnObject];
-            break;
-        case 2:
-            glColor3f(0.0f, 1.0f, 0.0f);
-            [self drawAnObject];
-            break;
-    }
+    if (_curveType != 0) glDrawArrays(GL_POINTS, 0, _drawBounds.width * _drawBounds.height);
     glFlush();
-}
-
-- (void) drawAnObject {
-    _vertexArray[0] = _drawBounds.width / 4;
-    _vertexArray[1] = _drawBounds.height / 4;
-    _vertexArray[2] = 0.0f;
-    _vertexArray[3] = _drawBounds.width / 2;
-    _vertexArray[4] = _drawBounds.height / 2;
-    _vertexArray[5] = 0.0f;
-    _vertexArray[6] = (_drawBounds.width / 2) + (_drawBounds.width / 4);
-    _vertexArray[7] = (_drawBounds.height / 2) + (_drawBounds.height / 4);
-    _vertexArray[8] = 0.0f;
-    glVertexPointer(3, GL_FLOAT, 0, _vertexArray);
-    glBegin(GL_POINTS);
-    {
-        glArrayElement(0);
-        glArrayElement(1);
-        glArrayElement(2);
-    }
-    glEnd();
 }
 
 - (void) scrollWheel: (NSEvent*) event {
