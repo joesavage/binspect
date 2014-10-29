@@ -41,6 +41,7 @@
     [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:filename]];
     _filePath = [filename retain];
     _data = [data retain];
+    [_curveView setDataSource:_data];
     [[self window] setTitle:[self windowTitleForDocumentDisplayName:_filePath]];
     [self beginApplication];
     return YES;
@@ -64,26 +65,24 @@
 }
 
 - (IBAction) segmentedControlClicked:(id)sender {
-    [_curveView setCurveTypeBlank];
-    
     switch ([_curveTypeSegmentedControl selectedSegment]) {
         case 0:
-            [_curveView setCurveTypeHilbert];
+            [_curveView setCurveType:CurveViewTypeHilbert];
             break;
         case 1:
-            [_curveView setCurveTypeZigzag];
+            [_curveView setCurveType:CurveViewTypeZigzag];
             break;
     }
     
     switch ([_curveColouringSegmentedControl selectedSegment]) {
         case 0:
-            [_curveView setCurveColourModeSimilarity];
+            [_curveView setCurveColourMode:CurveViewColourModeSimilarity];
             break;
         case 1:
-            [_curveView setCurveColourModeEntropy];
+            [_curveView setCurveColourMode:CurveViewColourModeEntropy];
             break;
         case 2:
-            [_curveView setCurveColourModeStructural];
+            [_curveView setCurveColourMode:CurveViewColourModeStructural];
     }
     
     [_curvePanelProgressIndicator startAnimation:self];
@@ -97,6 +96,7 @@
     } else {
         // Moves the window to the front of the screen list, within its level, and makes it the key window
         [[self window] makeKeyAndOrderFront:nil];
+        [_curveView setDataSource:_data];
         [_curvePanelProgressIndicator startAnimation:self];
         [self segmentedControlClicked:nil];
         

@@ -8,23 +8,31 @@
 
 #import <Cocoa/Cocoa.h>
 
+typedef NS_ENUM(NSInteger, CurveViewType) {
+    CurveViewTypeBlank,
+    CurveViewTypeHilbert,
+    CurveViewTypeZigzag
+};
+
+typedef NS_ENUM(NSInteger, CurveViewColourMode) {
+    CurveViewColourModeBlank,
+    CurveViewColourModeSimilarity,
+    CurveViewColourModeEntropy,
+    CurveViewColourModeStructural
+};
+
 @interface CurveView : NSOpenGLView
 {
-    NSInteger _curveType, _curveColourMode;
+    NSData    *_data;
+    NSInteger _type, _colourMode;
     CGSize    _drawBounds;
     float     *_vertexArray, *_colourArray;
 }
 
+- (void) setCurveType:(CurveViewType)type;
+- (void) setCurveColourMode:(CurveViewColourMode)mode;
+- (void) setDataSource:(NSData *)data;
 - (void) drawRect: (NSRect) bounds;
 - (void) redraw;
-
-- (void) setCurveTypeBlank;
-- (void) setCurveTypeHilbert;
-- (void) setCurveTypeZigzag;
-- (void) setCurveColourModeBlank;
-- (void) setCurveColourModeSimilarity;
-- (void) setCurveColourModeEntropy;
-- (void) setCurveColourModeStructural;
-
 
 @end

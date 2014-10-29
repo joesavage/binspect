@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Binspect/CurveView.h"
-            timestampString = "436138155.402578"
+            timestampString = "436228833.0692"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "13"
-            endingLineNumber = "13"
+            startingLineNumber = "27"
+            endingLineNumber = "27"
             landmarkName = "@interface CurveView"
             landmarkType = "2">
          </BreakpointContent>

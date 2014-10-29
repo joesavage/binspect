@@ -11,27 +11,59 @@
 
 @implementation CurveView
 
-- (void) redraw { [self drawRect:[self bounds]]; }
-
-- (void) setCurveTypeBlank { _curveType = 0; }
-- (void) setCurveTypeHilbert { _curveType = 1; }
-- (void) setCurveTypeZigzag { _curveType = 2; }
-- (void) setCurveColourModeBlank { _curveColourMode = 0; }
-- (void) setCurveColourModeSimilarity { _curveColourMode = 1; }
-- (void) setCurveColourModeEntropy { _curveColourMode = 2; }
-- (void) setCurveColourModeStructural { _curveColourMode = 3; }
-
-- (void) awakeFromNib {
-    [self setCurveTypeBlank];
+- (void) setCurveType:(CurveViewType)type { _type = type; }
+- (void) setCurveColourMode:(CurveViewColourMode)mode {
+    if (mode == _colourMode) return; // Don't re-set the colour mode if it's not necessary.
+    
+    _colourMode = mode;
+    switch (_colourMode) {
+        case CurveViewColourModeEntropy:
+            break;
+        case CurveViewColourModeSimilarity:
+            break;
+        case CurveViewColourModeStructural:
+            break;
+        default:
+            break;
+    }
+    
+    for(int i = 0; i < (3 * [_data length]); i++)
+        _colourArray[i] = rand() / (float)RAND_MAX;
 }
 
-- (void) dealloc {
+// TODO: Clean up this mess. Including all the casting, and maybe the raw memory management.
+// TODO: This doesn't seem to always draw right to the edge of the view as e.g. points at (0, y) are half drawn off-screen
+//       (Same with (x, 0) [sometimes offscreen]. Need to be drawn with an offset of pointsize / 2. Could use a transformation?
+// TODO: Flip curve to top of screen without messing up array order, or the half-point nudge mentioned above (display all points!)
+- (void) setDataSource:(NSData *)data {
+    if ([data isEqualToData:_data]) return; // Don't re-set the data source if it's not necessary.
+    
+    [_data release];
+    _data = nil;
+    _data = [data retain];
+    
+    // TODO: Could possibly move from C++-style arrays and alloc to NSArray and point to the C-style internals if it's memory efficient.
     if (_vertexArray != nil) delete [] _vertexArray;
     _vertexArray = nil;
+    _vertexArray = new float[3 * [_data length]];
     if (_colourArray != nil) delete [] _colourArray;
     _colourArray = nil;
-    [super dealloc];
+    _colourArray = new float[3 * [_data length]];
+    
+    for(int i = 0; i < [_data length]; i++) {
+        _vertexArray[(3 * i)] = i % (int)_drawBounds.width;
+        _vertexArray[(3 * i) + 1] = (int)(i / _drawBounds.width);
+        _vertexArray[(3 * i) + 2] = 0.0f;
+    }
+    
+    glVertexPointer(3, GL_FLOAT, 0, _vertexArray);
+    glColorPointer(3, GL_FLOAT, 0, _colourArray);
+    
+    [self setCurveType:CurveViewTypeBlank];
+    [self setCurveColourMode:CurveViewColourModeBlank];
 }
+
+- (void) redraw { [self drawRect:[self bounds]]; }
 
 - (void) prepareOpenGL {
     // NSLog(@"Preparing...");
@@ -48,37 +80,17 @@
     NSDictionary *description = [screen deviceDescription];
     NSSize displayPixelSize = [[description objectForKey:NSDeviceSize] sizeValue];
     CGSize displayPhysicalSize = CGDisplayScreenSize([[description objectForKey:@"NSScreenNumber"] unsignedIntValue]);
-    int pixelDensityFactor = (int)(((displayPixelSize.width / displayPhysicalSize.width) * 0.233) + 0.5f);
+    int pixelScaleFactor = (int)(((displayPixelSize.width / displayPhysicalSize.width) * 0.233) + 1.0f);
     
     CGSize drawBounds;
-    drawBounds.height = (int)(viewSize.height / pixelDensityFactor);
-    drawBounds.width = (int)(viewSize.width / pixelDensityFactor);
-    glPointSize(pixelDensityFactor);
+    drawBounds.height = (int)(viewSize.height / pixelScaleFactor);
+    drawBounds.width = (int)(viewSize.width / pixelScaleFactor);
+    glPointSize(pixelScaleFactor);
     
     // If a reshape operation isn't necessary, don't perform one.
     if (drawBounds.height == _drawBounds.height && drawBounds.width == _drawBounds.width) return;
     
     _drawBounds = drawBounds;
-    
-    // TODO: The size of these should be based on data size alone (and should only change on a data or algorithm change).
-    if (_vertexArray != nil) delete [] _vertexArray;
-    _vertexArray = nil;
-    _vertexArray = new float[3 * (int)_drawBounds.width * (int)_drawBounds.height];
-    if (_colourArray != nil) delete [] _colourArray;
-    _colourArray = nil;
-    _colourArray = new float[3 * (int)_drawBounds.width * (int)_drawBounds.height];
-    
-    for(int i = 0; i < _drawBounds.height; i++) {
-        for(int j = 0; j < _drawBounds.width; j++) {
-            _vertexArray[3 * (int)(_drawBounds.width * i + j)] = j;
-            _vertexArray[3 * (int)(_drawBounds.width * i + j) + 1] = i;
-            _vertexArray[3 * (int)(_drawBounds.width * i + j) + 2] = 0.0f;
-        }
-    }
-    for(int i = 0; i < (3 * _drawBounds.width * _drawBounds.height); i++)
-        _colourArray[i] = rand() / (float)RAND_MAX;
-    glVertexPointer(3, GL_FLOAT, 0, _vertexArray);
-    glColorPointer(3, GL_FLOAT, 0, _colourArray);
     
     glViewport(0, 0, (int)viewSize.width, (int)viewSize.height);
     glMatrixMode(GL_PROJECTION);
@@ -92,12 +104,31 @@
     // NSLog(@"Draw!");
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
-    if (_curveType != 0) glDrawArrays(GL_POINTS, 0, _drawBounds.width * _drawBounds.height);
+    
+    if (_type != CurveViewTypeBlank) glDrawArrays(GL_POINTS, 0, (GLsizei)[_data length]);
     glFlush();
 }
 
 - (void) scrollWheel: (NSEvent*) event {
     // NSLog(@"Scroll!");
+}
+
+- (void) awakeFromNib {
+    _data = nil;
+    [self setCurveType:CurveViewTypeBlank];
+    [self setCurveColourMode:CurveViewColourModeBlank];
+}
+
+- (void) dealloc {
+    [_data release];
+    _data = nil;
+    
+    if (_vertexArray != nil) delete [] _vertexArray;
+    _vertexArray = nil;
+    if (_colourArray != nil) delete [] _colourArray;
+    _colourArray = nil;
+    
+    [super dealloc];
 }
 
 // For mouse hovering in future: updateTrackingAreas, mouseEntered, mouseExited
