@@ -34,5 +34,6 @@ typedef NS_ENUM(NSInteger, CurveViewColourMode) {
 - (void) setDataSource:(NSData *)data;
 - (void) drawRect: (NSRect) bounds;
 - (void) redraw;
+- (void) clearMemoryFingerprint;
 
 @end

@@ -21,6 +21,8 @@
     }
     
     // _vertexArray and _colourArray should be indexed the same as _data (for sequential drawing, indexed access, etc.)
+    // Note: This isn't zigzag quite yet as it resets its line position each line instead of looping back on itself.
+    //       [The pre-calculation will save a LOT of memory and computation]
     for(int i = 0; i < [_data length]; i++) {
         float halfPointSize = (_pointSize / 2.0f);
         unsigned long rowNumber = (i * _pointSize) / (int)_viewBounds.width;
@@ -36,18 +38,33 @@
     
     _colourMode = mode;
     switch (_colourMode) {
-        case CurveViewColourModeEntropy:
-            break;
         case CurveViewColourModeSimilarity:
+            for(int i = 0; i < (3 * [_data length]); i++)
+                _colourArray[i] = rand() / (float)RAND_MAX;
+            break;
+        case CurveViewColourModeEntropy:
+            
             break;
         case CurveViewColourModeStructural:
-            break;
-        default:
+            // TODO: If the data is longer than X, /pre-calculate/ the colour palette and then repeat it.
+            NSColorSpace *rgbSpace = [NSColorSpace sRGBColorSpace];
+            for(int i = 0; i < [_data length]; i++) {
+                float percentageComplete = (float)i / (float)[_data length];
+                float hue = percentageComplete;
+                
+                // May need to tweak the specifics of the cycle size depending on Hilbert appearance.
+                if ([_data length] > _viewBounds.width * 5) hue = (float)i / (_viewBounds.width * 5);
+                if (hue > 1.0f) hue = (float)hue - (int)hue;
+                
+                NSColor *colour = [NSColor colorWithCalibratedHue:hue saturation:0.8f brightness:1.0f alpha:1.0f];
+                [colour colorUsingColorSpace:rgbSpace];
+                
+                _colourArray[(i * 3)] = [colour redComponent];
+                _colourArray[(i * 3) + 1] = [colour greenComponent];
+                _colourArray[(i * 3) + 2] = [colour blueComponent];
+            }
             break;
     }
-    
-    for(int i = 0; i < (3 * [_data length]); i++)
-        _colourArray[i] = rand() / (float)RAND_MAX;
 }
 
 - (void) setDataSource:(NSData *)data {
@@ -119,7 +136,7 @@
     [self setCurveColourMode:CurveViewColourModeBlank];
 }
 
-- (void) dealloc {
+- (void) clearMemoryFingerprint {
     [_data release];
     _data = nil;
     
@@ -127,7 +144,10 @@
     _vertexArray = nil;
     if (_colourArray != nil) delete [] _colourArray;
     _colourArray = nil;
-    
+}
+
+- (void) dealloc {
+    [self clearMemoryFingerprint];
     [super dealloc];
 }
 

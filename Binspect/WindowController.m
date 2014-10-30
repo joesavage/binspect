@@ -65,6 +65,7 @@
 }
 
 - (IBAction) segmentedControlClicked:(id)sender {
+    [_curvePanelProgressIndicator startAnimation:self];
     switch ([_curveTypeSegmentedControl selectedSegment]) {
         case 0:
             [_curveView setCurveType:CurveViewTypeHilbert];
@@ -85,7 +86,6 @@
             [_curveView setCurveColourMode:CurveViewColourModeStructural];
     }
     
-    [_curvePanelProgressIndicator startAnimation:self];
     [_curveView redraw];
     [_curvePanelProgressIndicator stopAnimation:self];
 }
@@ -96,14 +96,11 @@
     } else {
         // Moves the window to the front of the screen list, within its level, and makes it the key window
         [[self window] makeKeyAndOrderFront:nil];
-        [_curveView setDataSource:_data];
         [_curvePanelProgressIndicator startAnimation:self];
-        [self segmentedControlClicked:nil];
-        
-        // TODO: Pass the data to a model to get data to draw to the curve view with selected algorithms.
-        
-        
+        [_curveView setDataSource:_data];
         [_curvePanelProgressIndicator stopAnimation:self];
+        
+        [self segmentedControlClicked:nil];
     }
 }
 
@@ -122,6 +119,7 @@
     _filePath = nil;
     [_data release];
     _data = nil;
+    [_curveView clearMemoryFingerprint];
 }
 
 @end
