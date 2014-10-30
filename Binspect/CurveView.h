@@ -24,8 +24,8 @@ typedef NS_ENUM(NSInteger, CurveViewColourMode) {
 @interface CurveView : NSOpenGLView
 {
     NSData    *_data;
-    NSInteger _type, _colourMode;
-    CGSize    _drawBounds;
+    NSInteger _type, _colourMode, _pointSize;
+    CGSize    _viewBounds;
     float     *_vertexArray, *_colourArray;
 }
 
