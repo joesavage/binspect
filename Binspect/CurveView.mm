@@ -34,7 +34,6 @@
 // TODO: Clean up this mess. Including all the casting, and maybe the raw memory management.
 // TODO: This doesn't seem to always draw right to the edge of the view as e.g. points at (0, y) are half drawn off-screen
 //       (Same with (x, 0) [sometimes offscreen]. Need to be drawn with an offset of pointsize / 2. Could use a transformation?
-// TODO: Flip curve to top of screen without messing up array order, or the half-point nudge mentioned above (display all points!)
 - (void) setDataSource:(NSData *)data {
     if ([data isEqualToData:_data]) return; // Don't re-set the data source if it's not necessary.
     
@@ -51,7 +50,7 @@
     _colourArray = new float[3 * [_data length]];
     
     for(int i = 0; i < [_data length]; i++) {
-        _vertexArray[(3 * i)] = i % (int)_drawBounds.width;
+        _vertexArray[(3 * i)]     = i % (int)_drawBounds.width;
         _vertexArray[(3 * i) + 1] = (int)(i / _drawBounds.width);
         _vertexArray[(3 * i) + 2] = 0.0f;
     }
@@ -75,12 +74,7 @@
 - (void) reshape {
     //NSLog(@"Reshape!");
     CGSize viewSize = [self bounds].size;
-    
-    NSScreen *screen = [NSScreen mainScreen];
-    NSDictionary *description = [screen deviceDescription];
-    NSSize displayPixelSize = [[description objectForKey:NSDeviceSize] sizeValue];
-    CGSize displayPhysicalSize = CGDisplayScreenSize([[description objectForKey:@"NSScreenNumber"] unsignedIntValue]);
-    int pixelScaleFactor = (int)(((displayPixelSize.width / displayPhysicalSize.width) * 0.233) + 1.0f);
+    int pixelScaleFactor = 2;
     
     CGSize drawBounds;
     drawBounds.height = (int)(viewSize.height / pixelScaleFactor);
@@ -94,16 +88,16 @@
     
     glViewport(0, 0, (int)viewSize.width, (int)viewSize.height);
     glMatrixMode(GL_PROJECTION);
-    glOrtho(0.0f, _drawBounds.width, 0.0f, _drawBounds.height, -1.0f, 1.0f);
+    glOrtho(0.0f, _drawBounds.width, _drawBounds.height, 0.0f, -1.0f, 1.0f);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    glTranslatef(0.5f, 1.0f, 0.0f); // Transform GL_POINTS wholly into the view
 }
 
 -(void) drawRect: (NSRect) bounds
 {
     // NSLog(@"Draw!");
     glClear(GL_COLOR_BUFFER_BIT);
-    glLoadIdentity();
     
     if (_type != CurveViewTypeBlank) glDrawArrays(GL_POINTS, 0, (GLsizei)[_data length]);
     glFlush();
