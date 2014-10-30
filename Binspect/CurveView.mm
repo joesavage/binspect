@@ -11,26 +11,36 @@
 
 @implementation CurveView
 
+// Note: _vertexArray and _colourArray should be indexed the same as _data (for sequential drawing, indexed access, etc.)
 - (void) setCurveType:(CurveViewType)type {
     _type = type;
     switch(_type) {
         case CurveViewTypeHilbert:
+            // TODO: Actually implement Hilbert here. Keep in mind, _vertexArray should remain indexed as _data is.
+            
+            for(int i = 0; i < [_data length]; i++) {
+                float halfPointSize = (_pointSize / 2.0f);
+                unsigned long rowNumber = (i * _pointSize) / (int)_viewBounds.width;
+                
+                // Assign the (x, y, z) co-ordinates for this point in the vertex array
+                _vertexArray[(3 * i)]     = ((i * _pointSize) % (int)_viewBounds.width) + halfPointSize;
+                _vertexArray[(3 * i) + 1] = (rowNumber * _pointSize) + halfPointSize;
+                _vertexArray[(3 * i) + 2] = 0.0f;
+            }
             break;
         case CurveViewTypeZigzag:
+            for(int i = 0; i < [_data length]; i++) {
+                float halfPointSize = (_pointSize / 2.0f);
+                unsigned long rowNumber = (i * _pointSize) / (int)_viewBounds.width;
+                bool oddRow = rowNumber % 2 == 1;
+                
+                // Assign the (x, y, z) co-ordinates for this point in the vertex array
+                _vertexArray[(3 * i)]     = ((i * _pointSize) % (int)_viewBounds.width) + halfPointSize;
+                if (oddRow) _vertexArray[(3 * i)] = (int)_viewBounds.width - _vertexArray[(3 * i)];
+                _vertexArray[(3 * i) + 1] = (rowNumber * _pointSize) + halfPointSize;
+                _vertexArray[(3 * i) + 2] = 0.0f;
+            }
             break;
-    }
-    
-    // _vertexArray and _colourArray should be indexed the same as _data (for sequential drawing, indexed access, etc.)
-    // Note: This isn't zigzag quite yet as it resets its line position each line instead of looping back on itself.
-    //       [The pre-calculation will save a LOT of memory and computation]
-    for(int i = 0; i < [_data length]; i++) {
-        float halfPointSize = (_pointSize / 2.0f);
-        unsigned long rowNumber = (i * _pointSize) / (int)_viewBounds.width;
-        
-        // Assign the (x, y, z) co-ordinates for this point in the vertex array
-        _vertexArray[(3 * i)]     = ((i * _pointSize) % (int)_viewBounds.width) + halfPointSize;
-        _vertexArray[(3 * i) + 1] = (rowNumber * _pointSize) + halfPointSize;
-        _vertexArray[(3 * i) + 2] = 0.0f;
     }
 }
 - (void) setCurveColourMode:(CurveViewColourMode)mode {
@@ -47,6 +57,7 @@
             break;
         case CurveViewColourModeStructural:
             // TODO: If the data is longer than X, /pre-calculate/ the colour palette and then repeat it.
+            //       [The pre-calculation will save a LOT of memory and computation]
             NSColorSpace *rgbSpace = [NSColorSpace sRGBColorSpace];
             for(int i = 0; i < [_data length]; i++) {
                 float percentageComplete = (float)i / (float)[_data length];
@@ -131,7 +142,7 @@
 
 - (void) awakeFromNib {
     _data = nil;
-    _pointSize = 3;
+    _pointSize = 4;
     [self setCurveType:CurveViewTypeBlank];
     [self setCurveColourMode:CurveViewColourModeBlank];
 }
