@@ -11,35 +11,84 @@
 
 @implementation CurveView
 
++ (unsigned int) getHilbertCurveIndex:(unsigned int)size forCoords:(CGPoint)point {
+    CGPoint rotation;
+    unsigned int result = 0;
+    int temporarySize;
+    for (temporarySize = size / 2; temporarySize > 0; temporarySize /= 2) {
+        rotation.x = ((int)point.x & temporarySize) > 0;
+        rotation.y = ((int)point.y & temporarySize) > 0;
+        result += temporarySize * temporarySize * ((3 * (int)rotation.x) ^ (int)rotation.y);
+        [CurveView rotateHilbertCurveQuadrant:temporarySize by:rotation forPoint:&point];
+    }
+    
+    return result;
+}
+
++ (CGPoint) getHilbertCurveCoordinates:(unsigned int)size forIndex:(unsigned int)index {
+    CGPoint rotation, result = CGPointMake(0, 0);
+    int temporarySize, temporaryIndex = index;
+    for (temporarySize = 1; temporarySize < size; temporarySize *= 2) {
+        rotation.x = 1 & (temporaryIndex / 2);
+        rotation.y = 1 & (temporaryIndex ^ (int)rotation.x);
+        [CurveView rotateHilbertCurveQuadrant:temporarySize by:rotation forPoint:&result];
+        result.x += temporarySize * (int)rotation.x;
+        result.y += temporarySize * (int)rotation.y;
+        temporaryIndex /= 4;
+    }
+    
+    return result;
+}
+
++ (void) rotateHilbertCurveQuadrant:(unsigned int)size by:(CGPoint)rotation forPoint:(CGPoint *)point {
+    if (rotation.y == 0) {
+        if (rotation.x == 1) {
+            point->x = (size - 1) - point->x;
+            point->y = (size - 1) - point->y;
+        }
+        
+        // Swap coordinates, (x, y) -> (y, x)
+        CGFloat temporary  = point->x;
+        point->x = point->y;
+        point->y = temporary;
+    }
+}
+
++ (unsigned int) getZigzagCurveIndex:(unsigned int)width forCoords:(CGPoint)point {
+    unsigned int result, rowNumber = point.y;
+    bool oddRow = (rowNumber % 2 == 1);
+    result = (point.y * width) + (oddRow ? (width - 1) - point.x : point.x);
+    
+    return result;
+}
+
++ (CGPoint) getZigzagCurveCoordinates:(unsigned int)width forIndex:(unsigned int)index {
+    CGPoint result = CGPointMake(0, 0);
+    unsigned int rowNumber = index / width;
+    bool oddRow = (rowNumber % 2 == 1);
+    result.x = index % width;
+    result.y = rowNumber;
+    if (oddRow) result.x = (width - 1) - result.x;
+    
+    return result;
+}
+
 // Note: _vertexArray and _colourArray should be indexed the same as _data (for sequential drawing, indexed access, etc.)
-// TODO: These algorithms should be genericized into index->pos (and pos->index) functions (separate classes?)
 - (void) setCurveType:(CurveViewType)type {
     _type = type;
     switch(_type) {
         case CurveViewTypeHilbert:
-            // TODO: Actually implement Hilbert here. Keep in mind, _vertexArray should remain indexed as _data is.
-            
-            for(int i = 0; i < [_data length]; i++) {
-                float halfPointSize = (_pointSize / 2.0f);
-                unsigned long rowNumber = (i * _pointSize) / (int)_viewBounds.width;
-                
-                
-                // Assign the (x, y, z) co-ordinates for this point in the vertex array
-                _vertexArray[(3 * i)]     = ((i * _pointSize) % (int)_viewBounds.width) + halfPointSize;
-                _vertexArray[(3 * i) + 1] = (rowNumber * _pointSize) + halfPointSize;
-                _vertexArray[(3 * i) + 2] = 0.0f;
-            }
+            // TODO: Actually implement Hilbert here
             break;
         case CurveViewTypeZigzag:
             for(int i = 0; i < [_data length]; i++) {
-                float halfPointSize = (_pointSize / 2.0f);
-                unsigned long rowNumber = (i * _pointSize) / (int)_viewBounds.width;
-                bool oddRow = rowNumber % 2 == 1;
+                CGPoint point = [CurveView getZigzagCurveCoordinates:(_viewBounds.width / _pointSize) forIndex:i];
+                point.x = (point.x * _pointSize) + (_pointSize / 2.0f);
+                point.y = (point.y * _pointSize) + (_pointSize / 2.0f);
                 
                 // Assign the (x, y, z) co-ordinates for this point in the vertex array
-                _vertexArray[(3 * i)]     = ((i * _pointSize) % (int)_viewBounds.width) + halfPointSize;
-                if (oddRow) _vertexArray[(3 * i)] = (int)_viewBounds.width - _vertexArray[(3 * i)];
-                _vertexArray[(3 * i) + 1] = (rowNumber * _pointSize) + halfPointSize;
+                _vertexArray[(3 * i)]     = point.x;
+                _vertexArray[(3 * i) + 1] = point.y;
                 _vertexArray[(3 * i) + 2] = 0.0f;
             }
             break;
@@ -134,7 +183,7 @@
     glLoadIdentity();
     
     // TODO: Don't draw points that aren't on screen.
-    if (_type != CurveViewTypeBlank) glDrawArrays(GL_POINTS, 0, (GLsizei)[_data length]);
+    if (_type != CurveViewTypeBlank) glDrawArrays(GL_POINTS, 0, (GLsizei)[_data length]); // GL_LINE_STRIP for curve debugging
     glFlush();
 }
 
