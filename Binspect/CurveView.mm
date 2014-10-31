@@ -12,6 +12,7 @@
 @implementation CurveView
 
 // Note: _vertexArray and _colourArray should be indexed the same as _data (for sequential drawing, indexed access, etc.)
+// TODO: These algorithms should be genericized into index->pos (and pos->index) functions (separate classes?)
 - (void) setCurveType:(CurveViewType)type {
     _type = type;
     switch(_type) {
@@ -21,6 +22,7 @@
             for(int i = 0; i < [_data length]; i++) {
                 float halfPointSize = (_pointSize / 2.0f);
                 unsigned long rowNumber = (i * _pointSize) / (int)_viewBounds.width;
+                
                 
                 // Assign the (x, y, z) co-ordinates for this point in the vertex array
                 _vertexArray[(3 * i)]     = ((i * _pointSize) % (int)_viewBounds.width) + halfPointSize;
@@ -67,7 +69,7 @@
                 if ([_data length] > _viewBounds.width * 5) hue = (float)i / (_viewBounds.width * 5);
                 if (hue > 1.0f) hue = (float)hue - (int)hue;
                 
-                NSColor *colour = [NSColor colorWithCalibratedHue:hue saturation:0.8f brightness:1.0f alpha:1.0f];
+                NSColor *colour = [NSColor colorWithCalibratedHue:hue saturation:0.9f brightness:1.0f alpha:1.0f];
                 [colour colorUsingColorSpace:rgbSpace];
                 
                 _colourArray[(i * 3)] = [colour redComponent];
@@ -163,5 +165,6 @@
 }
 
 // For mouse hovering in future: updateTrackingAreas, mouseEntered, mouseExited
+// Note for highlighting: Can cache old colours in an (NS?) array and restore on deselection (and redraw, obviously)
 
 @end
