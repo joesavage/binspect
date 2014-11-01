@@ -133,22 +133,29 @@
             
             break;
         case CurveViewColourModeStructural:
-            // TODO: If the data is longer than X, /pre-calculate/ the colour palette and then repeat it.
-            //       [The pre-calculation will save a LOT of memory and computation]
+            const unsigned int colourRepeatCycleSize = _viewBounds.width * 8;
+            bool repeatingPalette = ([_data length] > colourRepeatCycleSize);
+            NSMutableArray *palette = [[NSMutableArray alloc] init];
             NSColorSpace *rgbSpace = [NSColorSpace sRGBColorSpace];
             for(int i = 0; i < [_data length]; i++) {
                 float percentageComplete = (float)i / (float)[_data length];
                 float hue = percentageComplete;
                 
-                if ([_data length] > _viewBounds.width * 8) hue = (float)i / (_viewBounds.width * 8);
-                if (hue > 1.0f) hue = (float)hue - (int)hue;
+                if (repeatingPalette) hue = (float)i / (float)colourRepeatCycleSize;
+                if (repeatingPalette && hue > 1.0f) break;
                 
+                if (hue > 1.0f) hue = (float)hue - (int)hue;
                 NSColor *colour = [NSColor colorWithCalibratedHue:hue saturation:0.9f brightness:1.0f alpha:1.0f];
                 [colour colorUsingColorSpace:rgbSpace];
-                
-                _colourArray[(i * 3)] = [colour redComponent];
-                _colourArray[(i * 3) + 1] = [colour greenComponent];
-                _colourArray[(i * 3) + 2] = [colour blueComponent];
+                [palette addObject:colour];
+            }
+
+            for(int i = 0; i < [_data length]; i++) {
+                int paletteIndex = i;
+                if (repeatingPalette) paletteIndex = i % colourRepeatCycleSize;
+                _colourArray[(i * 3)] = [[palette objectAtIndex:paletteIndex] redComponent];
+                _colourArray[(i * 3) + 1] = [[palette objectAtIndex:paletteIndex] greenComponent];
+                _colourArray[(i * 3) + 2] = [[palette objectAtIndex:paletteIndex] blueComponent];
             }
             break;
     }
