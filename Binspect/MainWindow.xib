@@ -18,44 +18,28 @@
         <window title="Binspect" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" animationBehavior="default" id="olO-85-8lA">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" unifiedTitleAndToolbar="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="294" y="157" width="836" height="681"/>
+            <rect key="contentRect" x="294" y="157" width="748" height="681"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <value key="minSize" type="size" width="836" height="680"/>
             <value key="maxSize" type="size" width="836" height="683"/>
             <view key="contentView" id="sPg-ez-QiS">
-                <rect key="frame" x="0.0" y="0.0" width="836" height="681"/>
+                <rect key="frame" x="0.0" y="0.0" width="748" height="681"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="ycw-Yr-glK">
-                        <rect key="frame" x="284" y="323" width="32" height="32"/>
-                    </progressIndicator>
                     <visualEffectView fixedFrame="YES" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="Rcc-ZQ-Crz">
-                        <rect key="frame" x="601" y="0.0" width="235" height="680"/>
+                        <rect key="frame" x="513" y="0.0" width="235" height="680"/>
                     </visualEffectView>
                     <openGLView fixedFrame="YES" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CBw-Ea-AEE" customClass="CurveView">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="680"/>
+                        <rect key="frame" x="0.0" y="0.0" width="512" height="680"/>
                     </openGLView>
+                    <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="ycw-Yr-glK">
+                        <rect key="frame" x="240" y="324" width="32" height="32"/>
+                    </progressIndicator>
                 </subviews>
             </view>
             <toolbar key="toolbar" implicitIdentifier="812CE2D0-7E5B-4291-BA3E-383BE801169F" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="J9P-gJ-GGW">
                 <allowedToolbarItems>
-                    <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="8nm-8r-AyE"/>
-                    <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="a5r-oA-YFZ"/>
-                    <toolbarItem implicitItemIdentifier="79D2BABC-6CD3-45BD-9B1A-1E755A93F787" label="" paletteLabel="" id="G82-H2-G6A">
-                        <nil key="toolTip"/>
-                        <size key="minSize" width="96" height="22"/>
-                        <size key="maxSize" width="304" height="22"/>
-                        <searchField key="view" wantsLayer="YES" verticalHuggingPriority="750" id="jwm-B6-EDg">
-                            <rect key="frame" x="0.0" y="14" width="304" height="22"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="Search for a memory address range" usesSingleLineMode="YES" bezelStyle="round" id="51i-yl-kry">
-                                <font key="font" metaFont="system"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                            </searchFieldCell>
-                        </searchField>
-                    </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="E994E9B1-7702-4677-8BC7-6BCBB42ED0E6" label="" paletteLabel="" image="NSQuickLookTemplate" id="3PA-dU-Bd8">
+                    <toolbarItem implicitItemIdentifier="3FBA7A39-479B-4017-AEB7-320DCE3E99E7" label="" paletteLabel="" image="NSQuickLookTemplate" id="3PA-dU-Bd8">
                         <nil key="toolTip"/>
                         <size key="minSize" width="35" height="25"/>
                         <size key="maxSize" width="35" height="25"/>
@@ -68,7 +52,7 @@
                             </buttonCell>
                         </button>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="52721A9C-8F13-402C-A177-D67A093A2401" label="" paletteLabel="" image="NSRefreshTemplate" id="bCH-ES-FIQ">
+                    <toolbarItem implicitItemIdentifier="63CC3412-81FB-46F8-84C1-5596E9D3A52B" label="" paletteLabel="" image="NSRefreshTemplate" id="bCH-ES-FIQ">
                         <nil key="toolTip"/>
                         <size key="minSize" width="35" height="25"/>
                         <size key="maxSize" width="35" height="25"/>
@@ -81,7 +65,7 @@
                             </buttonCell>
                         </button>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="DE7B0925-0468-4768-9E5D-B0A1C6F065A5" label="" paletteLabel="" id="0rb-sX-u82">
+                    <toolbarItem implicitItemIdentifier="067708FC-B461-4BC2-9681-B71653155F6E" label="" paletteLabel="" id="0rb-sX-u82">
                         <nil key="toolTip"/>
                         <size key="minSize" width="76" height="28"/>
                         <size key="maxSize" width="129" height="28"/>
@@ -100,7 +84,7 @@
                             </segmentedCell>
                         </segmentedControl>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="C47359D3-09C0-482F-A761-B38172592A76" label="" paletteLabel="" id="syN-6p-gMJ">
+                    <toolbarItem implicitItemIdentifier="ED2F30A1-4323-46AF-ACBA-FEA62E45A4B5" label="" paletteLabel="" id="syN-6p-gMJ">
                         <nil key="toolTip"/>
                         <size key="minSize" width="76" height="28"/>
                         <size key="maxSize" width="230" height="28"/>
@@ -120,17 +104,30 @@
                             </connections>
                         </segmentedControl>
                     </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="a5r-oA-YFZ"/>
+                    <toolbarItem implicitItemIdentifier="004D7485-1CCC-4182-AEB4-1815AF5FB519" label="" paletteLabel="" id="G82-H2-G6A">
+                        <nil key="toolTip"/>
+                        <size key="minSize" width="96" height="22"/>
+                        <size key="maxSize" width="303" height="22"/>
+                        <searchField key="view" wantsLayer="YES" verticalHuggingPriority="750" id="jwm-B6-EDg">
+                            <rect key="frame" x="0.0" y="14" width="275" height="22"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="Search for a memory address range" usesSingleLineMode="YES" bezelStyle="round" id="51i-yl-kry">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </searchFieldCell>
+                        </searchField>
+                    </toolbarItem>
                 </allowedToolbarItems>
                 <defaultToolbarItems>
-                    <toolbarItem reference="3PA-dU-Bd8"/>
-                    <toolbarItem reference="a5r-oA-YFZ"/>
                     <toolbarItem reference="0rb-sX-u82"/>
                     <toolbarItem reference="syN-6p-gMJ"/>
                     <toolbarItem reference="a5r-oA-YFZ"/>
                     <toolbarItem reference="G82-H2-G6A"/>
                 </defaultToolbarItems>
             </toolbar>
-            <point key="canvasLocation" x="424" y="457.5"/>
+            <point key="canvasLocation" x="380" y="457.5"/>
         </window>
     </objects>
     <resources>

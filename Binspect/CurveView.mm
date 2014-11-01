@@ -78,20 +78,46 @@
     _type = type;
     switch(_type) {
         case CurveViewTypeHilbert:
-            // TODO: Actually implement Hilbert here
-            break;
-        case CurveViewTypeZigzag:
-            for(int i = 0; i < [_data length]; i++) {
-                CGPoint point = [CurveView getZigzagCurveCoordinates:(_viewBounds.width / _pointSize) forIndex:i];
-                point.x = (point.x * _pointSize) + (_pointSize / 2.0f);
-                point.y = (point.y * _pointSize) + (_pointSize / 2.0f);
+            {
+                unsigned int nearestPowerOfTwo = (unsigned int)(sqrt([_data length]) + 0.5f);
                 
-                // Assign the (x, y, z) co-ordinates for this point in the vertex array
-                _vertexArray[(3 * i)]     = point.x;
-                _vertexArray[(3 * i) + 1] = point.y;
-                _vertexArray[(3 * i) + 2] = 0.0f;
+                // Bit Twiddling Hacks: "Round up to the next highest power of 2"
+                // http://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
+                nearestPowerOfTwo--;
+                nearestPowerOfTwo |= nearestPowerOfTwo >> 1;
+                nearestPowerOfTwo |= nearestPowerOfTwo >> 2;
+                nearestPowerOfTwo |= nearestPowerOfTwo >> 4;
+                nearestPowerOfTwo |= nearestPowerOfTwo >> 8;
+                nearestPowerOfTwo |= nearestPowerOfTwo >> 16;
+                nearestPowerOfTwo++;
+                
+                // TODO: Unroll the curve so it fits into a rectangular pattern (vertical scrolling only, 512px width)
+                for(int i = 0; i < [_data length]; i++) {
+                    CGPoint point = [CurveView getHilbertCurveCoordinates:(unsigned int)nearestPowerOfTwo forIndex:i];
+                    point.x = (point.x * _pointSize) + (_pointSize / 2.0f);
+                    point.y = (point.y * _pointSize) + (_pointSize / 2.0f);
+                    
+                    // Assign the (x, y, z) co-ordinates for this point in the vertex array
+                    _vertexArray[(3 * i)]     = point.x;
+                    _vertexArray[(3 * i) + 1] = point.y;
+                    _vertexArray[(3 * i) + 2] = 0.0f;
+                }
+                break;
             }
-            break;
+        case CurveViewTypeZigzag:
+            {
+                for(int i = 0; i < [_data length]; i++) {
+                    CGPoint point = [CurveView getZigzagCurveCoordinates:(_viewBounds.width / _pointSize) forIndex:i];
+                    point.x = (point.x * _pointSize) + (_pointSize / 2.0f);
+                    point.y = (point.y * _pointSize) + (_pointSize / 2.0f);
+                    
+                    // Assign the (x, y, z) co-ordinates for this point in the vertex array
+                    _vertexArray[(3 * i)]     = point.x;
+                    _vertexArray[(3 * i) + 1] = point.y;
+                    _vertexArray[(3 * i) + 2] = 0.0f;
+                }
+                break;
+            }
     }
 }
 - (void) setCurveColourMode:(CurveViewColourMode)mode {
@@ -114,8 +140,7 @@
                 float percentageComplete = (float)i / (float)[_data length];
                 float hue = percentageComplete;
                 
-                // May need to tweak the specifics of the cycle size depending on Hilbert appearance.
-                if ([_data length] > _viewBounds.width * 5) hue = (float)i / (_viewBounds.width * 5);
+                if ([_data length] > _viewBounds.width * 8) hue = (float)i / (_viewBounds.width * 8);
                 if (hue > 1.0f) hue = (float)hue - (int)hue;
                 
                 NSColor *colour = [NSColor colorWithCalibratedHue:hue saturation:0.9f brightness:1.0f alpha:1.0f];
@@ -193,7 +218,9 @@
 
 - (void) awakeFromNib {
     _data = nil;
-    _pointSize = 4;
+    
+    // TODO (if time allows): Add zoom in/out feature that zooms in powers of two.
+    _pointSize = 4; // For best appearance, should be a power of 2.
     [self setCurveType:CurveViewTypeBlank];
     [self setCurveColourMode:CurveViewColourModeBlank];
 }
