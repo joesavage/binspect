@@ -20,8 +20,8 @@
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="294" y="157" width="748" height="681"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
-            <value key="minSize" type="size" width="836" height="680"/>
-            <value key="maxSize" type="size" width="836" height="683"/>
+            <value key="minSize" type="size" width="748" height="681"/>
+            <value key="maxSize" type="size" width="748" height="681"/>
             <view key="contentView" id="sPg-ez-QiS">
                 <rect key="frame" x="0.0" y="0.0" width="748" height="681"/>
                 <autoresizingMask key="autoresizingMask"/>
