@@ -151,10 +151,23 @@
     _colourMode = mode;
     switch (_colourMode) {
         case CurveViewColourModeSimilarity:
-            for(int i = 0; i < (3 * [_data length]); i++)
-                _colourArray[i] = rand() / (float)RAND_MAX;
+            {
+                // TODO: Actually use a colour palette here (where similar bytes have similar colours)
+                // [Using varying hues isn't sufficient here as the cyclical nature means that very different
+                //   values may have very similar colours]
+                //
+                // ALSO: At current, this colour scheme collides with the background colour. Fix.
+                const unsigned char *bytes = (const unsigned char*)[_data bytes];
+                for(int i = 0; i < [_data length]; i++) {
+                    _colourArray[(3 * i)] = bytes[i] / 255.0f;
+                    _colourArray[(3 * i) + 1] = bytes[i] / 255.0f;
+                    _colourArray[(3 * i) + 2] = bytes[i] / 255.0f;
+                }
+            }
             break;
         case CurveViewColourModeEntropy:
+            for(int i = 0; i < (3 * [_data length]); i++)
+                _colourArray[i] = rand() / (float)RAND_MAX;
             break;
         case CurveViewColourModeStructural:
             {
@@ -242,7 +255,9 @@
     // NSLog(@"Draw!");
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
-    glTranslatef(0.0f, -_scrollPosition, 0.0f); // Translate by the distance scrolled
+    
+    // Note: Would be nice if the user's scrolling preferences were used here.
+    glTranslatef(0.0f, -_scrollPosition, 0.0f); // Translate by the distance scrolled.
     
     if (_type != CurveViewTypeBlank) { // Only draw if we're not in the blank curve mode
         
