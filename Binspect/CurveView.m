@@ -152,16 +152,15 @@
     switch (_colourMode) {
         case CurveViewColourModeSimilarity:
             {
-                // TODO: Actually use a colour palette here (where similar bytes have similar colours)
-                // [Using varying hues isn't sufficient here as the cyclical nature means that very different
-                //   values may have very similar colours]
-                //
-                // ALSO: At current, this colour scheme collides with the background colour. Fix.
+                // Similarity colour palette, generated through a Hilbert-order traversal of the RGB colour cube - more
+                // specifically through the use of Aldo Cortesi's scurve swatch Python utility. This palette idea
+                // itself was heavily inspired by the work of Cortesi.
+                #include "ColourModeSimilarityPalette.c"
                 const unsigned char *bytes = (const unsigned char*)[_data bytes];
                 for(int i = 0; i < [_data length]; i++) {
-                    _colourArray[(3 * i)] = bytes[i] / 255.0f;
-                    _colourArray[(3 * i) + 1] = bytes[i] / 255.0f;
-                    _colourArray[(3 * i) + 2] = bytes[i] / 255.0f;
+                    _colourArray[(3 * i)] = palette[(3 * bytes[i])];
+                    _colourArray[(3 * i) + 1] = palette[(3 * bytes[i]) + 1];
+                    _colourArray[(3 * i) + 2] = palette[(3 * bytes[i]) + 2];
                 }
             }
             break;
@@ -287,6 +286,7 @@
 - (void) awakeFromNib {
     _data = nil;
     
+    // TODO: If time allows, zoom functionality is invaluable (more/less byte detail, bigger/smaller files, etc.)
     _pointSize = 4; // Should be a power of 2. Ideally in the form 2^(2n) - see Hilbert chunking code.
     _scrollPosition = 0.0f;
     [self setCurveType:CurveViewTypeBlank];

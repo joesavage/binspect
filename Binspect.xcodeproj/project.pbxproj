@@ -15,6 +15,7 @@
 		D859DACC19F1E39C00137408 /* BinspectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D859DACB19F1E39C00137408 /* BinspectTests.m */; };
 		D87F5C3419FAAA4A00E31BA6 /* WindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = D87F5C3219FAAA4A00E31BA6 /* WindowController.m */; };
 		D8A5E00A19FAD3AC00AC11D7 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8A5E00919FAD3AC00AC11D7 /* MainWindow.xib */; };
+		D8B8DBF41A06B48500EB53B7 /* ColourModeSimilarityPalette.c in Sources */ = {isa = PBXBuildFile; fileRef = D8B8DBF31A06B48500EB53B7 /* ColourModeSimilarityPalette.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +44,7 @@
 		D87F5C3119FAAA4A00E31BA6 /* WindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowController.h; sourceTree = "<group>"; };
 		D87F5C3219FAAA4A00E31BA6 /* WindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WindowController.m; sourceTree = "<group>"; };
 		D8A5E00919FAD3AC00AC11D7 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		D8B8DBF31A06B48500EB53B7 /* ColourModeSimilarityPalette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ColourModeSimilarityPalette.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 				D8A5E00919FAD3AC00AC11D7 /* MainWindow.xib */,
 				D816EE6C19FC908F00102667 /* CurveView.h */,
 				D816EE6D19FC908F00102667 /* CurveView.m */,
+				D8B8DBF31A06B48500EB53B7 /* ColourModeSimilarityPalette.c */,
 				D859DAB519F1E39B00137408 /* Supporting Files */,
 			);
 			path = Binspect;
@@ -236,6 +239,7 @@
 				D859DABB19F1E39B00137408 /* AppDelegate.m in Sources */,
 				D816EE6E19FC908F00102667 /* CurveView.m in Sources */,
 				D859DAB819F1E39B00137408 /* main.m in Sources */,
+				D8B8DBF41A06B48500EB53B7 /* ColourModeSimilarityPalette.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
