@@ -74,34 +74,6 @@
     return result;
 }
 
-+ (CGFloat) calculateShannonEntropy:(NSData*)data fromIndex:(long)index forBlockSize:(long)blocksize {
-    if ([data length] < blocksize) return 0.0f;
-    
-    const unsigned char *bytes = (const unsigned char*)[data bytes];
-    long halfBlockSize = (blocksize / 2),
-         startIndex    = index - halfBlockSize;
-    
-    if (index < halfBlockSize) startIndex = 0;
-    else if (index > ([data length] - 1 - halfBlockSize)) startIndex = [data length] - 1 - halfBlockSize;
-    
-    NSMutableDictionary *frequencies = [[NSMutableDictionary alloc] init];
-    for(unsigned long i = startIndex; i < startIndex + blocksize; i++) {
-        NSNumber *key = [NSNumber numberWithUnsignedChar:bytes[i]];
-        unsigned long freq = [[frequencies objectForKey:key] integerValue] + 1;
-        [frequencies setObject:[NSNumber numberWithUnsignedLong:freq] forKey:key];
-    }
-    
-    float entropy = 0.0f,
-          logBlockSize = logf(blocksize);
-    for(id frequencyKey in frequencies) {
-        float p = (float)[[frequencies objectForKey:frequencyKey] integerValue] / (float)blocksize;
-        entropy += (p * (logf(p) / logBlockSize)); // Shannon Entropy
-    }
-    [frequencies release];
-    
-    return -entropy;
-}
-
 // Note: _vertexArray and _colourArray should be indexed the same as _data (for sequential drawing, indexed access, etc.)
 - (void) setCurveType:(CurveViewType)type {
     _type = type;
@@ -195,17 +167,46 @@
             break;
         case CurveViewColourModeEntropy:
             {
-                // Note: This is SUPER slow. Presumably because a bunch of work is being repeatedly done for each byte.
                 unsigned long blocksize = 128;
                 if ([_data length] < blocksize) blocksize = [_data length];
-                for(int i = 0; i < [_data length]; i++) {
-                    float entropy = [CurveView calculateShannonEntropy:_data fromIndex:i forBlockSize:blocksize];
+                
+                long halfBlockSize = (blocksize / 2), previousStartIndex = 0;
+                float logBlockSize = logf(blocksize);
+                
+                unsigned long frequencies[256] = {0};
+                for(long i = 0; i < [_data length]; i++) {
+                    const unsigned char *bytes = (const unsigned char*)[_data bytes];
+                    long startIndex    = i - halfBlockSize;
+                    float entropy = 0.0f;
+                    
+                    if (i < halfBlockSize) startIndex = 0;
+                    else if (i > ([_data length] - 1 - halfBlockSize)) startIndex = [_data length] - 1 - halfBlockSize;
+                    
+                    if (i == 0) {
+                        for(unsigned long j = startIndex; j < startIndex + blocksize; j++)
+                            frequencies[bytes[j]]++;
+                    } else if (startIndex != previousStartIndex) {
+                        frequencies[bytes[previousStartIndex]]--; // Remove from start
+                        frequencies[bytes[previousStartIndex + blocksize]]++; // Add to end
+                    }
+                    
+                    previousStartIndex = startIndex;
+                    
+                    // Calculate Shannon Entropy
+                    for(unsigned int i = 0; i < 256; i++) {
+                        if (frequencies[i] == 0) continue;
+                        float p = (float)frequencies[i] / (float)blocksize;
+                        
+                        // TODO: For perf. increase, could cache logf(p) results (as many will be repeated)
+                        // Alternatively, could remove (by adding) those which have now changed, and add (by deleting)
+                        // the increased value [probably the better bet - more elegant, more performant in some cases].
+                        entropy -= (p * (logf(p) / logBlockSize));
+                    }
                     
                     // Note: Entropy values here are squared here to ensure that only the highest entropy areas
                     //       show up noticably in the final colouring. Too much noise isn't useful to the user.
                     float red = 0, blue = pow(entropy, 2);
                     if (entropy > 0.5) red = 4 * pow(entropy - 0.5f, 2);
-                    
                     _colourArray[(3 * i)] = red;
                     _colourArray[(3 * i) + 1] = 0.0f;
                     _colourArray[(3 * i) + 2] = blue;
