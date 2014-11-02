@@ -242,20 +242,36 @@
     // NSLog(@"Draw!");
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
+    glTranslatef(0.0f, -_scrollPosition, 0.0f); // Translate by the distance scrolled
     
-    // TODO: Don't draw points that aren't on screen.
-    if (_type != CurveViewTypeBlank) glDrawArrays(GL_POINTS, 0, (GLsizei)[_data length]);
+    if (_type != CurveViewTypeBlank) { // Only draw if we're not in the blank curve mode
+        
+        // Draw only visible bytes (Hilbert makes this more difficult to calculate, so draw a bit extra both sides)
+        GLsizei sqArea = (_viewBounds.width / _pointSize) * (_viewBounds.width / _pointSize),
+             drawCount = (_viewBounds.height / _pointSize) * (_viewBounds.width / _pointSize) + sqArea,
+        startDrawIndex = ((_scrollPosition / _pointSize) * (_viewBounds.width / _pointSize)) - sqArea / 2.0f;
+        if (startDrawIndex < 0) startDrawIndex = 0;
+        if ((startDrawIndex + drawCount) > [_data length]) drawCount = (GLsizei)[_data length] - startDrawIndex;
+        glDrawArrays(GL_POINTS, startDrawIndex, drawCount);
+    }
     glFlush();
 }
 
 - (void) scrollWheel: (NSEvent*) event {
-    // NSLog(@"Scroll!");
+    _scrollPosition -= [event deltaY] * 4.0f; // If time allows, setting scroll sensitivity in prefs. would be good.
+    unsigned long minScrollPosition = 0,
+                  maxScrollPosition = (unsigned long)(([_data length] / (_viewBounds.width / _pointSize)) + 1.0f);
+    maxScrollPosition =  (maxScrollPosition * _pointSize) - (_viewBounds.height / 4.0f);
+    if (_scrollPosition < minScrollPosition) _scrollPosition = minScrollPosition;
+    else if (_scrollPosition > maxScrollPosition) _scrollPosition = maxScrollPosition;
+    [self redraw];
 }
 
 - (void) awakeFromNib {
     _data = nil;
     
     _pointSize = 4; // Should be a power of 2. Ideally in the form 2^(2n) - see Hilbert chunking code.
+    _scrollPosition = 0.0f;
     [self setCurveType:CurveViewTypeBlank];
     [self setCurveColourMode:CurveViewColourModeBlank];
 }
@@ -263,6 +279,7 @@
 - (void) clearMemoryFingerprint {
     [_data release];
     _data = nil;
+    _scrollPosition = 0.0f; // TODO: This probably doesn't belong in a method related to memory (rename this method?)
     
     if (_vertexArray != nil) free(_vertexArray);
     _vertexArray = nil;

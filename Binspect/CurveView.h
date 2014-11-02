@@ -27,6 +27,7 @@ typedef NS_ENUM(NSInteger, CurveViewColourMode) {
     NSInteger _type, _colourMode, _pointSize;
     CGSize    _viewBounds;
     float     *_vertexArray, *_colourArray;
+    float      _scrollPosition;
 }
 
 // TODO: Update the method prototypes shown here.
