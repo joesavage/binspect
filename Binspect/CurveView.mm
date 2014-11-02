@@ -77,7 +77,7 @@
 - (void) setCurveType:(CurveViewType)type {
     _type = type;
     switch(_type) {
-        case CurveViewTypeHilbert:
+        case CurveViewTypeHilbert: // TODO: Clean up some of the casting here.
             {
                 unsigned int nearestPowerOfTwo = (unsigned int)(sqrt([_data length]) + 0.5f);
                 
@@ -91,17 +91,43 @@
                 nearestPowerOfTwo |= nearestPowerOfTwo >> 16;
                 nearestPowerOfTwo++;
                 
-                // TODO: Unroll the curve so it fits into a rectangular pattern (vertical scrolling only, 512px width)
-                for(int i = 0; i < [_data length]; i++) {
-                    CGPoint point = [CurveView getHilbertCurveCoordinates:(unsigned int)nearestPowerOfTwo forIndex:i];
-                    point.x = (point.x * _pointSize) + (_pointSize / 2.0f);
-                    point.y = (point.y * _pointSize) + (_pointSize / 2.0f);
-                    
-                    // Assign the (x, y, z) co-ordinates for this point in the vertex array
-                    _vertexArray[(3 * i)]     = point.x;
-                    _vertexArray[(3 * i) + 1] = point.y;
-                    _vertexArray[(3 * i) + 2] = 0.0f;
+                // Spit the curve into 128-size segments, and stack those on top of eachother.
+                unsigned long chunkWidth = nearestPowerOfTwo,
+                             chunks    = 1,
+                             maxWidth  = _viewBounds.width / _pointSize;
+                if (nearestPowerOfTwo > maxWidth) {
+                    chunkWidth = maxWidth;
+                    chunks = (unsigned long)(((float)[_data length] / (float)(maxWidth * maxWidth)) + 1.0f);
                 }
+                
+                // A _pointSize of 4 works particularly well for this, as it produces a 'chunkWidth' of size 128.
+                // Due to the nature of the Hilbert curve, this means that the curves finish in the bottom left,
+                // and so tile excellently with (and have proper locality with) the next chunk.
+                
+                // In fact, if the _pointSize is not 4 then chunking makes the visualisation somewhat ugly.
+                // I wouldn't recommend using this chunking method (and instead enabling horizontal scrolling
+                // of a square curve) for _pointSize values which are not 4.
+                for(int chunk = 0; chunk < chunks; chunk++) {
+                    unsigned long currentChunkArea = chunkWidth * chunkWidth,
+                                  lastPointCovered = chunkWidth * chunkWidth * chunk;
+                    if (chunk + 1 == chunks) currentChunkArea = [_data length] - lastPointCovered;
+                    for(unsigned long i = 0; i < currentChunkArea; i++) {
+                        unsigned long index = lastPointCovered + i;
+                        CGPoint point = [CurveView getHilbertCurveCoordinates:(unsigned int)(chunkWidth * chunkWidth) forIndex:(int)i];
+                        
+                        point.x = (point.x * _pointSize) + (_pointSize / 2.0f);
+                        point.y = (point.y * _pointSize) + (_pointSize / 2.0f);
+                        
+                        // Assign the (x, y, z) co-ordinates for this point in the vertex array
+                        _vertexArray[(3 * index)]     = point.x;
+                        _vertexArray[(3 * index) + 1] = point.y + (chunk * chunkWidth * _pointSize);
+                        _vertexArray[(3 * index) + 2] = 0.0f;
+                    }
+                }
+                
+                
+                // TODO: Unroll the curve so it fits into a rectangular pattern (vertical scrolling only, 512( / _pointSize) width)
+                
                 break;
             }
         case CurveViewTypeZigzag:
@@ -130,10 +156,10 @@
                 _colourArray[i] = rand() / (float)RAND_MAX;
             break;
         case CurveViewColourModeEntropy:
-            
             break;
         case CurveViewColourModeStructural:
-            const unsigned int colourRepeatCycleSize = _viewBounds.width * 8;
+            // To consider: Having the cycle never repeat is useful for some purposes (namely, seeing raw files offsets)
+            const unsigned int colourRepeatCycleSize = 128 * 128 * 2; // If time permits, the 2 here can be modified in user prefs.
             bool repeatingPalette = ([_data length] > colourRepeatCycleSize);
             NSMutableArray *palette = [[NSMutableArray alloc] init];
             NSColorSpace *rgbSpace = [NSColorSpace sRGBColorSpace];
@@ -226,8 +252,7 @@
 - (void) awakeFromNib {
     _data = nil;
     
-    // TODO (if time allows): Add zoom in/out feature that zooms in powers of two.
-    _pointSize = 4; // For best appearance, should be a power of 2.
+    _pointSize = 4; // Should be a power of 2. Ideally 4 (see Hilbert chunking code).
     [self setCurveType:CurveViewTypeBlank];
     [self setCurveColourMode:CurveViewColourModeBlank];
 }
