@@ -185,6 +185,7 @@
                 _colourArray[(i * 3) + 1] = [[palette objectAtIndex:paletteIndex] greenComponent];
                 _colourArray[(i * 3) + 2] = [[palette objectAtIndex:paletteIndex] blueComponent];
             }
+            [palette release];
             break;
     }
 }
