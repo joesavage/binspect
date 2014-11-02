@@ -29,6 +29,8 @@ typedef NS_ENUM(NSInteger, CurveViewColourMode) {
     float     *_vertexArray, *_colourArray;
 }
 
+// TODO: Update the method prototypes shown here.
+
 - (void) setCurveType:(CurveViewType)type;
 - (void) setCurveColourMode:(CurveViewColourMode)mode;
 - (void) setDataSource:(NSData *)data;

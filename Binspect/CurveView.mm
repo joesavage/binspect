@@ -11,6 +11,8 @@
 
 @implementation CurveView
 
+// The following three Hilbert curve algorithms are based on those shown on Wikipedia.
+// http://en.wikipedia.org/wiki/Hilbert_curve#Applications_and_mapping_algorithms
 + (unsigned int) getHilbertCurveIndex:(unsigned int)size forCoords:(CGPoint)point {
     CGPoint rotation;
     unsigned int result = 0;
@@ -91,7 +93,15 @@
                 nearestPowerOfTwo |= nearestPowerOfTwo >> 16;
                 nearestPowerOfTwo++;
                 
-                // Spit the curve into 128-size segments, and stack those on top of eachother.
+                // Spit the curve into chunks to be stacked on top of each other for rectangular viewing.
+                //
+                // A _pointSize of 2^(2n) works particularly well for this, as it produces a desirable 'chunkWidth'
+                // which ensures that the Hilbert chunk will finish in the bottom left, and so tiles excellently
+                // with, and has proper visual locality with, the next chunk.
+                //
+                // In fact, if _pointSize is not of this type then chunking makes the visualisation somewhat ugly.
+                // I wouldn't recommend using this chunking method (and instead enabling horizontal scrolling
+                // of a square curve) for _pointSize values which are not of this type.
                 unsigned long chunkWidth = nearestPowerOfTwo,
                              chunks    = 1,
                              maxWidth  = _viewBounds.width / _pointSize;
@@ -100,13 +110,7 @@
                     chunks = (unsigned long)(((float)[_data length] / (float)(maxWidth * maxWidth)) + 1.0f);
                 }
                 
-                // A _pointSize of 4 works particularly well for this, as it produces a 'chunkWidth' of size 128.
-                // Due to the nature of the Hilbert curve, this means that the curves finish in the bottom left,
-                // and so tile excellently with (and have proper locality with) the next chunk.
-                
-                // In fact, if the _pointSize is not 4 then chunking makes the visualisation somewhat ugly.
-                // I wouldn't recommend using this chunking method (and instead enabling horizontal scrolling
-                // of a square curve) for _pointSize values which are not 4.
+                // Set the vertex array values for each chunk
                 for(int chunk = 0; chunk < chunks; chunk++) {
                     unsigned long currentChunkArea = chunkWidth * chunkWidth,
                                   lastPointCovered = chunkWidth * chunkWidth * chunk;
@@ -124,10 +128,6 @@
                         _vertexArray[(3 * index) + 2] = 0.0f;
                     }
                 }
-                
-                
-                // TODO: Unroll the curve so it fits into a rectangular pattern (vertical scrolling only, 512( / _pointSize) width)
-                
                 break;
             }
         case CurveViewTypeZigzag:
@@ -158,8 +158,10 @@
         case CurveViewColourModeEntropy:
             break;
         case CurveViewColourModeStructural:
-            // To consider: Having the cycle never repeat is useful for some purposes (namely, seeing raw files offsets)
-            const unsigned int colourRepeatCycleSize = 128 * 128 * 2; // If time permits, the 2 here can be modified in user prefs.
+            // Note: Being able to change the repeat cycle size in preferences might be a nice touch for the future.
+            // To consider: Having the cycle never repeat is useful sometimes (mainly for seeing raw files offsets)
+            // [ Alt (square-size region cycling): (_viewBounds.width / _pointSize) * (_viewBounds.width / _pointSize) * 2 ]
+            const unsigned int colourRepeatCycleSize = 128 * 128 * 2; // TODO: Reduce? Maybe? idek :/
             bool repeatingPalette = ([_data length] > colourRepeatCycleSize);
             NSMutableArray *palette = [[NSMutableArray alloc] init];
             NSColorSpace *rgbSpace = [NSColorSpace sRGBColorSpace];
@@ -241,7 +243,7 @@
     glLoadIdentity();
     
     // TODO: Don't draw points that aren't on screen.
-    if (_type != CurveViewTypeBlank) glDrawArrays(GL_POINTS, 0, (GLsizei)[_data length]); // GL_LINE_STRIP for curve debugging
+    if (_type != CurveViewTypeBlank) glDrawArrays(GL_POINTS, 0, (GLsizei)[_data length]);
     glFlush();
 }
 
@@ -252,7 +254,7 @@
 - (void) awakeFromNib {
     _data = nil;
     
-    _pointSize = 4; // Should be a power of 2. Ideally 4 (see Hilbert chunking code).
+    _pointSize = 4; // Should be a power of 2. Ideally in the form 2^(2n) - see Hilbert chunking code.
     [self setCurveType:CurveViewTypeBlank];
     [self setCurveColourMode:CurveViewColourModeBlank];
 }
