@@ -159,8 +159,8 @@
         case CurveViewColourModeStructural:
             // Note: Being able to change the repeat cycle size in preferences might be a nice touch for the future.
             // To consider: Having the cycle never repeat is useful sometimes (mainly for seeing raw files offsets)
-            // [ Alt (square-size region cycling): (_viewBounds.width / _pointSize) * (_viewBounds.width / _pointSize) * 2 ]
-            const unsigned int colourRepeatCycleSize = 128 * 128 * 2; // TODO: Reduce? Maybe? idek :/
+            // [ Alt. absolute cycle size: 128 * 128 * 4. Can be difficult to see distinctions at different zoom sizes. ]
+            const unsigned int colourRepeatCycleSize = (_viewBounds.width / _pointSize) * (_viewBounds.width / _pointSize) * 2;
             bool repeatingPalette = ([_data length] > colourRepeatCycleSize);
             NSMutableArray *palette = [[NSMutableArray alloc] init];
             NSColorSpace *rgbSpace = [NSColorSpace sRGBColorSpace];
