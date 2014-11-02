@@ -18,7 +18,8 @@ typedef NS_ENUM(NSInteger, CurveViewColourMode) {
     CurveViewColourModeBlank,
     CurveViewColourModeSimilarity,
     CurveViewColourModeEntropy,
-    CurveViewColourModeStructural
+    CurveViewColourModeStructural,
+    CurveViewColourModeRandom
 };
 
 @interface CurveView : NSOpenGLView

@@ -165,8 +165,7 @@
             }
             break;
         case CurveViewColourModeEntropy:
-            for(int i = 0; i < (3 * [_data length]); i++)
-                _colourArray[i] = rand() / (float)RAND_MAX;
+            // TODO: Implement entropy-based colouring
             break;
         case CurveViewColourModeStructural:
             {
@@ -200,6 +199,10 @@
                 [palette release];
             }
             break;
+        case CurveViewColourModeRandom:
+            for(int i = 0; i < (3 * [_data length]); i++)
+                _colourArray[i] = rand() / (float)RAND_MAX;
+            break;
     }
 }
 
@@ -227,7 +230,6 @@
 - (void) redraw { [self drawRect:[self bounds]]; }
 
 - (void) prepareOpenGL {
-    // NSLog(@"Preparing...");
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);
     glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
@@ -236,7 +238,6 @@
 
 - (void) reshape {
     CGSize viewBounds = [self bounds].size;
-    // NSLog(@"Reshape: %fw x %fh", viewBounds.width, viewBounds.height);
     
     // If a reshape operation isn't necessary, don't perform one.
     if (viewBounds.height == _viewBounds.height && viewBounds.width == _viewBounds.width) return;
@@ -251,7 +252,6 @@
 
 -(void) drawRect: (NSRect) bounds
 {
-    // NSLog(@"Draw!");
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
     
