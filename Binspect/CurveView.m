@@ -252,6 +252,7 @@
         startDrawIndex = ((_scrollPosition / _pointSize) * (_viewBounds.width / _pointSize)) - sqArea / 2.0f;
         if (startDrawIndex < 0) startDrawIndex = 0;
         if ((startDrawIndex + drawCount) > [_data length]) drawCount = (GLsizei)[_data length] - startDrawIndex;
+        
         glDrawArrays(GL_POINTS, startDrawIndex, drawCount);
     }
     glFlush();
@@ -260,10 +261,11 @@
 - (void) scrollWheel: (NSEvent*) event {
     _scrollPosition -= [event deltaY] * 4.0f; // If time allows, setting scroll sensitivity in prefs. would be good.
     unsigned long minScrollPosition = 0,
-                  maxScrollPosition = (unsigned long)(([_data length] / (_viewBounds.width / _pointSize)) + 1.0f);
-    maxScrollPosition =  (maxScrollPosition * _pointSize) - (_viewBounds.height / 4.0f);
+                  maxScrollPosition = (unsigned long)(([_data length] / (_viewBounds.width / _pointSize)) + 1.0f) * _pointSize;
+    if (maxScrollPosition >= _viewBounds.height / 4.0f) maxScrollPosition -= (_viewBounds.height / 4.0f);
     if (_scrollPosition < minScrollPosition) _scrollPosition = minScrollPosition;
     else if (_scrollPosition > maxScrollPosition) _scrollPosition = maxScrollPosition;
+    
     [self redraw];
 }
 
