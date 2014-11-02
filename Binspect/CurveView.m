@@ -157,34 +157,36 @@
         case CurveViewColourModeEntropy:
             break;
         case CurveViewColourModeStructural:
-            // Note: Being able to change the repeat cycle size in preferences might be a nice touch for the future.
-            // To consider: Having the cycle never repeat is useful sometimes (mainly for seeing raw files offsets)
-            // [ Alt. absolute cycle size: 128 * 128 * 4. Can be difficult to see distinctions at different zoom sizes. ]
-            const unsigned int colourRepeatCycleSize = (_viewBounds.width / _pointSize) * (_viewBounds.width / _pointSize) * 2;
-            bool repeatingPalette = ([_data length] > colourRepeatCycleSize);
-            NSMutableArray *palette = [[NSMutableArray alloc] init];
-            NSColorSpace *rgbSpace = [NSColorSpace sRGBColorSpace];
-            for(int i = 0; i < [_data length]; i++) {
-                float percentageComplete = (float)i / (float)[_data length];
-                float hue = percentageComplete;
+            {
+                // Note: Being able to change the repeat cycle size in preferences might be a nice touch for the future.
+                // To consider: Having the cycle never repeat is useful sometimes (mainly for seeing raw files offsets)
+                // [ Alt. absolute cycle size: 128 * 128 * 4. Can be difficult to see distinctions at different zoom sizes. ]
+                const unsigned int colourRepeatCycleSize = (_viewBounds.width / _pointSize) * (_viewBounds.width / _pointSize) * 2;
+                bool repeatingPalette = ([_data length] > colourRepeatCycleSize);
+                NSMutableArray *palette = [[NSMutableArray alloc] init];
+                NSColorSpace *rgbSpace = [NSColorSpace sRGBColorSpace];
+                for(int i = 0; i < [_data length]; i++) {
+                    float percentageComplete = (float)i / (float)[_data length];
+                    float hue = percentageComplete;
+                    
+                    if (repeatingPalette) hue = (float)i / (float)colourRepeatCycleSize;
+                    if (repeatingPalette && hue > 1.0f) break;
+                    
+                    if (hue > 1.0f) hue = (float)hue - (int)hue;
+                    NSColor *colour = [NSColor colorWithCalibratedHue:hue saturation:0.9f brightness:1.0f alpha:1.0f];
+                    [colour colorUsingColorSpace:rgbSpace];
+                    [palette addObject:colour];
+                }
                 
-                if (repeatingPalette) hue = (float)i / (float)colourRepeatCycleSize;
-                if (repeatingPalette && hue > 1.0f) break;
-                
-                if (hue > 1.0f) hue = (float)hue - (int)hue;
-                NSColor *colour = [NSColor colorWithCalibratedHue:hue saturation:0.9f brightness:1.0f alpha:1.0f];
-                [colour colorUsingColorSpace:rgbSpace];
-                [palette addObject:colour];
+                for(int i = 0; i < [_data length]; i++) {
+                    int paletteIndex = i;
+                    if (repeatingPalette) paletteIndex = i % colourRepeatCycleSize;
+                    _colourArray[(i * 3)] = [[palette objectAtIndex:paletteIndex] redComponent];
+                    _colourArray[(i * 3) + 1] = [[palette objectAtIndex:paletteIndex] greenComponent];
+                    _colourArray[(i * 3) + 2] = [[palette objectAtIndex:paletteIndex] blueComponent];
+                }
+                [palette release];
             }
-
-            for(int i = 0; i < [_data length]; i++) {
-                int paletteIndex = i;
-                if (repeatingPalette) paletteIndex = i % colourRepeatCycleSize;
-                _colourArray[(i * 3)] = [[palette objectAtIndex:paletteIndex] redComponent];
-                _colourArray[(i * 3) + 1] = [[palette objectAtIndex:paletteIndex] greenComponent];
-                _colourArray[(i * 3) + 2] = [[palette objectAtIndex:paletteIndex] blueComponent];
-            }
-            [palette release];
             break;
     }
 }
@@ -196,13 +198,12 @@
     _data = nil;
     _data = [data retain];
     
-    // TODO: Move away from C++ style memory allocation.
-    if (_vertexArray != nil) delete [] _vertexArray;
+    if (_vertexArray != nil) free(_vertexArray);
     _vertexArray = nil;
-    _vertexArray = new float[3 * [_data length]];
-    if (_colourArray != nil) delete [] _colourArray;
+    _vertexArray = (float*)calloc(3 * [_data length], sizeof(float));
+    if (_colourArray != nil) free(_vertexArray);
     _colourArray = nil;
-    _colourArray = new float[3 * [_data length]];
+    _colourArray = (float*)calloc(3 * [_data length], sizeof(float));
     
     glVertexPointer(3, GL_FLOAT, 0, _vertexArray);
     glColorPointer(3, GL_FLOAT, 0, _colourArray);
@@ -263,9 +264,9 @@
     [_data release];
     _data = nil;
     
-    if (_vertexArray != nil) delete [] _vertexArray;
+    if (_vertexArray != nil) free(_vertexArray);
     _vertexArray = nil;
-    if (_colourArray != nil) delete [] _colourArray;
+    if (_colourArray != nil) free(_colourArray);
     _colourArray = nil;
 }
 

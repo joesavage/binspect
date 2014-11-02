@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D816EE6E19FC908F00102667 /* CurveView.mm in Sources */ = {isa = PBXBuildFile; fileRef = D816EE6D19FC908F00102667 /* CurveView.mm */; };
+		D816EE6E19FC908F00102667 /* CurveView.m in Sources */ = {isa = PBXBuildFile; fileRef = D816EE6D19FC908F00102667 /* CurveView.m */; };
 		D859DAB819F1E39B00137408 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D859DAB719F1E39B00137408 /* main.m */; };
 		D859DABB19F1E39B00137408 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D859DABA19F1E39B00137408 /* AppDelegate.m */; };
 		D859DABD19F1E39B00137408 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D859DABC19F1E39B00137408 /* Images.xcassets */; };
@@ -29,7 +29,7 @@
 
 /* Begin PBXFileReference section */
 		D816EE6C19FC908F00102667 /* CurveView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurveView.h; sourceTree = "<group>"; };
-		D816EE6D19FC908F00102667 /* CurveView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CurveView.mm; sourceTree = "<group>"; };
+		D816EE6D19FC908F00102667 /* CurveView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CurveView.m; sourceTree = "<group>"; };
 		D859DAB219F1E39B00137408 /* Binspect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Binspect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D859DAB619F1E39B00137408 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D859DAB719F1E39B00137408 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -100,7 +100,7 @@
 				D87F5C3219FAAA4A00E31BA6 /* WindowController.m */,
 				D8A5E00919FAD3AC00AC11D7 /* MainWindow.xib */,
 				D816EE6C19FC908F00102667 /* CurveView.h */,
-				D816EE6D19FC908F00102667 /* CurveView.mm */,
+				D816EE6D19FC908F00102667 /* CurveView.m */,
 				D859DAB519F1E39B00137408 /* Supporting Files */,
 			);
 			path = Binspect;
@@ -234,7 +234,7 @@
 			files = (
 				D87F5C3419FAAA4A00E31BA6 /* WindowController.m in Sources */,
 				D859DABB19F1E39B00137408 /* AppDelegate.m in Sources */,
-				D816EE6E19FC908F00102667 /* CurveView.mm in Sources */,
+				D816EE6E19FC908F00102667 /* CurveView.m in Sources */,
 				D859DAB819F1E39B00137408 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
