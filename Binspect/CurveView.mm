@@ -13,10 +13,9 @@
 
 // The following three Hilbert curve algorithms are based on those shown on Wikipedia.
 // http://en.wikipedia.org/wiki/Hilbert_curve#Applications_and_mapping_algorithms
-+ (unsigned int) getHilbertCurveIndex:(unsigned int)size forCoords:(CGPoint)point {
++ (unsigned long) getHilbertCurveIndex:(unsigned long)size forCoords:(CGPoint)point {
     CGPoint rotation;
-    unsigned int result = 0;
-    int temporarySize;
+    unsigned long result = 0, temporarySize;
     for (temporarySize = size / 2; temporarySize > 0; temporarySize /= 2) {
         rotation.x = ((int)point.x & temporarySize) > 0;
         rotation.y = ((int)point.y & temporarySize) > 0;
@@ -27,9 +26,9 @@
     return result;
 }
 
-+ (CGPoint) getHilbertCurveCoordinates:(unsigned int)size forIndex:(unsigned int)index {
++ (CGPoint) getHilbertCurveCoordinates:(unsigned long)size forIndex:(unsigned long)index {
     CGPoint rotation, result = CGPointMake(0, 0);
-    int temporarySize, temporaryIndex = index;
+    unsigned long temporarySize, temporaryIndex = index;
     for (temporarySize = 1; temporarySize < size; temporarySize *= 2) {
         rotation.x = 1 & (temporaryIndex / 2);
         rotation.y = 1 & (temporaryIndex ^ (int)rotation.x);
@@ -42,7 +41,7 @@
     return result;
 }
 
-+ (void) rotateHilbertCurveQuadrant:(unsigned int)size by:(CGPoint)rotation forPoint:(CGPoint *)point {
++ (void) rotateHilbertCurveQuadrant:(unsigned long)size by:(CGPoint)rotation forPoint:(CGPoint *)point {
     if (rotation.y == 0) {
         if (rotation.x == 1) {
             point->x = (size - 1) - point->x;
@@ -79,7 +78,7 @@
 - (void) setCurveType:(CurveViewType)type {
     _type = type;
     switch(_type) {
-        case CurveViewTypeHilbert: // TODO: Clean up some of the casting here.
+        case CurveViewTypeHilbert:
             {
                 unsigned int nearestPowerOfTwo = (unsigned int)(sqrt([_data length]) + 0.5f);
                 
@@ -103,8 +102,8 @@
                 // I wouldn't recommend using this chunking method (and instead enabling horizontal scrolling
                 // of a square curve) for _pointSize values which are not of this type.
                 unsigned long chunkWidth = nearestPowerOfTwo,
-                             chunks    = 1,
-                             maxWidth  = _viewBounds.width / _pointSize;
+                              chunks    = 1,
+                              maxWidth  = _viewBounds.width / _pointSize;
                 if (nearestPowerOfTwo > maxWidth) {
                     chunkWidth = maxWidth;
                     chunks = (unsigned long)(((float)[_data length] / (float)(maxWidth * maxWidth)) + 1.0f);
@@ -117,7 +116,7 @@
                     if (chunk + 1 == chunks) currentChunkArea = [_data length] - lastPointCovered;
                     for(unsigned long i = 0; i < currentChunkArea; i++) {
                         unsigned long index = lastPointCovered + i;
-                        CGPoint point = [CurveView getHilbertCurveCoordinates:(unsigned int)(chunkWidth * chunkWidth) forIndex:(int)i];
+                        CGPoint point = [CurveView getHilbertCurveCoordinates:(chunkWidth * chunkWidth) forIndex:i];
                         
                         point.x = (point.x * _pointSize) + (_pointSize / 2.0f);
                         point.y = (point.y * _pointSize) + (_pointSize / 2.0f);
