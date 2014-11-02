@@ -74,6 +74,34 @@
     return result;
 }
 
++ (CGFloat) calculateShannonEntropy:(NSData*)data fromIndex:(long)index forBlockSize:(long)blocksize {
+    if ([data length] < blocksize) return 0.0f;
+    
+    const unsigned char *bytes = (const unsigned char*)[data bytes];
+    long halfBlockSize = (blocksize / 2),
+         startIndex    = index - halfBlockSize;
+    
+    if (index < halfBlockSize) startIndex = 0;
+    else if (index > ([data length] - 1 - halfBlockSize)) startIndex = [data length] - 1 - halfBlockSize;
+    
+    NSMutableDictionary *frequencies = [[NSMutableDictionary alloc] init];
+    for(unsigned long i = startIndex; i < startIndex + blocksize; i++) {
+        NSNumber *key = [NSNumber numberWithUnsignedChar:bytes[i]];
+        unsigned long freq = [[frequencies objectForKey:key] integerValue] + 1;
+        [frequencies setObject:[NSNumber numberWithUnsignedLong:freq] forKey:key];
+    }
+    
+    float entropy = 0.0f,
+          logBlockSize = logf(blocksize);
+    for(id frequencyKey in frequencies) {
+        float p = (float)[[frequencies objectForKey:frequencyKey] integerValue] / (float)blocksize;
+        entropy += (p * (logf(p) / logBlockSize)); // Shannon Entropy
+    }
+    [frequencies release];
+    
+    return -entropy;
+}
+
 // Note: _vertexArray and _colourArray should be indexed the same as _data (for sequential drawing, indexed access, etc.)
 - (void) setCurveType:(CurveViewType)type {
     _type = type;
@@ -156,6 +184,7 @@
                 // specifically through the use of Aldo Cortesi's scurve swatch Python utility. This palette idea
                 // itself was heavily inspired by the work of Cortesi.
                 #include "ColourModeSimilarityPalette.c"
+                
                 const unsigned char *bytes = (const unsigned char*)[_data bytes];
                 for(int i = 0; i < [_data length]; i++) {
                     _colourArray[(3 * i)] = palette[(3 * bytes[i])];
@@ -165,7 +194,23 @@
             }
             break;
         case CurveViewColourModeEntropy:
-            // TODO: Implement entropy-based colouring
+            {
+                // Note: This is SUPER slow. Presumably because a bunch of work is being repeatedly done for each byte.
+                unsigned long blocksize = 128;
+                if ([_data length] < blocksize) blocksize = [_data length];
+                for(int i = 0; i < [_data length]; i++) {
+                    float entropy = [CurveView calculateShannonEntropy:_data fromIndex:i forBlockSize:blocksize];
+                    
+                    // Note: Entropy values here are squared here to ensure that only the highest entropy areas
+                    //       show up noticably in the final colouring. Too much noise isn't useful to the user.
+                    float red = 0, blue = pow(entropy, 2);
+                    if (entropy > 0.5) red = 4 * pow(entropy - 0.5f, 2);
+                    
+                    _colourArray[(3 * i)] = red;
+                    _colourArray[(3 * i) + 1] = 0.0f;
+                    _colourArray[(3 * i) + 2] = blue;
+                }
+            }
             break;
         case CurveViewColourModeStructural:
             {
