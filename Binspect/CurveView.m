@@ -198,8 +198,10 @@
                         float p = (float)frequencies[i] / (float)blocksize;
                         
                         // TODO: For perf. increase, could cache logf(p) results (as many will be repeated)
-                        // Alternatively, could remove (by adding) those which have now changed, and add (by deleting)
-                        // the increased value [probably the better bet - more elegant, more performant in some cases].
+                        //
+                        // I once attempted to use a rolling entropy value that only updated the changes each loop,
+                        // but after many hours of troubleshooting found that it had serious precision issues which
+                        // eventually snowballed the calculations way off track.
                         entropy -= (p * (logf(p) / logBlockSize));
                     }
                     
