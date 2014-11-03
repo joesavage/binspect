@@ -167,17 +167,18 @@
             break;
         case CurveViewColourModeEntropy:
             {
+                // TODO: Clean up and properly comment this whole section
                 unsigned long blocksize = 128;
                 if ([_data length] < blocksize) blocksize = [_data length];
                 
                 long halfBlockSize = (blocksize / 2), previousStartIndex = 0;
-                float logBlockSize = logf(blocksize);
+                double logBlockSize = log(blocksize);
                 
                 unsigned long frequencies[256] = {0};
+                double entropy = 0.0f;
                 for(long i = 0; i < [_data length]; i++) {
                     const unsigned char *bytes = (const unsigned char*)[_data bytes];
                     long startIndex    = i - halfBlockSize;
-                    float entropy = 0.0f;
                     
                     if (i < halfBlockSize) startIndex = 0;
                     else if (i > ([_data length] - 1 - halfBlockSize)) startIndex = [_data length] - 1 - halfBlockSize;
@@ -185,26 +186,37 @@
                     if (i == 0) {
                         for(unsigned long j = startIndex; j < startIndex + blocksize; j++)
                             frequencies[bytes[j]]++;
+                        
+                        // Calculate Shannon Entropy
+                        for(unsigned int i = 0; i < 256; i++) {
+                            if (frequencies[i] == 0) continue;
+                            double p = (double)frequencies[i] / (double)blocksize;
+                            entropy -= (p * (log(p) / logBlockSize));
+                        }
                     } else if (startIndex != previousStartIndex) {
-                        frequencies[bytes[previousStartIndex]]--; // Remove from start
-                        frequencies[bytes[previousStartIndex + blocksize]]++; // Add to end
+                        // Remove from start
+                        double p = (double)frequencies[bytes[previousStartIndex]] / (double)blocksize;
+                        entropy += (p * (log(p) / logBlockSize));
+                        frequencies[bytes[previousStartIndex]]--;
+                        if (frequencies[bytes[previousStartIndex]] != 0) {
+                            p = (double)frequencies[bytes[previousStartIndex]] / (double)blocksize;
+                            entropy -= (p * (log(p) / logBlockSize));
+                        }
+                        
+                        
+                        // Add to end
+                        if (frequencies[bytes[previousStartIndex + blocksize]] != 0) {
+                            p = (double)frequencies[bytes[previousStartIndex + blocksize]] / (double)blocksize;
+                            entropy += (p * (log(p) / logBlockSize));
+                        }
+                        frequencies[bytes[previousStartIndex + blocksize]]++;
+                        p = (double)frequencies[bytes[previousStartIndex + blocksize]] / (double)blocksize;
+                        entropy -= (p * (log(p) / logBlockSize));
                     }
                     
                     previousStartIndex = startIndex;
                     
-                    // Calculate Shannon Entropy
-                    for(unsigned int i = 0; i < 256; i++) {
-                        if (frequencies[i] == 0) continue;
-                        float p = (float)frequencies[i] / (float)blocksize;
-                        
-                        // TODO: For perf. increase, could cache logf(p) results (as many will be repeated)
-                        //
-                        // I once attempted to use a rolling entropy value that only updated the changes each loop,
-                        // but after many hours of troubleshooting found that it had serious precision issues which
-                        // eventually snowballed the calculations way off track.
-                        entropy -= (p * (logf(p) / logBlockSize));
-                    }
-                    
+
                     // Note: Entropy values here are squared here to ensure that only the highest entropy areas
                     //       show up noticably in the final colouring. Too much noise isn't useful to the user.
                     float red = 0, blue = pow(entropy, 2);
