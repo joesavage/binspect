@@ -119,16 +119,18 @@
 }
 
 - (void) updateLabels {
-    NSString *fileName = @"N/A", *fileSize = @"0 bytes", *fileEntropy = @"0.00%";
+    NSString *fileName = @"N/A", *fileSize = @"0 bytes", *fileSizeHex = @"0x000000", *fileEntropy = @"0.00%";
     
     if ([_data length] > 0) {
         fileName = [[_filePath componentsSeparatedByString:@"/"] lastObject];
         fileSize = [NSString stringWithFormat:@"%lu bytes", [_data length]];
+        fileSizeHex = [NSString stringWithFormat:@"(0x%06lX)", [_data length]];
         fileEntropy = [NSString stringWithFormat:@"%.02f%%", [WindowController calculateShannonEntropy:_data fromIndex:0 forBlockSize:[_data length]]*100];
     }
     
     [_fileNameLabel setStringValue:fileName];
     [_fileSizeLabel setStringValue:fileSize];
+    [_fileSizeHexLabel setStringValue:fileSizeHex];
     [_fileEntropyLabel setStringValue:fileEntropy];
 }
 
@@ -153,6 +155,7 @@
                                           selector:@selector(windowWillClose:)
                                           name:NSWindowWillCloseNotification
                                           object:[self window]];
+    [_curveView setHoveredMemoryAddressLabel:_hoveredMemoryAddressLabel];
 }
 
 - (void)windowWillClose:(NSNotification *)notification {

@@ -20,7 +20,8 @@
     IBOutlet NSSegmentedControl  *_curveColouringSegmentedControl;
     IBOutlet CurveView           *_curveView;
     IBOutlet NSProgressIndicator *_curvePanelProgressIndicator;
-    IBOutlet NSTextField         *_fileNameLabel, *_fileSizeLabel, *_fileEntropyLabel;
+    IBOutlet NSTextField         *_fileNameLabel, *_fileSizeLabel, *_fileSizeHexLabel, *_fileEntropyLabel,
+                                 *_hoveredMemoryAddressLabel;
 }
 
 - (IBAction) segmentedControlClicked:(id)sender;

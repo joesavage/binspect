@@ -55,17 +55,17 @@
     }
 }
 
-+ (unsigned int) getZigzagCurveIndex:(unsigned int)width forCoords:(CGPoint)point {
-    unsigned int result, rowNumber = point.y;
++ (unsigned long) getZigzagCurveIndex:(unsigned long)width forCoords:(CGPoint)point {
+    unsigned long result, rowNumber = point.y;
     bool oddRow = (rowNumber % 2 == 1);
     result = (point.y * width) + (oddRow ? (width - 1) - point.x : point.x);
     
     return result;
 }
 
-+ (CGPoint) getZigzagCurveCoordinates:(unsigned int)width forIndex:(unsigned int)index {
++ (CGPoint) getZigzagCurveCoordinates:(unsigned long)width forIndex:(unsigned long)index {
     CGPoint result = CGPointMake(0, 0);
-    unsigned int rowNumber = index / width;
+    unsigned long rowNumber = index / width;
     bool oddRow = (rowNumber % 2 == 1);
     result.x = index % width;
     result.y = rowNumber;
@@ -74,24 +74,61 @@
     return result;
 }
 
+- (unsigned long) calculateHilbertChunkWidth:(unsigned long)maxWidth {
+    unsigned int nearestPowerOfTwo = (unsigned int)(sqrt([_data length]) + 0.5f);
+    
+    // Bit Twiddling Hacks: "Round up to the next highest power of 2"
+    // http://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
+    nearestPowerOfTwo--;
+    nearestPowerOfTwo |= nearestPowerOfTwo >> 1;
+    nearestPowerOfTwo |= nearestPowerOfTwo >> 2;
+    nearestPowerOfTwo |= nearestPowerOfTwo >> 4;
+    nearestPowerOfTwo |= nearestPowerOfTwo >> 8;
+    nearestPowerOfTwo |= nearestPowerOfTwo >> 16;
+    nearestPowerOfTwo++;
+    
+    // Spit the curve into chunks to be stacked on top of each other for rectangular viewing.
+    //
+    // A _pointSize of 2^(2n) works particularly well for this, as it produces a desirable 'chunkWidth'
+    // which ensures that the Hilbert chunk will finish in the bottom left, and so tiles excellently
+    // with, and has proper visual locality with, the next chunk.
+    //
+    // In fact, if _pointSize is not of this type then chunking makes the visualisation somewhat ugly.
+    // I wouldn't recommend using this chunking method (and instead enabling horizontal scrolling
+    // of a square curve) for _pointSize values which are not of this type.
+    unsigned long chunkWidth = nearestPowerOfTwo;
+    if (nearestPowerOfTwo > maxWidth) chunkWidth = maxWidth;
+    
+    return chunkWidth;
+}
+
+- (unsigned long) getIndexOfCurrentlyHoveredByte {
+    unsigned long index = 0,
+               maxWidth = _viewBounds.width / _pointSize;
+    
+    _mousePosition.x = (unsigned long)(_mousePosition.x / _pointSize);
+    _mousePosition.y = (unsigned long)((_mousePosition.y - 0.8f + _scrollPosition) / _pointSize); // The 0.8f is a little accuracy adjustment factor. I assume for the little top border that the NSOpenGLView seems to have.
+    
+    if (_type == CurveViewTypeHilbert) {
+        unsigned long hilbertWidth = [self calculateHilbertChunkWidth:maxWidth],
+                      chunkArea    = (hilbertWidth * hilbertWidth),
+                      chunkIndex   = (unsigned long)(_mousePosition.y / hilbertWidth);
+        CGPoint hilbertPoint = _mousePosition;
+        hilbertPoint.y = (unsigned long)_mousePosition.y % hilbertWidth;
+        index = chunkIndex*chunkArea + [CurveView getHilbertCurveIndex:chunkArea forCoords:hilbertPoint];
+    } else if (_type == CurveViewTypeZigzag) {
+        index = [CurveView getZigzagCurveIndex:maxWidth forCoords:_mousePosition];
+    }
+    
+    return index;
+}
+
 // Note: _vertexArray and _colourArray should be indexed the same as _data (for sequential drawing, indexed access, etc.)
 - (void) setCurveType:(CurveViewType)type {
     _type = type;
     switch(_type) {
         case CurveViewTypeHilbert:
             {
-                unsigned int nearestPowerOfTwo = (unsigned int)(sqrt([_data length]) + 0.5f);
-                
-                // Bit Twiddling Hacks: "Round up to the next highest power of 2"
-                // http://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
-                nearestPowerOfTwo--;
-                nearestPowerOfTwo |= nearestPowerOfTwo >> 1;
-                nearestPowerOfTwo |= nearestPowerOfTwo >> 2;
-                nearestPowerOfTwo |= nearestPowerOfTwo >> 4;
-                nearestPowerOfTwo |= nearestPowerOfTwo >> 8;
-                nearestPowerOfTwo |= nearestPowerOfTwo >> 16;
-                nearestPowerOfTwo++;
-                
                 // Spit the curve into chunks to be stacked on top of each other for rectangular viewing.
                 //
                 // A _pointSize of 2^(2n) works particularly well for this, as it produces a desirable 'chunkWidth'
@@ -101,13 +138,9 @@
                 // In fact, if _pointSize is not of this type then chunking makes the visualisation somewhat ugly.
                 // I wouldn't recommend using this chunking method (and instead enabling horizontal scrolling
                 // of a square curve) for _pointSize values which are not of this type.
-                unsigned long chunkWidth = nearestPowerOfTwo,
-                              chunks    = 1,
-                              maxWidth  = _viewBounds.width / _pointSize;
-                if (nearestPowerOfTwo > maxWidth) {
-                    chunkWidth = maxWidth;
-                    chunks = (unsigned long)(((float)[_data length] / (float)(maxWidth * maxWidth)) + 1.0f);
-                }
+                unsigned long maxWidth   = _viewBounds.width / _pointSize,
+                              chunkWidth = [self calculateHilbertChunkWidth:maxWidth],
+                                  chunks = (unsigned long)(((float)[_data length] / (float)(maxWidth * maxWidth)) + 1.0f);;
                 
                 // Set the vertex array values for each chunk
                 for(int chunk = 0; chunk < chunks; chunk++) {
@@ -347,6 +380,12 @@
 }
 
 - (void) awakeFromNib {
+    NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds]
+                                                                options:NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved |NSTrackingActiveInKeyWindow
+                                                                  owner:self
+                                                               userInfo:nil];
+    [self addTrackingArea:trackingArea];
+    
     _data = nil;
     
     // TODO: If time allows, zoom functionality is invaluable (more/less byte detail, bigger/smaller files, etc.)
@@ -369,10 +408,35 @@
 
 - (void) dealloc {
     [self clearMemoryFingerprint];
+    [_hoveredMemoryAddressLabel release];
     [super dealloc];
 }
 
-// For mouse hovering in future: updateTrackingAreas, mouseEntered, mouseExited
+// For mouse hovering in future: updateTrackingAreas, mouseEntered, mouseMoved, mouseExited
 // Note for highlighting: Can cache old colours in an (NS?) array and restore on deselection (and redraw, obviously)
+//    CGPoint _mousePosition = CGPointMake(_pointSize * 5, 0);
+
+- (void) setHoveredMemoryAddressLabel:(NSTextField*)label {
+    [_hoveredMemoryAddressLabel release];
+    _hoveredMemoryAddressLabel = [label retain];
+}
+
+- (void) mouseExited:(NSEvent *)theEvent {
+    if (_hoveredMemoryAddressLabel) [_hoveredMemoryAddressLabel setStringValue:@"N/A"];
+}
+
+- (void)mouseMoved:(NSEvent *)theEvent {
+    _mousePosition = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    _mousePosition.y = _viewBounds.height - _mousePosition.y;
+    
+    if (_hoveredMemoryAddressLabel) {
+        unsigned long currentHoveredByteIndex = [self getIndexOfCurrentlyHoveredByte];
+        NSString *hoveredMemoryAddress = @"N/A";
+        if (currentHoveredByteIndex < [_data length])
+            hoveredMemoryAddress = [NSString stringWithFormat:@"0x%06lX", currentHoveredByteIndex];
+        [_hoveredMemoryAddressLabel setStringValue:hoveredMemoryAddress];
+    }
+}
+
 
 @end

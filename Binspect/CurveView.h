@@ -27,11 +27,14 @@ typedef NS_ENUM(NSInteger, CurveViewColourMode) {
     NSData    *_data;
     NSInteger _type, _colourMode, _pointSize;
     CGSize    _viewBounds;
+    CGPoint   _mousePosition;
     float     *_vertexArray, *_colourArray;
     float      _scrollPosition;
+    
+    NSTextField *_hoveredMemoryAddressLabel;
 }
 
-// TODO: Update the method prototypes shown here.
+// TODO: Update the method prototypes shown here. Like, seriously - do it.
 
 - (void) setCurveType:(CurveViewType)type;
 - (void) setCurveColourMode:(CurveViewColourMode)mode;
@@ -39,5 +42,7 @@ typedef NS_ENUM(NSInteger, CurveViewColourMode) {
 - (void) drawRect: (NSRect) bounds;
 - (void) redraw;
 - (void) clearMemoryFingerprint;
+
+- (void) setHoveredMemoryAddressLabel:(NSTextField*)label;
 
 @end
