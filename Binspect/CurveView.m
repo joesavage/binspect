@@ -271,6 +271,8 @@
     _data = nil;
     _data = [data retain];
     
+    _scrollPosition = 0.0f;
+    
     if (_vertexArray != nil) free(_vertexArray);
     _vertexArray = nil;
     _vertexArray = (float*)calloc(3 * [_data length], sizeof(float));
