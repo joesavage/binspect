@@ -11,6 +11,35 @@
 
 @implementation WindowController
 
+// TODO: Possibly move this and some other things into their own file (static class or whatever)
++ (CGFloat) calculateShannonEntropy:(NSData*)data fromIndex:(long)index forBlockSize:(long)blocksize {
+    if ([data length] < blocksize) blocksize = [data length];
+    
+    const unsigned char *bytes = (const unsigned char*)[data bytes];
+    long halfBlockSize = (blocksize / 2),
+    startIndex    = index - halfBlockSize;
+    
+    if (index < halfBlockSize) startIndex = 0;
+    else if (index > ([data length] - 1 - halfBlockSize)) startIndex = [data length] - 1 - halfBlockSize;
+    
+    NSMutableDictionary *frequencies = [[NSMutableDictionary alloc] init];
+    for(unsigned long i = startIndex; i < startIndex + blocksize; i++) {
+        NSNumber *key = [NSNumber numberWithUnsignedChar:bytes[i]];
+        unsigned long freq = [[frequencies objectForKey:key] integerValue] + 1;
+        [frequencies setObject:[NSNumber numberWithUnsignedLong:freq] forKey:key];
+    }
+    
+    float entropy = 0.0f,
+    logBlockSize = logf(blocksize);
+    for(id frequencyKey in frequencies) {
+        float p = (float)[[frequencies objectForKey:frequencyKey] integerValue] / (float)blocksize;
+        entropy -= (p * (logf(p) / logBlockSize)); // Shannon Entropy
+    }
+    [frequencies release];
+    
+    return entropy;
+}
+
 - (id)init {
     self = [super initWithWindowNibName:@"MainWindow"];
     if (self) {
@@ -41,9 +70,8 @@
     [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:filename]];
     _filePath = [filename retain];
     _data = [data retain];
-    [_curveView setDataSource:_data];
     [[self window] setTitle:[self windowTitleForDocumentDisplayName:_filePath]];
-    [self beginApplication];
+    [self initiateWindowAction];
     return YES;
 }
 
@@ -90,13 +118,28 @@
     [_curvePanelProgressIndicator stopAnimation:self];
 }
 
-- (void)beginApplication {
+- (void) updateLabels {
+    NSString *fileName = @"N/A", *fileSize = @"0 bytes", *fileEntropy = @"0.00%";
+    
+    if ([_data length] > 0) {
+        fileName = [[_filePath componentsSeparatedByString:@"/"] lastObject];
+        fileSize = [NSString stringWithFormat:@"%lu bytes", [_data length]];
+        fileEntropy = [NSString stringWithFormat:@"%.02f%%", [WindowController calculateShannonEntropy:_data fromIndex:0 forBlockSize:[_data length]]*100];
+    }
+    
+    [_fileNameLabel setStringValue:fileName];
+    [_fileSizeLabel setStringValue:fileSize];
+    [_fileEntropyLabel setStringValue:fileEntropy];
+}
+
+- (void)initiateWindowAction {
     if([_filePath length] == 0) {
         [self presentOpenDialog];
     } else {
         // Moves the window to the front of the screen list, within its level, and makes it the key window
         [[self window] makeKeyAndOrderFront:nil];
         [_curvePanelProgressIndicator startAnimation:self];
+        [self updateLabels];
         [_curveView setDataSource:_data];
         [_curvePanelProgressIndicator stopAnimation:self];
         
@@ -119,6 +162,8 @@
     _filePath = nil;
     [_data release];
     _data = nil;
+    
+    [self updateLabels];
     [_curveView clearMemoryFingerprint];
 }
 

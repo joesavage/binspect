@@ -16,13 +16,13 @@
 @implementation AppDelegate
 
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)hasVisibleWindows {
-    if (!hasVisibleWindows) [_windowController beginApplication];
+    if (!hasVisibleWindows) [_windowController initiateWindowAction];
     return YES; // The application should indeed handle window reopening
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     _windowController = [[WindowController alloc] init];
-    [_windowController beginApplication];
+    [_windowController initiateWindowAction];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

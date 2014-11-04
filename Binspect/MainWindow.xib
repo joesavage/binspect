@@ -10,6 +10,9 @@
                 <outlet property="_curvePanelProgressIndicator" destination="ycw-Yr-glK" id="YZR-qd-xMA"/>
                 <outlet property="_curveTypeSegmentedControl" destination="9Ea-d9-axk" id="QFP-Cy-xum"/>
                 <outlet property="_curveView" destination="CBw-Ea-AEE" id="Kug-CM-Wze"/>
+                <outlet property="_fileEntropyLabel" destination="9T7-a2-TR5" id="MzH-98-Cxt"/>
+                <outlet property="_fileNameLabel" destination="6Kz-Dt-vgm" id="mAz-67-Ynb"/>
+                <outlet property="_fileSizeLabel" destination="afk-aD-aaS" id="UK4-3E-O9n"/>
                 <outlet property="window" destination="olO-85-8lA" id="mAy-3T-ede"/>
             </connections>
         </customObject>
@@ -30,8 +33,8 @@
                         <rect key="frame" x="513" y="0.0" width="235" height="680"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6Kz-Dt-vgm">
-                                <rect key="frame" x="18" y="643" width="199" height="17"/>
-                                <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Filename" placeholderString="" usesSingleLineMode="YES" id="LKy-3r-TEC">
+                                <rect key="frame" x="18" y="643" width="199" height="19"/>
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="N/A" placeholderString="" usesSingleLineMode="YES" id="LKy-3r-TEC">
                                     <font key="font" metaFont="system" size="16"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -55,7 +58,7 @@
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="afk-aD-aaS">
                                 <rect key="frame" x="75" y="617" width="142" height="17"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" title="0 bytes (0x000000)" id="7fC-BD-BPg">
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" sendsActionOnEndEditing="YES" title="0 bytes" id="7fC-BD-BPg">
                                     <font key="font" metaFont="titleBar" size="12"/>
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -64,14 +67,6 @@
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9T7-a2-TR5">
                                 <rect key="frame" x="125" y="598" width="92" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" title="0.00%" id="qpy-9P-hYW">
-                                    <font key="font" metaFont="titleBar" size="12"/>
-                                    <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qEJ-mz-dCz">
-                                <rect key="frame" x="18" y="579" width="41" height="17"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="SHA1:" id="Es8-ck-u8I">
                                     <font key="font" metaFont="titleBar" size="12"/>
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -88,14 +83,6 @@
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8oX-ld-Ir8">
                                 <rect key="frame" x="137" y="5" width="80" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" alignment="center" title="N/A" id="ruM-wL-cm3">
-                                    <font key="font" metaFont="titleBar" size="12"/>
-                                    <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6RZ-vf-jIG">
-                                <rect key="frame" x="59" y="579" width="158" height="17"/>
-                                <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" sendsActionOnEndEditing="YES" title="da39a3ee5e6b4b0d3255bfef95601890afd80709" usesSingleLineMode="YES" id="znZ-uf-MfA">
                                     <font key="font" metaFont="titleBar" size="12"/>
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

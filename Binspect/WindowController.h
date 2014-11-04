@@ -20,10 +20,11 @@
     IBOutlet NSSegmentedControl  *_curveColouringSegmentedControl;
     IBOutlet CurveView           *_curveView;
     IBOutlet NSProgressIndicator *_curvePanelProgressIndicator;
+    IBOutlet NSTextField         *_fileNameLabel, *_fileSizeLabel, *_fileEntropyLabel;
 }
 
 - (IBAction) segmentedControlClicked:(id)sender;
-- (void)beginApplication;
+- (void)initiateWindowAction;
 - (void)presentOpenDialog;
 - (void)windowWillClose:(NSNotification *)notification;
 - (BOOL)openFile:(NSString *)filename;
