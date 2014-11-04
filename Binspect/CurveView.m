@@ -146,8 +146,6 @@
     }
 }
 - (void) setCurveColourMode:(CurveViewColourMode)mode {
-    if (mode == _colourMode) return; // Don't re-set the colour mode if it's not necessary.
-    
     _colourMode = mode;
     switch (_colourMode) {
         case CurveViewColourModeSimilarity:
@@ -276,15 +274,19 @@
     if (_vertexArray != nil) free(_vertexArray);
     _vertexArray = nil;
     _vertexArray = (float*)calloc(3 * [_data length], sizeof(float));
-    if (_colourArray != nil) free(_vertexArray);
+    if (_colourArray != nil) free(_colourArray);
     _colourArray = nil;
     _colourArray = (float*)calloc(3 * [_data length], sizeof(float));
     
     glVertexPointer(3, GL_FLOAT, 0, _vertexArray);
     glColorPointer(3, GL_FLOAT, 0, _colourArray);
     
+    
     [self setCurveType:CurveViewTypeBlank];
     [self setCurveColourMode:CurveViewColourModeBlank];
+    [self setCurveType:_type];
+    [self setCurveColourMode:_colourMode];
+    [self redraw];
 }
 
 - (void) redraw { [self drawRect:[self bounds]]; }
@@ -319,7 +321,6 @@
     glTranslatef(0.0f, -_scrollPosition, 0.0f); // Translate by the distance scrolled.
     
     if (_type != CurveViewTypeBlank) { // Only draw if we're not in the blank curve mode
-        
         // Draw only visible bytes (Hilbert makes this more difficult to calculate, so draw a bit extra both sides)
         GLsizei sqArea = (_viewBounds.width / _pointSize) * (_viewBounds.width / _pointSize),
              drawCount = (_viewBounds.height / _pointSize) * (_viewBounds.width / _pointSize) + sqArea,

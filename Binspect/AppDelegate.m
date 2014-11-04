@@ -34,4 +34,8 @@
     return [_windowController openFile:filename];
 }
 
+- (IBAction)openDocument:(id)sender {
+    [_windowController presentOpenDialog];
+}
+
 @end
