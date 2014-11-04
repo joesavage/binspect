@@ -100,11 +100,30 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="WRV-NI-Exz"/>
-                            <menuItem title="Copy" keyEquivalent="c" id="x3v-GG-iWU">
+                            <menuItem title="Cut" keyEquivalent="x" id="x3v-GG-iWU">
                                 <connections>
-                                    <action selector="copy:" target="-1" id="G1f-GL-Joy"/>
+                                    <action selector="cut:" target="-1" id="plZ-WT-kVM"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Copy" keyEquivalent="c" id="JJb-Pa-euX">
+                                <connections>
+                                    <action selector="copy:" target="-1" id="gyk-cl-r0g"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Paste" keyEquivalent="v" id="D7D-jG-SaN">
+                                <connections>
+                                    <action selector="paste:" target="-1" id="qOT-4u-ki3"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Delete" id="ed2-EV-sff">
+                                <string key="keyEquivalent" base64-UTF8="YES">
+CA
+</string>
+                                <connections>
+                                    <action selector="delete:" target="-1" id="U2p-PX-foz"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="C9h-Sj-HiW"/>
                             <menuItem title="Select All" keyEquivalent="a" id="Ruw-6m-B2m">
                                 <connections>
                                     <action selector="selectAll:" target="-1" id="VNm-Mi-diN"/>
