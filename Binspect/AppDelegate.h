@@ -19,6 +19,5 @@
 - (void) applicationDidFinishLaunching:(NSNotification *)notification;
 - (void) applicationWillTerminate:(NSNotification *)notification;
 - (BOOL) application:(NSApplication *)theApplication openFile:(NSString *)filename;
-- (IBAction) openDocument:(id)sender;
 
 @end

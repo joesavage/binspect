@@ -236,6 +236,9 @@
 	[_tableView reloadData];
 }
 
+// A method to handle the action sent from the 'Open' command in the menu bar
+- (IBAction) openDocument:(id)sender { [self presentOpenDialog]; }
+
 // A method to handle the action sent from the 'Copy' command in the menu bar
 - (IBAction) copy:(id)sender {
 	NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
