@@ -13,7 +13,7 @@
 
 - (BOOL) applicationShouldHandleReopen:(NSApplication *)application hasVisibleWindows:(BOOL)hasVisibleWindows {
 		if (!hasVisibleWindows) [_windowController initiateWindowAction];
-		return YES; // The application should indeed handle window reopening
+		return YES; // The application has decided to open in response to this reopen request
 }
 
 - (void) applicationDidFinishLaunching:(NSNotification *)notification {
@@ -30,8 +30,6 @@
 		return [_windowController openFile:filename];
 }
 
-- (IBAction) openDocument:(id)sender {
-		[_windowController presentOpenDialog];
-}
+- (IBAction) openDocument:(id)sender { [_windowController presentOpenDialog]; }
 
 @end

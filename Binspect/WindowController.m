@@ -211,4 +211,12 @@
 	[_tableView reloadData];
 }
 
+// A method to handle the action sent from the 'Copy' command in the menu bar
+- (IBAction) copy:(id)sender {
+	NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+	[pasteboard clearContents];
+	NSString *copiedString = @"Copied!"; // TODO: Copy selected hex view data to clipboard
+	[pasteboard setString:copiedString forType:NSStringPboardType];
+}
+
 @end

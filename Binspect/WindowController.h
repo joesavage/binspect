@@ -29,6 +29,9 @@
 - (void)windowWillClose:(NSNotification *)notification;
 - (BOOL)openFile:(NSString *)filename;
 
+// First-responder event handlers
+- (IBAction) copy:(id)sender;
+
 // NSTableViewDelegate Protocol Delegate Methods
 - (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row;
 
