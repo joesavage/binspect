@@ -107,7 +107,7 @@
                maxWidth = _viewBounds.width / _pointSize;
     
     _mousePosition.x = (unsigned long)(_mousePosition.x / _pointSize);
-    _mousePosition.y = (unsigned long)((_mousePosition.y - 0.8f + _scrollPosition) / _pointSize); // The 0.8f is a little accuracy adjustment factor. I assume for the little top border that the NSOpenGLView seems to have.
+    _mousePosition.y = (unsigned long)((_mousePosition.y - 2.5f + _scrollPosition) / _pointSize); // The 2.5f is a little accuracy adjustment factor. I assume for the little top border that the NSOpenGLView seems to have.
     
     if (_type == CurveViewTypeHilbert) {
         unsigned long hilbertWidth = [self calculateHilbertChunkWidth:maxWidth],
@@ -412,9 +412,8 @@
     [super dealloc];
 }
 
-// For mouse hovering in future: updateTrackingAreas, mouseEntered, mouseMoved, mouseExited
+
 // Note for highlighting: Can cache old colours in an (NS?) array and restore on deselection (and redraw, obviously)
-//    CGPoint _mousePosition = CGPointMake(_pointSize * 5, 0);
 
 - (void) setHoveredMemoryAddressLabel:(NSTextField*)label {
     [_hoveredMemoryAddressLabel release];

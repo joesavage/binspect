@@ -62,6 +62,7 @@
     return [NSString stringWithFormat:@"Binspect — %@", displayName];
 }
 
+// TODO: Should deal with max file size (probably sizeof(unsigned int)-1 or something) here
 - (BOOL)openFile:(NSString *)filename {
     // Note: Disk errors /could/ occur here. Also, option 'NSMappedRead' might be useful for big files.
     NSData *data = [NSData dataWithContentsOfFile:filename];
