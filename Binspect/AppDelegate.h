@@ -12,8 +12,13 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 {
-    WindowController *_windowController;
+	WindowController *_windowController;
 }
 
-@end
+- (BOOL) applicationShouldHandleReopen:(NSApplication *)application hasVisibleWindows:(BOOL)hasVisibleWindows;
+- (void) applicationDidFinishLaunching:(NSNotification *)notification;
+- (void) applicationWillTerminate:(NSNotification *)notification;
+- (BOOL) application:(NSApplication *)theApplication openFile:(NSString *)filename;
+- (IBAction) openDocument:(id)sender;
 
+@end

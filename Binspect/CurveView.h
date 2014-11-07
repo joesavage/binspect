@@ -9,40 +9,45 @@
 #import <Cocoa/Cocoa.h>
 
 typedef NS_ENUM(NSInteger, CurveViewType) {
-    CurveViewTypeBlank,
-    CurveViewTypeHilbert,
-    CurveViewTypeZigzag
+	CurveViewTypeBlank,
+	CurveViewTypeHilbert,
+	CurveViewTypeZigzag
 };
 
 typedef NS_ENUM(NSInteger, CurveViewColourMode) {
-    CurveViewColourModeBlank,
-    CurveViewColourModeSimilarity,
-    CurveViewColourModeEntropy,
-    CurveViewColourModeStructural,
-    CurveViewColourModeRandom
+	CurveViewColourModeBlank,
+	CurveViewColourModeSimilarity,
+	CurveViewColourModeEntropy,
+	CurveViewColourModeStructural,
+	CurveViewColourModeRandom
 };
+
+@protocol CurveViewDelegate <NSObject>
+- (void) curveViewMouseMovedToInvalidIndex;
+- (void) curveViewMouseMovedToIndex:(NSInteger)index;
+@end
 
 @interface CurveView : NSOpenGLView
 {
-    NSData    *_data;
-    NSInteger _type, _colourMode, _pointSize, _hoverRegionSize;
-    CGSize    _viewBounds;
-    CGPoint   _mousePosition;
-    float     *_vertexArray, *_colourArray;
-    float      _scrollPosition;
-    
-    NSTextField *_hoveredMemoryAddressLabel, *_hoveredRegionMemoryAddressRangeLabel;
+	         CGSize                _viewBounds;
+	         CGPoint               _mousePosition;
+	         float                 *_vertexArray, *_colourArray;
+	         NSData                *_data;
+	         NSInteger             _type, _colourMode, _pointSize;
+	         float                 _scrollPosition;
+	IBOutlet id<CurveViewDelegate> _delegate;
 }
 
 // TODO: Update the method prototypes shown here. Like, seriously - do it.
+// Also: add more setting/getting methods (point size/zoom, hover region size, etc.). The controller should CONTROL this!
 
 - (void) setCurveType:(CurveViewType)type;
 - (void) setCurveColourMode:(CurveViewColourMode)mode;
+- (void) setZoomLevel:(NSInteger)zoomLevel;
 - (void) setDataSource:(NSData *)data;
 - (void) drawRect: (NSRect) bounds;
 - (void) redraw;
-- (void) clearMemoryFingerprint;
-
-- (void) setInternalLabels:(NSTextField*)hoveredMemoryAddressLabel :(NSTextField*)hoveredRegionMemoryAddressRangeLabel;
+- (void) clearState;
+- (unsigned long) getIndexOfCurrentlyHoveredByte;
 
 @end
