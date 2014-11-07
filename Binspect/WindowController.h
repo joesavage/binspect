@@ -11,6 +11,7 @@
 
 @interface WindowController : NSWindowController <NSTableViewDelegate, NSTableViewDataSource, CurveViewDelegate>
 {
+	unsigned long                _selectionRegionStartIndex, _selectionRegionEndIndex;
 	         NSString            *_filePath;
 	         NSData              *_data;
 	         NSInteger           _zoomLevel, _hoverRegionSize;

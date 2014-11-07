@@ -187,7 +187,7 @@
 				// itself was heavily inspired by the work of Cortesi.
 				#include "ColourModeSimilarityPalette.c"
 				
-				const unsigned char *bytes = (const unsigned char*)[_data bytes];
+				const unsigned char *bytes = (const unsigned char*)(_data.bytes);
 				for(int i = 0; i < _data.length; i++) {
 					_colourArray[(3 * i)] = palette[(3 * bytes[i])];
 					_colourArray[(3 * i) + 1] = palette[(3 * bytes[i]) + 1];
@@ -207,7 +207,7 @@
 				unsigned long frequencies[256] = {0};
 				double entropy = 0.0f;
 				for(long i = 0; i < _data.length; i++) {
-					const unsigned char *bytes = (const unsigned char*)[_data bytes];
+					const unsigned char *bytes = (const unsigned char*)(_data.bytes);
 					long startIndex    = i - halfBlockSize;
 					
 					if (i < halfBlockSize) startIndex = 0;

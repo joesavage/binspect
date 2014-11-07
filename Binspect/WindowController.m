@@ -176,14 +176,32 @@
 }
 
 - (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+	if (_selectionRegionEndIndex - _selectionRegionStartIndex == 0) return nil;
+	
 	// Formulate the identifier name for the table view cell in Interface Builder which should be copied for this particular cell.
 	NSString *viewIdentifier = @"hexView";
 	viewIdentifier = [viewIdentifier stringByAppendingString:tableColumn.identifier];
 	
 	// Create a new NSTableCellView from the identifier, and set its value appropriately.
 	NSTableCellView *result = [tableView makeViewWithIdentifier:viewIdentifier owner:self];
-	result.textField.stringValue = [NSString stringWithFormat:@"%i", rand() % 255]; // TODO: Set sensible data
+	NSString *resultString = @"";
+	const unsigned char *bytes = _data.bytes;
+	if ([tableColumn.identifier isEqualTo:@"Bytes"]) {
+		resultString = [NSString stringWithFormat:@"%02X %02X %02X %02X %02X %02X %02X %02X",
+						bytes[_selectionRegionStartIndex + row * 8 + 0], bytes[_selectionRegionStartIndex + row * 8 + 1],
+						bytes[_selectionRegionStartIndex + row * 8 + 2], bytes[_selectionRegionStartIndex + row * 8 + 3],
+						bytes[_selectionRegionStartIndex + row * 8 + 4], bytes[_selectionRegionStartIndex + row * 8 + 5],
+						bytes[_selectionRegionStartIndex + row * 8 + 6], bytes[_selectionRegionStartIndex + row * 8 + 7]];
+	}
+	else {
+		for(unsigned char i = 0; i < 8; i++) {
+			unsigned char value = bytes[_selectionRegionStartIndex + row * 8 + i];
+			resultString = [resultString stringByAppendingFormat:@"%c", (isprint(value) ? value : ' ')];
+		}
+	}
 	
+	result.textField.stringValue = resultString;
+
 	return result;
 }
 
@@ -194,17 +212,24 @@
 - (void) curveViewMouseMovedToInvalidIndex {
 	[_hoveredMemoryAddressLabel setStringValue:@"N/A"];
 	[_hoveredRegionMemoryAddressRangeLabel setStringValue:@"N/A"];
+	
+	_selectionRegionStartIndex = 0;
+	_selectionRegionEndIndex = 0;
+	
 	[_tableView reloadData];
 }
 - (void) curveViewMouseMovedToIndex:(NSInteger)index {
 	unsigned long regionStartIndex = index,
-				  regionEndIndex = index + _hoverRegionSize,
+	              regionEndIndex = index + _hoverRegionSize,
 				  maximumDataIndex = _data.length - 1;
 	
 	if (regionEndIndex > maximumDataIndex) {
 		regionStartIndex = maximumDataIndex - _hoverRegionSize;
 		regionEndIndex = maximumDataIndex;
 	}
+	
+	_selectionRegionStartIndex = regionStartIndex;
+	_selectionRegionEndIndex = regionEndIndex;
 	
 	[_hoveredMemoryAddressLabel setStringValue:[NSString stringWithFormat:@"0x%06lX", index]];
 	[_hoveredRegionMemoryAddressRangeLabel setStringValue:[NSString stringWithFormat:@"0x%06lX - 0x%06lX", regionStartIndex, regionEndIndex]];
