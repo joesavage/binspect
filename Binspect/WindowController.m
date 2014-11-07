@@ -156,7 +156,7 @@
                                           selector:@selector(windowWillClose:)
                                           name:NSWindowWillCloseNotification
                                           object:[self window]];
-    [_curveView setHoveredMemoryAddressLabel:_hoveredMemoryAddressLabel];
+    [_curveView setInternalLabels:_hoveredMemoryAddressLabel :_hoveredRegionMemoryAddressRangeLabel];
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
@@ -169,6 +169,24 @@
     
     [self updateLabels];
     [_curveView clearMemoryFingerprint];
+}
+
+
+// Note: Can call [_tableView reloadData] to reload the data in the table
+- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+	// Formulate the identifier name for the table view cell in Interface Builder which should be copied for this particular cell.
+	NSString *viewIdentifier = @"hexView";
+	viewIdentifier = [viewIdentifier stringByAppendingString:tableColumn.identifier];
+	
+	// Create a new NSTableCellView from the identifier, and set its value appropriately.
+	NSTableCellView *result = [tableView makeViewWithIdentifier:viewIdentifier owner:self];
+	result.textField.stringValue = [NSString stringWithFormat:@"%i", rand() % 255]; // TODO: Set sensible data
+	
+	return result;
+}
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
+    return 8; // TODO: Or 0.
 }
 
 @end

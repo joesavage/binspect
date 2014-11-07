@@ -42,7 +42,7 @@
 		D859DACA19F1E39C00137408 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D859DACB19F1E39C00137408 /* BinspectTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BinspectTests.m; sourceTree = "<group>"; };
 		D87F5C3119FAAA4A00E31BA6 /* WindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowController.h; sourceTree = "<group>"; };
-		D87F5C3219FAAA4A00E31BA6 /* WindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WindowController.m; sourceTree = "<group>"; };
+		D87F5C3219FAAA4A00E31BA6 /* WindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WindowController.m; sourceTree = "<group>"; usesTabs = 1; };
 		D8A5E00919FAD3AC00AC11D7 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		D8B8DBF31A06B48500EB53B7 /* ColourModeSimilarityPalette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ColourModeSimilarityPalette.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -76,8 +76,9 @@
 			isa = PBXGroup;
 			children = (
 				D859DAB419F1E39B00137408 /* Binspect */,
-				D859DAC819F1E39C00137408 /* BinspectTests */,
 				D859DAB319F1E39B00137408 /* Products */,
+				D859DAC819F1E39C00137408 /* BinspectTests */,
+				D859DAB519F1E39B00137408 /* Supporting Files */,
 			);
 			sourceTree = "<group>";
 		};
@@ -93,18 +94,16 @@
 		D859DAB419F1E39B00137408 /* Binspect */ = {
 			isa = PBXGroup;
 			children = (
-				D823965619FBA1CE00DED7D8 /* Models */,
 				D859DAB919F1E39B00137408 /* AppDelegate.h */,
 				D859DABA19F1E39B00137408 /* AppDelegate.m */,
 				D859DABC19F1E39B00137408 /* Images.xcassets */,
-				D859DABE19F1E39B00137408 /* MainMenu.xib */,
 				D87F5C3119FAAA4A00E31BA6 /* WindowController.h */,
 				D87F5C3219FAAA4A00E31BA6 /* WindowController.m */,
-				D8A5E00919FAD3AC00AC11D7 /* MainWindow.xib */,
 				D816EE6C19FC908F00102667 /* CurveView.h */,
 				D816EE6D19FC908F00102667 /* CurveView.m */,
 				D8B8DBF31A06B48500EB53B7 /* ColourModeSimilarityPalette.c */,
-				D859DAB519F1E39B00137408 /* Supporting Files */,
+				D823965619FBA1CE00DED7D8 /* Models */,
+				D8F847A01A0D1D9400FA7B5F /* Nibs */,
 			);
 			path = Binspect;
 			sourceTree = "<group>";
@@ -116,6 +115,7 @@
 				D859DAB719F1E39B00137408 /* main.m */,
 			);
 			name = "Supporting Files";
+			path = Binspect;
 			sourceTree = "<group>";
 		};
 		D859DAC819F1E39C00137408 /* BinspectTests */ = {
@@ -125,7 +125,7 @@
 				D859DAC919F1E39C00137408 /* Supporting Files */,
 			);
 			path = BinspectTests;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		D859DAC919F1E39C00137408 /* Supporting Files */ = {
 			isa = PBXGroup;
@@ -133,6 +133,15 @@
 				D859DACA19F1E39C00137408 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D8F847A01A0D1D9400FA7B5F /* Nibs */ = {
+			isa = PBXGroup;
+			children = (
+				D859DABE19F1E39B00137408 /* MainMenu.xib */,
+				D8A5E00919FAD3AC00AC11D7 /* MainWindow.xib */,
+			);
+			name = Nibs;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

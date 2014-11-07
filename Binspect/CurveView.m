@@ -387,9 +387,11 @@
     [self addTrackingArea:trackingArea];
     
     _data = nil;
+    _hoveredRegionMemoryAddressRangeLabel = nil;
     
     // TODO: If time allows, zoom functionality is invaluable (more/less byte detail, bigger/smaller files, etc.)
     _pointSize = 4; // Should be a power of 2. Ideally in the form 2^(2n) - see Hilbert chunking code.
+    _hoverRegionSize = 64;
     _scrollPosition = 0.0f;
     [self setCurveType:CurveViewTypeBlank];
     [self setCurveColourMode:CurveViewColourModeBlank];
@@ -408,32 +410,46 @@
 
 - (void) dealloc {
     [self clearMemoryFingerprint];
-    [_hoveredMemoryAddressLabel release];
+    [_hoveredRegionMemoryAddressRangeLabel release];
     [super dealloc];
 }
 
 
 // Note for highlighting: Can cache old colours in an (NS?) array and restore on deselection (and redraw, obviously)
 
-- (void) setHoveredMemoryAddressLabel:(NSTextField*)label {
+- (void) setInternalLabels:(NSTextField*)hoveredMemoryAddressLabel :(NSTextField*)hoveredRegionMemoryAddressRangeLabel {
+    [_hoveredRegionMemoryAddressRangeLabel release];
+    _hoveredRegionMemoryAddressRangeLabel = [hoveredRegionMemoryAddressRangeLabel retain];
+
     [_hoveredMemoryAddressLabel release];
-    _hoveredMemoryAddressLabel = [label retain];
+    _hoveredMemoryAddressLabel = [hoveredMemoryAddressLabel retain];
 }
 
 - (void) mouseExited:(NSEvent *)theEvent {
-    if (_hoveredMemoryAddressLabel) [_hoveredMemoryAddressLabel setStringValue:@"N/A"];
+    if (_hoveredRegionMemoryAddressRangeLabel != nil) [_hoveredRegionMemoryAddressRangeLabel setStringValue:@"N/A"];
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent {
     _mousePosition = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     _mousePosition.y = _viewBounds.height - _mousePosition.y;
     
-    if (_hoveredMemoryAddressLabel) {
+    if (_hoveredRegionMemoryAddressRangeLabel != nil) {
         unsigned long currentHoveredByteIndex = [self getIndexOfCurrentlyHoveredByte];
-        NSString *hoveredMemoryAddress = @"N/A";
-        if (currentHoveredByteIndex < [_data length])
+        NSString *hoveredMemoryAddress = @"N/A", *hoveredMemoryAddressRange = @"N/A";
+        if (currentHoveredByteIndex < [_data length]) {
+            unsigned long currentHoveredRegionStartIndex = currentHoveredByteIndex;
+            unsigned long currentHoveredRegionEndIndex = currentHoveredByteIndex + _hoverRegionSize;
+            
+            if (currentHoveredRegionEndIndex > [_data length] - 1) {
+                currentHoveredRegionStartIndex = [_data length] - 1 - _hoverRegionSize;
+                currentHoveredRegionEndIndex = [_data length] - 1;
+            }
+            
             hoveredMemoryAddress = [NSString stringWithFormat:@"0x%06lX", currentHoveredByteIndex];
+            hoveredMemoryAddressRange = [NSString stringWithFormat:@"0x%06lX - 0x%06lX", currentHoveredRegionStartIndex, currentHoveredRegionEndIndex];
+        }
         [_hoveredMemoryAddressLabel setStringValue:hoveredMemoryAddress];
+        [_hoveredRegionMemoryAddressRangeLabel setStringValue:hoveredMemoryAddressRange];
     }
 }
 

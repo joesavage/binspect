@@ -25,13 +25,13 @@ typedef NS_ENUM(NSInteger, CurveViewColourMode) {
 @interface CurveView : NSOpenGLView
 {
     NSData    *_data;
-    NSInteger _type, _colourMode, _pointSize;
+    NSInteger _type, _colourMode, _pointSize, _hoverRegionSize;
     CGSize    _viewBounds;
     CGPoint   _mousePosition;
     float     *_vertexArray, *_colourArray;
     float      _scrollPosition;
     
-    NSTextField *_hoveredMemoryAddressLabel;
+    NSTextField *_hoveredMemoryAddressLabel, *_hoveredRegionMemoryAddressRangeLabel;
 }
 
 // TODO: Update the method prototypes shown here. Like, seriously - do it.
@@ -43,6 +43,6 @@ typedef NS_ENUM(NSInteger, CurveViewColourMode) {
 - (void) redraw;
 - (void) clearMemoryFingerprint;
 
-- (void) setHoveredMemoryAddressLabel:(NSTextField*)label;
+- (void) setInternalLabels:(NSTextField*)hoveredMemoryAddressLabel :(NSTextField*)hoveredRegionMemoryAddressRangeLabel;
 
 @end
