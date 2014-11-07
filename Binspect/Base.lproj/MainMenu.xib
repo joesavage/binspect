@@ -76,6 +76,11 @@
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem title="Reload" keyEquivalent="r" id="QnJ-6k-KXf">
+                                <connections>
+                                    <action selector="openDocument:" target="-1" id="Os0-nG-AqE"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="m54-Is-iLE"/>
                             <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG">
                                 <connections>
@@ -101,6 +106,29 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="View" id="HyV-fh-RgO">
                         <items>
+                            <menuItem title="Curve Type" id="Q2J-gJ-od2">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Curve Type" id="vQ2-cT-Sdg">
+                                    <items>
+                                        <menuItem title="Hilbert" keyEquivalent="1" id="sP5-QZ-AuZ"/>
+                                        <menuItem title="Zigzag" keyEquivalent="2" id="GD1-Jl-oJO"/>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Colouring Mode" id="tAw-Q3-18a">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Colouring Mode" id="5cl-g5-jgU">
+                                    <items>
+                                        <menuItem title="Similarity" keyEquivalent="4" id="QF9-Nw-o5s"/>
+                                        <menuItem title="Entropy" keyEquivalent="5" id="e1q-rM-oD9"/>
+                                        <menuItem title="Structural" keyEquivalent="6" id="fZX-uo-dWV"/>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="0QY-lq-DpP"/>
+                            <menuItem title="Zoom In" keyEquivalent="+" id="R5m-V4-wLj"/>
+                            <menuItem title="Zoom Out" keyEquivalent="-" id="ryE-oZ-7iW"/>
+                            <menuItem isSeparatorItem="YES" id="f1a-YH-MXX"/>
                             <menuItem title="Show Toolbar" keyEquivalent="t" id="snW-S8-Cw5">
                                 <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                 <connections>
