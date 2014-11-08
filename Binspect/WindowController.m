@@ -236,15 +236,24 @@
 	[_tableView reloadData];
 }
 
-// A method to handle the action sent from the 'Open' command in the menu bar
-- (IBAction) openDocument:(id)sender { [self presentOpenDialog]; }
-
 // A method to handle the action sent from the 'Copy' command in the menu bar
 - (IBAction) copy:(id)sender {
 	NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
 	[pasteboard clearContents];
 	NSString *copiedString = @"Copied!"; // TODO: Copy selected hex view data to clipboard
 	[pasteboard setString:copiedString forType:NSStringPboardType];
+}
+
+- (IBAction) zoomIn:(id)sender {
+	if ([_curveView isValidZoomLevel:_zoomLevel + 1]) _zoomLevel++;
+	[_curveView setZoomLevel:_zoomLevel];
+	[_curveView redraw];
+}
+
+- (IBAction) zoomOut:(id)sender {
+	if ([_curveView isValidZoomLevel:_zoomLevel - 1]) _zoomLevel--;
+	[_curveView setZoomLevel:_zoomLevel];
+	[_curveView redraw];
 }
 
 @end

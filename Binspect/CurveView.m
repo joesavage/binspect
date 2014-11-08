@@ -363,14 +363,17 @@
 	glFlush();
 }
 
-- (void) scrollWheel: (NSEvent *)event {
-	_scrollPosition -= [event deltaY] * 4.0f;
+- (void) setScrollPosition:(float)position {
 	unsigned long minScrollPosition = 0,
 				  maxScrollPosition = (unsigned long)((_data.length / (_viewBounds.width / _pointSize)) + 1.0f) * _pointSize;
 	if (maxScrollPosition >= _viewBounds.height / 4.0f) maxScrollPosition -= (_viewBounds.height / 4.0f);
-	if (_scrollPosition < minScrollPosition) _scrollPosition = minScrollPosition;
-	else if (_scrollPosition > maxScrollPosition) _scrollPosition = maxScrollPosition;
-	
+	if (position < minScrollPosition) _scrollPosition = minScrollPosition;
+	else if (position > maxScrollPosition) _scrollPosition = maxScrollPosition;
+	else _scrollPosition = position;
+}
+
+- (void) scrollWheel: (NSEvent *)event {
+	[self setScrollPosition:(_scrollPosition - [event deltaY] * 4.0f)];
 	[self redraw];
 }
 
@@ -390,10 +393,17 @@
 	[self setCurveColourMode:CurveViewColourModeBlank];
 }
 
+- (BOOL) isValidZoomLevel:(NSInteger)zoomLevel {
+	return (zoomLevel >= 0 && zoomLevel <= _viewBounds.width);
+}
+
 - (void) setZoomLevel:(NSInteger)zoomLevel {
+	NSInteger oldPointSize = _pointSize;
 	// The form 2^(2n) is for aesthetics - see comments in the Hilbert chunking code.
 	_pointSize = pow(2, 2 * zoomLevel);
 	glPointSize(_pointSize);
+	[self setScrollPosition:(_scrollPosition * (pow((float)_pointSize, 2) / pow((float)oldPointSize, 2)))];
+	[self setCurveType:_type];
 }
 
 - (void) mouseExited:(NSEvent *)event {

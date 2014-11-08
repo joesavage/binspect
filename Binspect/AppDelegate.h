@@ -15,9 +15,13 @@
 	WindowController *_windowController;
 }
 
+// NSApplicationDelegate Protocol Delegate Methods
 - (BOOL) applicationShouldHandleReopen:(NSApplication *)application hasVisibleWindows:(BOOL)hasVisibleWindows;
 - (void) applicationDidFinishLaunching:(NSNotification *)notification;
 - (void) applicationWillTerminate:(NSNotification *)notification;
 - (BOOL) application:(NSApplication *)theApplication openFile:(NSString *)filename;
+
+// First-responder event handlers
+- (IBAction) openDocument:(id)sender;
 
 @end

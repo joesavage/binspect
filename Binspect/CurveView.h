@@ -43,6 +43,8 @@ typedef NS_ENUM(NSInteger, CurveViewColourMode) {
 
 - (void) setCurveType:(CurveViewType)type;
 - (void) setCurveColourMode:(CurveViewColourMode)mode;
+- (void) setScrollPosition:(float)position;
+- (BOOL) isValidZoomLevel:(NSInteger)zoomLevel;
 - (void) setZoomLevel:(NSInteger)zoomLevel;
 - (void) setDataSource:(NSData *)data;
 - (void) drawRect: (NSRect) bounds;

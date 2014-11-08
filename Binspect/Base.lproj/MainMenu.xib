@@ -76,11 +76,7 @@
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem title="Reload" keyEquivalent="r" id="QnJ-6k-KXf">
-                                <connections>
-                                    <action selector="openDocument:" target="-1" id="Os0-nG-AqE"/>
-                                </connections>
-                            </menuItem>
+                            <menuItem title="Reload" keyEquivalent="r" id="QnJ-6k-KXf"/>
                             <menuItem isSeparatorItem="YES" id="m54-Is-iLE"/>
                             <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG">
                                 <connections>
@@ -126,8 +122,16 @@
                                 </menu>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="0QY-lq-DpP"/>
-                            <menuItem title="Zoom In" keyEquivalent="+" id="R5m-V4-wLj"/>
-                            <menuItem title="Zoom Out" keyEquivalent="-" id="ryE-oZ-7iW"/>
+                            <menuItem title="Zoom In" keyEquivalent="+" id="R5m-V4-wLj">
+                                <connections>
+                                    <action selector="zoomIn:" target="-1" id="LG8-dq-OtG"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Zoom Out" keyEquivalent="-" id="ryE-oZ-7iW">
+                                <connections>
+                                    <action selector="zoomOut:" target="-1" id="9eP-6I-OWm"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="f1a-YH-MXX"/>
                             <menuItem title="Show Toolbar" keyEquivalent="t" id="snW-S8-Cw5">
                                 <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>

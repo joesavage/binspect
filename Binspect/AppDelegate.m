@@ -30,4 +30,8 @@
 		return [_windowController openFile:filename];
 }
 
+// A method to handle the action sent from the 'Open' command in the menu bar
+// (Should be available even when the main window is closed, so defined in this file)
+- (IBAction) openDocument:(id)sender { [_windowController presentOpenDialog]; }
+
 @end

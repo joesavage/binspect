@@ -41,7 +41,6 @@
 - (void) curveViewMouseMovedToIndex:(NSInteger)index;
 
 // First-responder event handlers
-- (IBAction) openDocument:(id)sender;
 - (IBAction) copy:(id)sender;
 
 @end
