@@ -384,6 +384,7 @@
 																  owner:self
 															   userInfo:nil];
 	[self addTrackingArea:trackingArea];
+	[trackingArea release];
 	
 	// Initialize class properties
 	_data = nil;
