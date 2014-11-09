@@ -405,6 +405,7 @@
 	glPointSize(_pointSize);
 	[self setScrollPosition:(_scrollPosition * (pow((float)_pointSize, 2) / pow((float)oldPointSize, 2)))];
 	[self setCurveType:_type];
+	[self setCurveColourMode:_colourMode];
 }
 
 - (void) mouseExited:(NSEvent *)event {
