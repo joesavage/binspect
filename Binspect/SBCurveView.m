@@ -75,21 +75,8 @@
 }
 
 - (NSUInteger) calculateHilbertChunkWidth:(NSUInteger)maxWidth {
-	// Calculate the exact ideal chunk width(/height), and round it up.
-	NSUInteger chunkWidth = ceil(sqrt(_data.length));
-	
-	// Round up to the next highest power of 2 (as required for our Hilbert usage)
-	chunkWidth = pow(2, ceil(log2(chunkWidth)));
-	
-	// Spit the curve into chunks to be stacked on top of each other for rectangular viewing.
-	//
-	// A _pointSize of 2^(2n) works particularly well for this, as it produces a desirable 'chunkWidth'
-	// which ensures that the Hilbert chunk will finish in the bottom left, and so tiles excellently
-	// with, and has proper visual locality with, the next chunk.
-	//
-	// In fact, if _pointSize is not of this type then chunking makes the visualisation somewhat ugly.
-	// I wouldn't recommend using this chunking method (and instead enabling horizontal scrolling
-	// of a square curve) for _pointSize values which are not of this type.
+	NSUInteger chunkWidth = ceil(sqrt(_data.length)); // Calculate the exact ideal chunk width(/height), and round it up.
+	chunkWidth = pow(2, ceil(log2(chunkWidth))); // Round up to the next highest power of 2 (as required for our Hilbert usage)
 	if (chunkWidth > maxWidth) chunkWidth = maxWidth;
 	
 	return chunkWidth;
@@ -179,8 +166,9 @@
 				// specifically through the use of Aldo Cortesi's scurve swatch Python utility. This palette idea
 				// itself was heavily inspired by the work of Cortesi.
 				#include "ColourModeSimilarityPalette.c"
-				
 				const unsigned char *bytes = (const unsigned char *)(_data.bytes);
+				
+				// For each byte, set the RGB colour values to the appropriate colour based on the similarity palette.
 				for(NSInteger i = 0; i < _data.length; i++) {
 					_colourArray[(3 * i)] = palette[(3 * bytes[i])];
 					_colourArray[(3 * i) + 1] = palette[(3 * bytes[i]) + 1];
@@ -190,34 +178,38 @@
 			break;
 		case SBCurveViewColourModeEntropy:
 			{
-				// TODO: Clean up and properly comment this whole section
-				NSUInteger blocksize = 128;
+				NSUInteger blocksize = 128; // The number of bytes around this one which should be factored into the calculation
 				if (_data.length < blocksize) blocksize = _data.length;
 				
 				NSInteger halfBlockSize = (blocksize / 2), previousStartIndex = 0;
-				double logBlockSize = log(blocksize);
+				double logBlockSize = log(blocksize),
+				       entropy = 0.0f;
+				const unsigned char *bytes = (const unsigned char *)(_data.bytes);
+				NSUInteger frequencies[256] = {0}; // An array indicating the number of different byte values (0 - 255)
 				
-				NSUInteger frequencies[256] = {0};
-				double entropy = 0.0f;
+				// For each byte, update the 'frequencies' array and modify the 'entropy' result for this block (rolling result),
+				// and then finally set the colour for this byte.
 				for(NSInteger i = 0; i < _data.length; i++) {
-					const unsigned char *bytes = (const unsigned char *)(_data.bytes);
-					NSInteger startIndex    = i - halfBlockSize;
-					
+					// Calculate the position of this block
+					NSInteger startIndex = i - halfBlockSize;
 					if (i < halfBlockSize) startIndex = 0;
 					else if (i > (_data.length - 1 - halfBlockSize)) startIndex = _data.length - 1 - halfBlockSize;
 					
 					if (i == 0) {
+						// Calculate the frequencies and entropy for the first block
 						for(NSUInteger j = startIndex; j < startIndex + blocksize; j++)
 							frequencies[bytes[j]]++;
 						
-						// Calculate Shannon Entropy
+						// Standard shannon entropy calculation
 						for(NSUInteger i = 0; i < 256; i++) {
 							if (frequencies[i] == 0) continue;
 							double p = (double)frequencies[i] / (double)blocksize;
 							entropy -= (p * (log(p) / logBlockSize));
 						}
 					} else if (startIndex != previousStartIndex) {
-						// Remove from start
+						// Modify the frequencies and entropy result for this byte block
+						
+						// Remove a byte from the start of the block
 						double p = (double)frequencies[bytes[previousStartIndex]] / (double)blocksize;
 						entropy += (p * (log(p) / logBlockSize));
 						frequencies[bytes[previousStartIndex]]--;
@@ -227,7 +219,7 @@
 						}
 						
 						
-						// Add to end
+						// Add a byte to the end of the block
 						if (frequencies[bytes[previousStartIndex + blocksize]] != 0) {
 							p = (double)frequencies[bytes[previousStartIndex + blocksize]] / (double)blocksize;
 							entropy += (p * (log(p) / logBlockSize));
@@ -237,9 +229,10 @@
 						entropy -= (p * (log(p) / logBlockSize));
 					}
 					
-					previousStartIndex = startIndex;
+					previousStartIndex = startIndex; // This start index is now the 'previous' index, for future iterations.
 					
 
+					// Set the RGB values for this byte (low entropy -> high entropy: black -> blue -> pink)
 					// Note: Entropy values here are squared here to ensure that only the highest entropy areas
 					//       show up noticably in the final colouring. Too much noise isn't useful to the user.
 					float red = 0, blue = pow(entropy, 2);
@@ -252,9 +245,12 @@
 			break;
 		case SBCurveViewColourModeStructural:
 			{
-				// Alternative: absolute cycle size: 128 * 128 * 4 => can be difficult to see distinctions at different zoom sizes.
+				// The cycle at which the structural colour pattern should repeat.
+				// [Alt: absolute cycle size: 128 * 128 * 4 => can be difficult to see distinctions at different zoom sizes.]
 				const NSUInteger colourRepeatCycleSize = (_viewBounds.width / _pointSize) * (_viewBounds.width / _pointSize) * 2;
-				bool repeatingPalette = (_data.length > colourRepeatCycleSize);
+				bool repeatingPalette = (_data.length > colourRepeatCycleSize); // Whether this palette repeats
+				
+				// Set the colour palette (HSL hue cycle -> RGB)
 				NSMutableArray *palette = [[NSMutableArray alloc] init];
 				NSColorSpace *rgbSpace = [NSColorSpace sRGBColorSpace];
 				for(NSUInteger i = 0; i < _data.length; i++) {
@@ -270,6 +266,7 @@
 					[palette addObject:colour];
 				}
 				
+				// For each byte, set the colour to the corresponding colour in the generated palette.
 				for(NSUInteger i = 0; i < _data.length; i++) {
 					NSUInteger paletteIndex = i;
 					if (repeatingPalette) paletteIndex = i % colourRepeatCycleSize;
@@ -277,10 +274,12 @@
 					_colourArray[(i * 3) + 1] = [[palette objectAtIndex:paletteIndex] greenComponent];
 					_colourArray[(i * 3) + 2] = [[palette objectAtIndex:paletteIndex] blueComponent];
 				}
+				
 				[palette release];
 			}
 			break;
 		case SBCurveViewColourModeRandom:
+			// For each byte, generate a random colour.
 			for(NSUInteger i = 0; i < (3 * _data.length); i++)
 				_colourArray[i] = rand() / (float)RAND_MAX;
 			break;
@@ -344,13 +343,14 @@
 	glTranslatef(0.0f, -_scrollPosition, 0.0f); // Translate by the distance scrolled.
 	
 	if (_type != SBCurveViewTypeBlank) { // Only draw if we're not in the blank curve mode
-		// Draw only visible bytes (Hilbert makes this more difficult to calculate, so draw a bit extra both sides)
+		// Draw visible points only. Hilbert makes this more difficult to calculate, so draw a bit extra both sides.
 		GLsizei sqArea = (_viewBounds.width / _pointSize) * (_viewBounds.width / _pointSize),
-			 drawCount = (_viewBounds.height / _pointSize) * (_viewBounds.width / _pointSize) + sqArea,
+			    drawCount = (_viewBounds.height / _pointSize) * (_viewBounds.width / _pointSize) + sqArea,
 		startDrawIndex = ((_scrollPosition / _pointSize) * (_viewBounds.width / _pointSize)) - sqArea / 2.0f;
 		if (startDrawIndex < 0) startDrawIndex = 0;
 		if ((startDrawIndex + drawCount) > _data.length) drawCount = (GLsizei)_data.length - startDrawIndex;
 		
+		// Draw points at the specified indices using the specified GL vertex and colour arrays.
 		glDrawArrays(GL_POINTS, startDrawIndex, drawCount);
 	}
 	glFlush();
