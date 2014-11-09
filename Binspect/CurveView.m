@@ -394,7 +394,8 @@
 }
 
 - (BOOL) isValidZoomLevel:(NSInteger)zoomLevel {
-	return (zoomLevel >= 0 && zoomLevel <= _viewBounds.width);
+	NSInteger zoomValue = powf(2, 2 * zoomLevel);
+	return (zoomValue >= 1 && zoomValue <= (_viewBounds.width / 8));
 }
 
 - (void) setZoomLevel:(NSInteger)zoomLevel {
