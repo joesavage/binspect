@@ -24,17 +24,24 @@
 	IBOutlet NSTableView         *_tableView;
 }
 
+- (id) init;
+- (void) dealloc;
+- (NSString *) windowTitleForDocumentDisplayName:(NSString *)displayName;
+- (BOOL) openFile:(NSString *)filename;
+- (void) presentOpenDialog;
+- (void) changeSegmentedControl:(NSSegmentedControl *)segmentedControl toIndex:(NSInteger)index;
+- (void) updateLabels;
+- (void) initiateWindowAction;
+- (void) windowDidLoad;
+- (void) windowWillClose:(NSNotification *)notification;
+
 - (IBAction) segmentedControlClicked:(id)sender;
-- (void)initiateWindowAction;
-- (void)presentOpenDialog;
-- (void)windowWillClose:(NSNotification *)notification;
-- (BOOL)openFile:(NSString *)filename;
 
 // NSTableViewDelegate Protocol Delegate Methods
-- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row;
+- (NSView *) tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row;
 
 // NSTableViewDataSource Protocol Delegate Methods
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView;
+- (NSInteger) numberOfRowsInTableView:(NSTableView *)tableView;
 
 // CurveViewDelegate Protocol Delegate Methods
 - (void) curveViewMouseMovedToInvalidIndex;

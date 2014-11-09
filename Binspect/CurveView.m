@@ -343,7 +343,7 @@
 	glLoadIdentity();
 }
 
-- (void) drawRect: (NSRect) bounds
+- (void) drawRect: (NSRect)bounds
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLoadIdentity();
@@ -372,8 +372,8 @@
 	else _scrollPosition = position;
 }
 
-- (void) scrollWheel: (NSEvent *)event {
-	[self setScrollPosition:(_scrollPosition - [event deltaY] * 4.0f)];
+- (void) scrollWheel:(NSEvent *)event {
+	[self setScrollPosition:(_scrollPosition - event.deltaY * 4.0f)];
 	[self redraw];
 }
 
@@ -411,7 +411,7 @@
 	[_delegate curveViewMouseMovedToInvalidIndex];
 }
 
-- (void)mouseMoved:(NSEvent *)event {
+- (void) mouseMoved:(NSEvent *)event {
 	_mousePosition = [self convertPoint:event.locationInWindow fromView:nil];
 	_mousePosition.y = _viewBounds.height - _mousePosition.y;
 	

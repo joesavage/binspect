@@ -12,15 +12,15 @@
 @implementation WindowController
 
 // TODO: Possibly move this and some other things into their own file (static class or whatever)
-+ (CGFloat) calculateShannonEntropy:(NSData*)data fromIndex:(long)index forBlockSize:(long)blocksize {
-	if ([data length] < blocksize) blocksize = [data length];
++ (CGFloat) calculateShannonEntropy:(NSData *)data fromIndex:(long)index forBlockSize:(long)blocksize {
+	if (data.length < blocksize) blocksize = data.length;
 	
-	const unsigned char *bytes = (const unsigned char*)[data bytes];
+	const unsigned char *bytes = (const unsigned char*)data.bytes;
 	long halfBlockSize = (blocksize / 2),
 	startIndex    = index - halfBlockSize;
 	
 	if (index < halfBlockSize) startIndex = 0;
-	else if (index > ([data length] - 1 - halfBlockSize)) startIndex = [data length] - 1 - halfBlockSize;
+	else if (index > (data.length - 1 - halfBlockSize)) startIndex = data.length - 1 - halfBlockSize;
 	
 	NSMutableDictionary *frequencies = [[NSMutableDictionary alloc] init];
 	for(unsigned long i = startIndex; i < startIndex + blocksize; i++) {
@@ -40,7 +40,7 @@
 	return entropy;
 }
 
-- (id)init {
+- (id) init {
 	self = [super initWithWindowNibName:@"MainWindow"];
 	if (self) {
 		_filePath = nil;
@@ -50,20 +50,20 @@
 	return self;
 }
 
-- (void)dealloc {
+- (void) dealloc {
 	[_filePath release];
 	[_data release];
 	[super dealloc];
 }
 
-- (NSString *) windowTitleForDocumentDisplayName: (NSString *) displayName {
-	if ([displayName length] == 0) return @"Binspect";
-	displayName = [[displayName componentsSeparatedByString:@"/"] lastObject];
+- (NSString *) windowTitleForDocumentDisplayName:(NSString *)displayName {
+	if (displayName.length == 0) return @"Binspect";
+	displayName = [displayName componentsSeparatedByString:@"/"].lastObject;
 	return [NSString stringWithFormat:@"Binspect — %@", displayName];
 }
 
 // TODO: Should deal with max file size (probably sizeof(unsigned int)-1 or something) here
-- (BOOL)openFile:(NSString *)filename {
+- (BOOL) openFile:(NSString *)filename {
 	// Note: Disk errors /could/ occur here. Also, option 'NSMappedRead' might be useful for big files.
 	NSData *data = [NSData dataWithContentsOfFile:filename];
 	if (data == nil) return NO;
@@ -71,12 +71,12 @@
 	[[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:filename]];
 	_filePath = [filename retain];
 	_data = [data retain];
-	[[self window] setTitle:[self windowTitleForDocumentDisplayName:_filePath]];
+	[self.window setTitle:[self windowTitleForDocumentDisplayName:_filePath]];
 	[self initiateWindowAction];
 	return YES;
 }
 
-- (void)presentOpenDialog {
+- (void) presentOpenDialog {
 	NSOpenPanel* openPanel = [NSOpenPanel openPanel];
 	
 	[openPanel setTitle: @"Select a file for analysis"];
@@ -87,15 +87,15 @@
 	[openPanel setAllowsMultipleSelection: NO];
 	
 	if ([openPanel runModal] == NSModalResponseOK) {
-		NSURL *selection = [openPanel.URLs firstObject];
-		NSString *path = [[selection path] stringByResolvingSymlinksInPath];
+		NSURL *selection = openPanel.URLs.firstObject;
+		NSString *path = selection.path.stringByResolvingSymlinksInPath;
 		[self openFile:path];
 	}
 }
 
 - (IBAction) segmentedControlClicked:(id)sender {
 	[_curvePanelProgressIndicator startAnimation:self];
-	switch ([_curveTypeSegmentedControl selectedSegment]) {
+	switch (_curveTypeSegmentedControl.selectedSegment) {
 		case 0:
 			[_curveView setCurveType:CurveViewTypeHilbert];
 			break;
@@ -104,7 +104,7 @@
 			break;
 	}
 	
-	switch ([_curveColouringSegmentedControl selectedSegment]) {
+	switch (_curveColouringSegmentedControl.selectedSegment) {
 		case 0:
 			[_curveView setCurveColourMode:CurveViewColourModeSimilarity];
 			break;
@@ -127,25 +127,25 @@
 - (void) updateLabels {
 	NSString *fileName = @"N/A", *fileSize = @"0 bytes", *fileSizeHex = @"0x000000", *fileEntropy = @"0.00%";
 	
-	if ([_data length] > 0) {
-		fileName = [[_filePath componentsSeparatedByString:@"/"] lastObject];
-		fileSize = [NSString stringWithFormat:@"%lu bytes", [_data length]];
-		fileSizeHex = [NSString stringWithFormat:@"(0x%06lX)", [_data length]];
-		fileEntropy = [NSString stringWithFormat:@"%.02f%%", [WindowController calculateShannonEntropy:_data fromIndex:0 forBlockSize:[_data length]]*100];
+	if (_data.length > 0) {
+		fileName = [_filePath componentsSeparatedByString:@"/"].lastObject;
+		fileSize = [NSString stringWithFormat:@"%lu bytes", _data.length];
+		fileSizeHex = [NSString stringWithFormat:@"(0x%06lX)", _data.length];
+		fileEntropy = [NSString stringWithFormat:@"%.02f%%", [WindowController calculateShannonEntropy:_data fromIndex:0 forBlockSize:_data.length]*100];
 	}
 	
-	[_fileNameLabel setStringValue:fileName];
-	[_fileSizeLabel setStringValue:fileSize];
-	[_fileSizeHexLabel setStringValue:fileSizeHex];
-	[_fileEntropyLabel setStringValue:fileEntropy];
+	_fileNameLabel.stringValue = fileName;
+	_fileSizeLabel.stringValue = fileSize;
+	_fileSizeHexLabel.stringValue = fileSizeHex;
+	_fileEntropyLabel.stringValue = fileEntropy;
 }
 
-- (void)initiateWindowAction {
-	if([_filePath length] == 0) {
+- (void) initiateWindowAction {
+	if(_filePath.length == 0) {
 		[self presentOpenDialog];
 	} else {
 		// Moves the window to the front of the screen list, within its level, and makes it the key window
-		[[self window] makeKeyAndOrderFront:nil];
+		[self.window makeKeyAndOrderFront:nil];
 		[_curvePanelProgressIndicator startAnimation:self];
 		[self updateLabels];
 		[_curveView setZoomLevel:_zoomLevel];
@@ -156,7 +156,7 @@
 	}
 }
 
-- (void)windowDidLoad { // Invoked when this controller's window has been loaded from its nib file
+- (void) windowDidLoad { // Invoked when this controller's window has been loaded from its nib file
 	[super windowDidLoad];
 	
 	_zoomLevel = 1;
@@ -165,10 +165,10 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self
 										  selector:@selector(windowWillClose:)
 										  name:NSWindowWillCloseNotification
-										  object:[self window]];
+										  object:self.window];
 }
 
-- (void)windowWillClose:(NSNotification *)notification {
+- (void) windowWillClose:(NSNotification *)notification {
 	[self windowTitleForDocumentDisplayName:nil];
 	
 	[_filePath release];
@@ -180,7 +180,7 @@
 	[_curveView clearState];
 }
 
-- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+- (NSView *) tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
 	if (_selectionRegionEndIndex - _selectionRegionStartIndex == 0) return nil;
 	
 	// Formulate the identifier name for the table view cell in Interface Builder which should be copied for this particular cell.
@@ -206,17 +206,16 @@
 	}
 	
 	result.textField.stringValue = resultString;
-
 	return result;
 }
 
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-	return 8; // TODO: Or 0.
+- (NSInteger) numberOfRowsInTableView:(NSTableView *)tableView {
+	return 8;
 }
 
 - (void) curveViewMouseMovedToInvalidIndex {
-	[_hoveredMemoryAddressLabel setStringValue:@"N/A"];
-	[_hoveredRegionMemoryAddressRangeLabel setStringValue:@"N/A"];
+	_hoveredMemoryAddressLabel.stringValue = @"N/A";
+	_hoveredRegionMemoryAddressRangeLabel.stringValue = @"N/A";
 	
 	_selectionRegionStartIndex = 0;
 	_selectionRegionEndIndex = 0;
@@ -236,8 +235,8 @@
 	_selectionRegionStartIndex = regionStartIndex;
 	_selectionRegionEndIndex = regionEndIndex;
 	
-	[_hoveredMemoryAddressLabel setStringValue:[NSString stringWithFormat:@"0x%06lX", index]];
-	[_hoveredRegionMemoryAddressRangeLabel setStringValue:[NSString stringWithFormat:@"0x%06lX - 0x%06lX", regionStartIndex, regionEndIndex]];
+	_hoveredMemoryAddressLabel.stringValue = [NSString stringWithFormat:@"0x%06lX", index];
+	_hoveredRegionMemoryAddressRangeLabel.stringValue = [NSString stringWithFormat:@"0x%06lX - 0x%06lX", regionStartIndex, regionEndIndex];
 	[_tableView reloadData];
 }
 
@@ -252,11 +251,11 @@
 	// For each row in the hex view table, add that row's data (in a pretty format) to the string we'll change the clipboard to
 	NSString *copiedString = @"";
 	unsigned long rowMemoryAddress = _selectionRegionStartIndex;
-	for(NSInteger row = 0; row < [_tableView numberOfRows]; row++) {
+	for(NSInteger row = 0; row < _tableView.numberOfRows; row++) {
 		NSTextField *firstColumnTextField = [[_tableView viewAtColumn:0 row:row makeIfNecessary:YES] textField],
 		            *secondColumnTextField = [[_tableView viewAtColumn:1 row:row makeIfNecessary:YES] textField];
 		
-		copiedString = [copiedString stringByAppendingFormat:@"%06lX | %@   %@\n", rowMemoryAddress, [firstColumnTextField stringValue], [secondColumnTextField stringValue]];
+		copiedString = [copiedString stringByAppendingFormat:@"%06lX | %@   %@\n", rowMemoryAddress, firstColumnTextField.stringValue, secondColumnTextField.stringValue];
 		rowMemoryAddress += 8;
 	}
 	

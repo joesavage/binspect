@@ -39,15 +39,13 @@ typedef NS_ENUM(NSInteger, CurveViewColourMode) {
 }
 
 // TODO: Update the method prototypes shown here. Like, seriously - do it.
-// Also: add more setting/getting methods (point size/zoom, hover region size, etc.). The controller should CONTROL this!
-
 - (void) setCurveType:(CurveViewType)type;
 - (void) setCurveColourMode:(CurveViewColourMode)mode;
 - (void) setScrollPosition:(float)position;
 - (BOOL) isValidZoomLevel:(NSInteger)zoomLevel;
 - (void) setZoomLevel:(NSInteger)zoomLevel;
 - (void) setDataSource:(NSData *)data;
-- (void) drawRect: (NSRect) bounds;
+- (void) drawRect:(NSRect)bounds;
 - (void) redraw;
 - (void) clearState;
 - (unsigned long) getIndexOfCurrentlyHoveredByte;
