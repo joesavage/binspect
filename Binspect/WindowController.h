@@ -45,5 +45,10 @@
 - (IBAction) zoomIn:(id)sender;
 - (IBAction) zoomOut:(id)sender;
 - (IBAction) reload:(id)sender;
+- (IBAction) selectPrimaryCurveType:(id)sender;
+- (IBAction) selectSecondaryCurveType:(id)sender;
+- (IBAction) selectPrimaryCurveColouringMode:(id)sender;
+- (IBAction) selectSecondaryCurveColouringMode:(id)sender;
+- (IBAction) selectTertiaryCurveColouringMode:(id)sender;
 
 @end

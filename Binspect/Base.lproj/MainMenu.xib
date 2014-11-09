@@ -110,8 +110,16 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Curve Type" id="vQ2-cT-Sdg">
                                     <items>
-                                        <menuItem title="Hilbert" keyEquivalent="1" id="sP5-QZ-AuZ"/>
-                                        <menuItem title="Zigzag" keyEquivalent="2" id="GD1-Jl-oJO"/>
+                                        <menuItem title="Hilbert" keyEquivalent="1" id="sP5-QZ-AuZ">
+                                            <connections>
+                                                <action selector="selectPrimaryCurveType:" target="-1" id="Tpq-Uk-SVG"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Zigzag" keyEquivalent="2" id="GD1-Jl-oJO">
+                                            <connections>
+                                                <action selector="selectSecondaryCurveType:" target="-1" id="PoF-hM-K2i"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -119,9 +127,21 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Colouring Mode" id="5cl-g5-jgU">
                                     <items>
-                                        <menuItem title="Similarity" keyEquivalent="4" id="QF9-Nw-o5s"/>
-                                        <menuItem title="Entropy" keyEquivalent="5" id="e1q-rM-oD9"/>
-                                        <menuItem title="Structural" keyEquivalent="6" id="fZX-uo-dWV"/>
+                                        <menuItem title="Similarity" keyEquivalent="4" id="QF9-Nw-o5s">
+                                            <connections>
+                                                <action selector="selectPrimaryCurveColouringMode:" target="-1" id="34G-1X-7Va"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Entropy" keyEquivalent="5" id="e1q-rM-oD9">
+                                            <connections>
+                                                <action selector="selectSecondaryCurveColouringMode:" target="-1" id="BPI-fB-Ihw"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Structural" keyEquivalent="6" id="fZX-uo-dWV">
+                                            <connections>
+                                                <action selector="selectTertiaryCurveColouringMode:" target="-1" id="lMP-sa-jiO"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>

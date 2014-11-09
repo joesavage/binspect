@@ -119,6 +119,11 @@
 	[_curvePanelProgressIndicator stopAnimation:self];
 }
 
+- (void) changeSegmentedControl:(NSSegmentedControl *)segmentedControl toIndex:(NSInteger)index {
+	[segmentedControl setSelectedSegment:index];
+	[self segmentedControlClicked:nil];
+}
+
 - (void) updateLabels {
 	NSString *fileName = @"N/A", *fileSize = @"0 bytes", *fileSizeHex = @"0x000000", *fileEntropy = @"0.00%";
 	
@@ -258,6 +263,26 @@
 
 - (IBAction) reload:(id)sender {
 	[self openFile:_filePath];
+}
+
+- (IBAction) selectPrimaryCurveType:(id)sender {
+	[self changeSegmentedControl:_curveTypeSegmentedControl toIndex:0];
+}
+
+- (IBAction) selectSecondaryCurveType:(id)sender {
+	[self changeSegmentedControl:_curveTypeSegmentedControl toIndex:1];
+}
+
+- (IBAction) selectPrimaryCurveColouringMode:(id)sender {
+	[self changeSegmentedControl:_curveColouringSegmentedControl toIndex:0];
+}
+
+- (IBAction) selectSecondaryCurveColouringMode:(id)sender {
+	[self changeSegmentedControl:_curveColouringSegmentedControl toIndex:1];
+}
+
+- (IBAction) selectTertiaryCurveColouringMode:(id)sender {
+	[self changeSegmentedControl:_curveColouringSegmentedControl toIndex:2];
 }
 
 @end
