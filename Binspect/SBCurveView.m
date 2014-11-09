@@ -75,17 +75,11 @@
 }
 
 - (unsigned long) calculateHilbertChunkWidth:(unsigned long)maxWidth {
-	unsigned int nearestPowerOfTwo = (unsigned int)(sqrt(_data.length) + 0.5f);
+	// Calculate the exact ideal chunk width(/height), and round it up.
+	unsigned long chunkWidth = ceil(sqrt(_data.length));
 	
-	// Bit Twiddling Hacks: "Round up to the next highest power of 2"
-	// http://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
-	nearestPowerOfTwo--;
-	nearestPowerOfTwo |= nearestPowerOfTwo >> 1;
-	nearestPowerOfTwo |= nearestPowerOfTwo >> 2;
-	nearestPowerOfTwo |= nearestPowerOfTwo >> 4;
-	nearestPowerOfTwo |= nearestPowerOfTwo >> 8;
-	nearestPowerOfTwo |= nearestPowerOfTwo >> 16;
-	nearestPowerOfTwo++;
+	// Round up to the next highest power of 2 (as required for our Hilbert usage)
+	chunkWidth = pow(2, ceil(log2(chunkWidth)));
 	
 	// Spit the curve into chunks to be stacked on top of each other for rectangular viewing.
 	//
@@ -96,8 +90,7 @@
 	// In fact, if _pointSize is not of this type then chunking makes the visualisation somewhat ugly.
 	// I wouldn't recommend using this chunking method (and instead enabling horizontal scrolling
 	// of a square curve) for _pointSize values which are not of this type.
-	unsigned long chunkWidth = nearestPowerOfTwo;
-	if (nearestPowerOfTwo > maxWidth) chunkWidth = maxWidth;
+	if (chunkWidth > maxWidth) chunkWidth = maxWidth;
 	
 	return chunkWidth;
 }
@@ -139,7 +132,7 @@
 				// of a square curve) for _pointSize values which are not of this type.
 				unsigned long maxWidth   = _viewBounds.width / _pointSize,
 							  chunkWidth = [self calculateHilbertChunkWidth:maxWidth],
-								  chunks = (unsigned long)(((float)_data.length / (float)(maxWidth * maxWidth)) + 1.0f);;
+								  chunks = ceilf((float)_data.length / (float)(maxWidth * maxWidth));
 				
 				// Set the vertex array values for each chunk
 				for(int chunk = 0; chunk < chunks; chunk++) {
@@ -365,7 +358,7 @@
 
 - (void) setScrollPosition:(float)position {
 	unsigned long minScrollPosition = 0,
-				  maxScrollPosition = (unsigned long)((_data.length / (_viewBounds.width / _pointSize)) + 1.0f) * _pointSize;
+				  maxScrollPosition = ceilf(_data.length / (_viewBounds.width / _pointSize)) * _pointSize;
 	if (maxScrollPosition >= _viewBounds.height / 4.0f) maxScrollPosition -= (_viewBounds.height / 4.0f);
 	if (position < minScrollPosition) _scrollPosition = minScrollPosition;
 	else if (position > maxScrollPosition) _scrollPosition = maxScrollPosition;
