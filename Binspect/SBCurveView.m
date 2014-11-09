@@ -11,6 +11,28 @@
 
 @implementation SBCurveView
 
+- (void) awakeFromNib {
+	// Track mouse entering, exiting, and movement when our window is the key window
+	NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:self.bounds
+																options:NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved |NSTrackingActiveInKeyWindow
+																  owner:self
+															   userInfo:nil];
+	[self addTrackingArea:trackingArea];
+	[trackingArea release];
+	
+	// Initialize class properties
+	_data = nil;
+	_scrollPosition = 0.0f;
+	[self setZoomLevel:1];
+	[self setCurveType:SBCurveViewTypeBlank];
+	[self setCurveColourMode:SBCurveViewColourModeBlank];
+}
+
+- (void) dealloc {
+	[self clearState];
+	[super dealloc];
+}
+
 // The following three Hilbert curve algorithms are based on those shown on Wikipedia.
 // http://en.wikipedia.org/wiki/Hilbert_curve#Applications_and_mapping_algorithms
 + (NSUInteger) getHilbertCurveIndex:(NSUInteger)size forCoords:(CGPoint)point {
@@ -313,8 +335,6 @@
 	[self redraw];
 }
 
-- (void) redraw { [self drawRect:self.bounds]; }
-
 - (void) prepareOpenGL {
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -333,6 +353,10 @@
 	glOrtho(0.0f, _viewBounds.width, _viewBounds.height, 0.0f, -1.0f, 1.0f);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+- (void) redraw {
+	[self drawRect:self.bounds];
 }
 
 - (void) drawRect: (NSRect)bounds
@@ -368,23 +392,6 @@
 - (void) scrollWheel:(NSEvent *)event {
 	[self setScrollPosition:(_scrollPosition - event.deltaY * 4.0f)];
 	[self redraw];
-}
-
-- (void) awakeFromNib {
-	// Track mouse entering, exiting, and movement when our window is the key window
-	NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:self.bounds
-																options:NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved |NSTrackingActiveInKeyWindow
-																  owner:self
-															   userInfo:nil];
-	[self addTrackingArea:trackingArea];
-	[trackingArea release];
-	
-	// Initialize class properties
-	_data = nil;
-	_scrollPosition = 0.0f;
-	[self setZoomLevel:1];
-	[self setCurveType:SBCurveViewTypeBlank];
-	[self setCurveColourMode:SBCurveViewColourModeBlank];
 }
 
 - (BOOL) isValidZoomLevel:(NSInteger)zoomLevel {
@@ -426,11 +433,6 @@
 	_vertexArray = nil;
 	if (_colourArray != nil) free(_colourArray);
 	_colourArray = nil;
-}
-
-- (void) dealloc {
-	[self clearState];
-	[super dealloc];
 }
 
 @end

@@ -26,6 +26,9 @@
 
 - (id) init;
 - (void) dealloc;
+
++ (CGFloat) calculateShannonEntropy:(NSData *)data fromIndex:(NSInteger)index forBlockSize:(NSInteger)blocksize;
+
 - (NSString *) windowTitleForDocumentDisplayName:(NSString *)displayName;
 - (BOOL) openFile:(NSString *)filename;
 - (void) presentOpenDialog;

@@ -38,16 +38,30 @@ typedef NS_ENUM(NSUInteger, SBCurveViewColourMode) {
 	IBOutlet id<SBCurveViewDelegate> _delegate;
 }
 
-// TODO: Update the method prototypes shown here. Like, seriously - do it.
+- (void) awakeFromNib;
+- (void) dealloc;
+
++ (NSUInteger) getHilbertCurveIndex:(NSUInteger)size forCoords:(CGPoint)point;
++ (CGPoint) getHilbertCurveCoordinates:(NSUInteger)size forIndex:(NSUInteger)index;
++ (void) rotateHilbertCurveQuadrant:(NSUInteger)size by:(CGPoint)rotation forPoint:(CGPoint *)point;
++ (NSUInteger) getZigzagCurveIndex:(NSUInteger)width forCoords:(CGPoint)point;
++ (CGPoint) getZigzagCurveCoordinates:(NSUInteger)width forIndex:(NSUInteger)index;
+
+- (NSUInteger) calculateHilbertChunkWidth:(NSUInteger)maxWidth;
+- (NSUInteger) getIndexOfCurrentlyHoveredByte;
 - (void) setCurveType:(SBCurveViewType)type;
 - (void) setCurveColourMode:(SBCurveViewColourMode)mode;
+- (void) setDataSource:(NSData *)data;
+- (void) prepareOpenGL;
+- (void) reshape;
+- (void) redraw;
+- (void) drawRect: (NSRect)boun;
 - (void) setScrollPosition:(float)position;
+- (void) scrollWheel:(NSEvent *)event;
 - (BOOL) isValidZoomLevel:(NSInteger)zoomLevel;
 - (void) setZoomLevel:(NSInteger)zoomLevel;
-- (void) setDataSource:(NSData *)data;
-- (void) drawRect:(NSRect)bounds;
-- (void) redraw;
+- (void) mouseExited:(NSEvent *)event;
+- (void) mouseMoved:(NSEvent *)event;
 - (void) clearState;
-- (NSUInteger) getIndexOfCurrentlyHoveredByte;
 
 @end
