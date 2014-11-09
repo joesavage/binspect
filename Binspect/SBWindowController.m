@@ -11,13 +11,12 @@
 
 @implementation SBWindowController
 
-// TODO: Possibly move this and some other things into their own file (static class or whatever)
 + (CGFloat) calculateShannonEntropy:(NSData *)data fromIndex:(long)index forBlockSize:(long)blocksize {
 	if (data.length < blocksize) blocksize = data.length;
 	
 	const unsigned char *bytes = (const unsigned char*)data.bytes;
 	long halfBlockSize = (blocksize / 2),
-	startIndex    = index - halfBlockSize;
+	     startIndex = index - halfBlockSize;
 	
 	if (index < halfBlockSize) startIndex = 0;
 	else if (index > (data.length - 1 - halfBlockSize)) startIndex = data.length - 1 - halfBlockSize;
@@ -62,11 +61,9 @@
 	return [NSString stringWithFormat:@"Binspect — %@", displayName];
 }
 
-// TODO: Should deal with max file size (probably sizeof(unsigned int)-1 or something) here
 - (BOOL) openFile:(NSString *)filename {
-	// Note: Disk errors /could/ occur here. Also, option 'NSMappedRead' might be useful for big files.
-	NSData *data = [NSData dataWithContentsOfFile:filename];
-	if (data == nil) return NO;
+	NSData *data = [NSData dataWithContentsOfFile:filename]; // Note: The 'NSMappedRead' option might be useful for big files?
+	if (data == nil || data.length >= INT_MAX) return NO;
 	
 	[[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:filename]];
 	_filePath = [filename retain];
