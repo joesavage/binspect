@@ -1,5 +1,5 @@
 //
-//  AppDelegate.h
+//  SBAppDelegate.h
 //  Binspect
 //
 //  Created by Joe Savage on 18/10/2014.
@@ -8,11 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class WindowController;
+@class SBWindowController;
 
-@interface AppDelegate : NSObject <NSApplicationDelegate>
+@interface SBAppDelegate : NSObject <NSApplicationDelegate>
 {
-	WindowController *_windowController;
+	SBWindowController *_windowController;
 }
 
 // NSApplicationDelegate Protocol Delegate Methods

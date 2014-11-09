@@ -1,15 +1,15 @@
 //
-//  MainWindowController.m
+//  SBWindowController.m
 //  Binspect
 //
 //  Created by Joe Savage on 24/10/2014.
 //  Copyright (c) 2014 Joe Savage. All rights reserved.
 //
 
-#import "WindowController.h"
-#import "CurveView.h"
+#import "SBWindowController.h"
+#import "SBCurveView.h"
 
-@implementation WindowController
+@implementation SBWindowController
 
 // TODO: Possibly move this and some other things into their own file (static class or whatever)
 + (CGFloat) calculateShannonEntropy:(NSData *)data fromIndex:(long)index forBlockSize:(long)blocksize {
@@ -97,22 +97,22 @@
 	[_curvePanelProgressIndicator startAnimation:self];
 	switch (_curveTypeSegmentedControl.selectedSegment) {
 		case 0:
-			[_curveView setCurveType:CurveViewTypeHilbert];
+			[_curveView setCurveType:SBCurveViewTypeHilbert];
 			break;
 		case 1:
-			[_curveView setCurveType:CurveViewTypeZigzag];
+			[_curveView setCurveType:SBCurveViewTypeZigzag];
 			break;
 	}
 	
 	switch (_curveColouringSegmentedControl.selectedSegment) {
 		case 0:
-			[_curveView setCurveColourMode:CurveViewColourModeSimilarity];
+			[_curveView setCurveColourMode:SBCurveViewColourModeSimilarity];
 			break;
 		case 1:
-			[_curveView setCurveColourMode:CurveViewColourModeEntropy];
+			[_curveView setCurveColourMode:SBCurveViewColourModeEntropy];
 			break;
 		case 2:
-			[_curveView setCurveColourMode:CurveViewColourModeStructural];
+			[_curveView setCurveColourMode:SBCurveViewColourModeStructural];
 	}
 	
 	[_curveView redraw];
@@ -131,7 +131,7 @@
 		fileName = [_filePath componentsSeparatedByString:@"/"].lastObject;
 		fileSize = [NSString stringWithFormat:@"%lu bytes", _data.length];
 		fileSizeHex = [NSString stringWithFormat:@"(0x%06lX)", _data.length];
-		fileEntropy = [NSString stringWithFormat:@"%.02f%%", [WindowController calculateShannonEntropy:_data fromIndex:0 forBlockSize:_data.length]*100];
+		fileEntropy = [NSString stringWithFormat:@"%.02f%%", [SBWindowController calculateShannonEntropy:_data fromIndex:0 forBlockSize:_data.length]*100];
 	}
 	
 	_fileNameLabel.stringValue = fileName;

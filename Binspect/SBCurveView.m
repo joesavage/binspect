@@ -1,15 +1,15 @@
 //
-//  CurveView.m
+//  SBCurveView.m
 //  Binspect
 //
 //  Created by Joe Savage on 26/10/2014.
 //  Copyright (c) 2014 Joe Savage. All rights reserved.
 //
 
-#import "CurveView.h"
+#import "SBCurveView.h"
 #include <OpenGL/gl.h>
 
-@implementation CurveView
+@implementation SBCurveView
 
 // The following three Hilbert curve algorithms are based on those shown on Wikipedia.
 // http://en.wikipedia.org/wiki/Hilbert_curve#Applications_and_mapping_algorithms
@@ -20,7 +20,7 @@
 		rotation.x = ((int)point.x & temporarySize) > 0;
 		rotation.y = ((int)point.y & temporarySize) > 0;
 		result += temporarySize * temporarySize * ((3 * (int)rotation.x) ^ (int)rotation.y);
-		[CurveView rotateHilbertCurveQuadrant:temporarySize by:rotation forPoint:&point];
+		[SBCurveView rotateHilbertCurveQuadrant:temporarySize by:rotation forPoint:&point];
 	}
 	
 	return result;
@@ -32,7 +32,7 @@
 	for (temporarySize = 1; temporarySize < size; temporarySize *= 2) {
 		rotation.x = 1 & (temporaryIndex / 2);
 		rotation.y = 1 & (temporaryIndex ^ (int)rotation.x);
-		[CurveView rotateHilbertCurveQuadrant:temporarySize by:rotation forPoint:&result];
+		[SBCurveView rotateHilbertCurveQuadrant:temporarySize by:rotation forPoint:&result];
 		result.x += temporarySize * (int)rotation.x;
 		result.y += temporarySize * (int)rotation.y;
 		temporaryIndex /= 4;
@@ -109,24 +109,24 @@
 	_mousePosition.x = (unsigned long)(_mousePosition.x / _pointSize);
 	_mousePosition.y = (unsigned long)((_mousePosition.y - 2.5f + _scrollPosition) / _pointSize); // The 2.5f is a little accuracy adjustment factor. I assume for the little top border that the NSOpenGLView seems to have.
 	
-	if (_type == CurveViewTypeHilbert) {
+	if (_type == SBCurveViewTypeHilbert) {
 		unsigned long hilbertWidth = [self calculateHilbertChunkWidth:maxWidth],
 					  chunkArea    = (hilbertWidth * hilbertWidth),
 					  chunkIndex   = (unsigned long)(_mousePosition.y / hilbertWidth);
 		CGPoint hilbertPoint = _mousePosition;
 		hilbertPoint.y = (unsigned long)_mousePosition.y % hilbertWidth;
-		index = chunkIndex*chunkArea + [CurveView getHilbertCurveIndex:chunkArea forCoords:hilbertPoint];
-	} else if (_type == CurveViewTypeZigzag) {
-		index = [CurveView getZigzagCurveIndex:maxWidth forCoords:_mousePosition];
+		index = chunkIndex*chunkArea + [SBCurveView getHilbertCurveIndex:chunkArea forCoords:hilbertPoint];
+	} else if (_type == SBCurveViewTypeZigzag) {
+		index = [SBCurveView getZigzagCurveIndex:maxWidth forCoords:_mousePosition];
 	}
 	
 	return index;
 }
 
-- (void) setCurveType:(CurveViewType)type {
+- (void) setCurveType:(SBCurveViewType)type {
 	_type = type;
 	switch(_type) {
-		case CurveViewTypeHilbert:
+		case SBCurveViewTypeHilbert:
 			{
 				// Spit the curve into chunks to be stacked on top of each other for rectangular viewing.
 				//
@@ -148,7 +148,7 @@
 					if (chunk + 1 == chunks) currentChunkArea = _data.length - lastPointCovered;
 					for(unsigned long i = 0; i < currentChunkArea; i++) {
 						unsigned long index = lastPointCovered + i;
-						CGPoint point = [CurveView getHilbertCurveCoordinates:(chunkWidth * chunkWidth) forIndex:i];
+						CGPoint point = [SBCurveView getHilbertCurveCoordinates:(chunkWidth * chunkWidth) forIndex:i];
 						
 						point.x = (point.x * _pointSize) + (_pointSize / 2.0f);
 						point.y = (point.y * _pointSize) + (_pointSize / 2.0f);
@@ -161,10 +161,10 @@
 				}
 				break;
 			}
-		case CurveViewTypeZigzag:
+		case SBCurveViewTypeZigzag:
 			{
 				for(int i = 0; i < _data.length; i++) {
-					CGPoint point = [CurveView getZigzagCurveCoordinates:(_viewBounds.width / _pointSize) forIndex:i];
+					CGPoint point = [SBCurveView getZigzagCurveCoordinates:(_viewBounds.width / _pointSize) forIndex:i];
 					point.x = (point.x * _pointSize) + (_pointSize / 2.0f);
 					point.y = (point.y * _pointSize) + (_pointSize / 2.0f);
 					
@@ -177,10 +177,10 @@
 			}
 	}
 }
-- (void) setCurveColourMode:(CurveViewColourMode)mode {
+- (void) setCurveColourMode:(SBCurveViewColourMode)mode {
 	_colourMode = mode;
 	switch (_colourMode) {
-		case CurveViewColourModeSimilarity:
+		case SBCurveViewColourModeSimilarity:
 			{
 				// Similarity colour palette, generated through a Hilbert-order traversal of the RGB colour cube - more
 				// specifically through the use of Aldo Cortesi's scurve swatch Python utility. This palette idea
@@ -195,7 +195,7 @@
 				}
 			}
 			break;
-		case CurveViewColourModeEntropy:
+		case SBCurveViewColourModeEntropy:
 			{
 				// TODO: Clean up and properly comment this whole section
 				unsigned long blocksize = 128;
@@ -257,7 +257,7 @@
 				}
 			}
 			break;
-		case CurveViewColourModeStructural:
+		case SBCurveViewColourModeStructural:
 			{
 				// Alternative: absolute cycle size: 128 * 128 * 4 => can be difficult to see distinctions at different zoom sizes.
 				const unsigned int colourRepeatCycleSize = (_viewBounds.width / _pointSize) * (_viewBounds.width / _pointSize) * 2;
@@ -287,7 +287,7 @@
 				[palette release];
 			}
 			break;
-		case CurveViewColourModeRandom:
+		case SBCurveViewColourModeRandom:
 			for(int i = 0; i < (3 * _data.length); i++)
 				_colourArray[i] = rand() / (float)RAND_MAX;
 			break;
@@ -314,8 +314,8 @@
 	glColorPointer(3, GL_FLOAT, 0, _colourArray);
 	
 	
-	[self setCurveType:CurveViewTypeBlank];
-	[self setCurveColourMode:CurveViewColourModeBlank];
+	[self setCurveType:SBCurveViewTypeBlank];
+	[self setCurveColourMode:SBCurveViewColourModeBlank];
 	[self setCurveType:_type];
 	[self setCurveColourMode:_colourMode];
 	[self redraw];
@@ -350,7 +350,7 @@
 	
 	glTranslatef(0.0f, -_scrollPosition, 0.0f); // Translate by the distance scrolled.
 	
-	if (_type != CurveViewTypeBlank) { // Only draw if we're not in the blank curve mode
+	if (_type != SBCurveViewTypeBlank) { // Only draw if we're not in the blank curve mode
 		// Draw only visible bytes (Hilbert makes this more difficult to calculate, so draw a bit extra both sides)
 		GLsizei sqArea = (_viewBounds.width / _pointSize) * (_viewBounds.width / _pointSize),
 			 drawCount = (_viewBounds.height / _pointSize) * (_viewBounds.width / _pointSize) + sqArea,
@@ -389,8 +389,8 @@
 	_data = nil;
 	_scrollPosition = 0.0f;
 	[self setZoomLevel:1];
-	[self setCurveType:CurveViewTypeBlank];
-	[self setCurveColourMode:CurveViewColourModeBlank];
+	[self setCurveType:SBCurveViewTypeBlank];
+	[self setCurveColourMode:SBCurveViewColourModeBlank];
 }
 
 - (BOOL) isValidZoomLevel:(NSInteger)zoomLevel {
@@ -422,7 +422,7 @@
 		[_delegate curveViewMouseMovedToInvalidIndex];
 }
 
-- (void) clearState { // TODO: I don't like this method. At the very least, rename it or something.
+- (void) clearState {
 	[_data release];
 	_data = nil;
 	_scrollPosition = 0.0f;

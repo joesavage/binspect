@@ -1,15 +1,15 @@
 //
-//  AppDelegate.m
+//  SBAppDelegate.m
 //  Binspect
 //
 //  Created by Joe Savage on 18/10/2014.
 //  Copyright (c) 2014 Joe Savage. All rights reserved.
 //
 
-#import "AppDelegate.h"
-#import "WindowController.h"
+#import "SBAppDelegate.h"
+#import "SBWindowController.h"
 
-@implementation AppDelegate
+@implementation SBAppDelegate
 
 - (BOOL) applicationShouldHandleReopen:(NSApplication *)application hasVisibleWindows:(BOOL)hasVisibleWindows {
 		if (!hasVisibleWindows) [_windowController initiateWindowAction];
@@ -17,7 +17,7 @@
 }
 
 - (void) applicationDidFinishLaunching:(NSNotification *)notification {
-		_windowController = [[WindowController alloc] init];
+		_windowController = [[SBWindowController alloc] init];
 		[_windowController initiateWindowAction];
 }
 

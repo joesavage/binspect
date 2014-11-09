@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="WindowController">
+        <customObject id="-2" userLabel="File's Owner" customClass="SBWindowController">
             <connections>
                 <outlet property="_curveColouringSegmentedControl" destination="cMO-nR-gHd" id="YUM-lY-vUt"/>
                 <outlet property="_curvePanelProgressIndicator" destination="ycw-Yr-glK" id="YZR-qd-xMA"/>
@@ -216,7 +216,7 @@
                             </scrollView>
                         </subviews>
                     </visualEffectView>
-                    <openGLView fixedFrame="YES" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CBw-Ea-AEE" customClass="CurveView">
+                    <openGLView fixedFrame="YES" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CBw-Ea-AEE" customClass="SBCurveView">
                         <rect key="frame" x="0.0" y="0.0" width="512" height="680"/>
                         <connections>
                             <outlet property="_delegate" destination="-2" id="nuL-5f-o3q"/>
