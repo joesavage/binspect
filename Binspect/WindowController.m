@@ -243,9 +243,23 @@
 
 // A method to handle the action sent from the 'Copy' command in the menu bar
 - (IBAction) copy:(id)sender {
+	// If there is no current selected region, we don't want to do any copying.
+	if (_selectionRegionStartIndex == _selectionRegionEndIndex) return;
+	
 	NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
 	[pasteboard clearContents];
-	NSString *copiedString = @"Copied!"; // TODO: Copy selected hex view data to clipboard
+	
+	// For each row in the hex view table, add that row's data (in a pretty format) to the string we'll change the clipboard to
+	NSString *copiedString = @"";
+	unsigned long rowMemoryAddress = _selectionRegionStartIndex;
+	for(NSInteger row = 0; row < [_tableView numberOfRows]; row++) {
+		NSTextField *firstColumnTextField = [[_tableView viewAtColumn:0 row:row makeIfNecessary:YES] textField],
+		            *secondColumnTextField = [[_tableView viewAtColumn:1 row:row makeIfNecessary:YES] textField];
+		
+		copiedString = [copiedString stringByAppendingFormat:@"%06lX | %@   %@\n", rowMemoryAddress, [firstColumnTextField stringValue], [secondColumnTextField stringValue]];
+		rowMemoryAddress += 8;
+	}
+	
 	[pasteboard setString:copiedString forType:NSStringPboardType];
 }
 
