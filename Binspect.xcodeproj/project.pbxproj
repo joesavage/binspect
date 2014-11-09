@@ -65,6 +65,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D80ADA981A0FCDEA001A8114 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D8B8DBF31A06B48500EB53B7 /* ColourModeSimilarityPalette.c */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		D859DAA919F1E39B00137408 = {
 			isa = PBXGroup;
 			children = (
@@ -95,8 +103,8 @@
 				D87F5C3219FAAA4A00E31BA6 /* SBWindowController.m */,
 				D816EE6C19FC908F00102667 /* SBCurveView.h */,
 				D816EE6D19FC908F00102667 /* SBCurveView.m */,
-				D8B8DBF31A06B48500EB53B7 /* ColourModeSimilarityPalette.c */,
 				D8F847A01A0D1D9400FA7B5F /* Nibs */,
+				D80ADA981A0FCDEA001A8114 /* Resources */,
 			);
 			path = Binspect;
 			sourceTree = "<group>";
