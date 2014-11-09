@@ -256,4 +256,8 @@
 	[_curveView redraw];
 }
 
+- (IBAction) reload:(id)sender {
+	[self openFile:_filePath];
+}
+
 @end

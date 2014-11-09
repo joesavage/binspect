@@ -254,6 +254,9 @@
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
                         </button>
+                        <connections>
+                            <action selector="reload:" target="-1" id="DKu-2a-UNa"/>
+                        </connections>
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="067708FC-B461-4BC2-9681-B71653155F6E" label="" paletteLabel="" id="0rb-sX-u82">
                         <nil key="toolTip"/>

@@ -76,7 +76,11 @@
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem title="Reload" keyEquivalent="r" id="QnJ-6k-KXf"/>
+                            <menuItem title="Reload" keyEquivalent="r" id="QnJ-6k-KXf">
+                                <connections>
+                                    <action selector="reload:" target="-1" id="a26-9S-pJG"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="m54-Is-iLE"/>
                             <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG">
                                 <connections>

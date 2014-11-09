@@ -42,5 +42,8 @@
 
 // First-responder event handlers
 - (IBAction) copy:(id)sender;
+- (IBAction) zoomIn:(id)sender;
+- (IBAction) zoomOut:(id)sender;
+- (IBAction) reload:(id)sender;
 
 @end
