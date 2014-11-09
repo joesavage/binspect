@@ -11,7 +11,7 @@
 
 @interface SBWindowController : NSWindowController <NSTableViewDelegate, NSTableViewDataSource, SBCurveViewDelegate>
 {
-	         unsigned long       _selectionRegionStartIndex, _selectionRegionEndIndex;
+	         NSUInteger          _selectionRegionStartIndex, _selectionRegionEndIndex;
 	         NSString            *_filePath;
 	         NSData              *_data;
 	         NSInteger           _zoomLevel, _hoverRegionSize;

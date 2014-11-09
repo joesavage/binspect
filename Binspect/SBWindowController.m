@@ -11,20 +11,20 @@
 
 @implementation SBWindowController
 
-+ (CGFloat) calculateShannonEntropy:(NSData *)data fromIndex:(long)index forBlockSize:(long)blocksize {
++ (CGFloat) calculateShannonEntropy:(NSData *)data fromIndex:(NSInteger)index forBlockSize:(NSInteger)blocksize {
 	if (data.length < blocksize) blocksize = data.length;
 	
-	const unsigned char *bytes = (const unsigned char*)data.bytes;
-	long halfBlockSize = (blocksize / 2),
-	     startIndex = index - halfBlockSize;
+	const unsigned char *bytes = (const unsigned char *)data.bytes;
+	NSInteger halfBlockSize = (blocksize / 2),
+	          startIndex = index - halfBlockSize;
 	
 	if (index < halfBlockSize) startIndex = 0;
 	else if (index > (data.length - 1 - halfBlockSize)) startIndex = data.length - 1 - halfBlockSize;
 	
 	NSMutableDictionary *frequencies = [[NSMutableDictionary alloc] init];
-	for(unsigned long i = startIndex; i < startIndex + blocksize; i++) {
+	for(NSUInteger i = startIndex; i < startIndex + blocksize; i++) {
 		NSNumber *key = [NSNumber numberWithUnsignedChar:bytes[i]];
-		unsigned long freq = [[frequencies objectForKey:key] integerValue] + 1;
+		NSUInteger freq = [[frequencies objectForKey:key] integerValue] + 1;
 		[frequencies setObject:[NSNumber numberWithUnsignedLong:freq] forKey:key];
 	}
 	
@@ -63,7 +63,7 @@
 
 - (BOOL) openFile:(NSString *)filename {
 	NSData *data = [NSData dataWithContentsOfFile:filename]; // Note: The 'NSMappedRead' option might be useful for big files?
-	if (data == nil || data.length >= INT_MAX) return NO;
+	if (data == nil || data.length >= NSIntegerMax) return NO;
 	
 	[[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:filename]];
 	_filePath = [filename retain];
@@ -220,9 +220,9 @@
 	[_tableView reloadData];
 }
 - (void) curveViewMouseMovedToIndex:(NSInteger)index {
-	unsigned long regionStartIndex = index,
-	              regionEndIndex = index + _hoverRegionSize,
-				  maximumDataIndex = _data.length - 1;
+	NSUInteger regionStartIndex = index,
+			   regionEndIndex = index + _hoverRegionSize,
+			   maximumDataIndex = _data.length - 1;
 	
 	if (regionEndIndex > maximumDataIndex) {
 		regionStartIndex = maximumDataIndex - _hoverRegionSize;
@@ -247,7 +247,7 @@
 	
 	// For each row in the hex view table, add that row's data (in a pretty format) to the string we'll change the clipboard to
 	NSString *copiedString = @"";
-	unsigned long rowMemoryAddress = _selectionRegionStartIndex;
+	NSUInteger rowMemoryAddress = _selectionRegionStartIndex;
 	for(NSInteger row = 0; row < _tableView.numberOfRows; row++) {
 		NSTextField *firstColumnTextField = [[_tableView viewAtColumn:0 row:row makeIfNecessary:YES] textField],
 		            *secondColumnTextField = [[_tableView viewAtColumn:1 row:row makeIfNecessary:YES] textField];

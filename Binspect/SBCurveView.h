@@ -8,13 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 
-typedef NS_ENUM(NSInteger, SBCurveViewType) {
+typedef NS_ENUM(NSUInteger, SBCurveViewType) {
 	SBCurveViewTypeBlank,
 	SBCurveViewTypeHilbert,
 	SBCurveViewTypeZigzag
 };
 
-typedef NS_ENUM(NSInteger, SBCurveViewColourMode) {
+typedef NS_ENUM(NSUInteger, SBCurveViewColourMode) {
 	SBCurveViewColourModeBlank,
 	SBCurveViewColourModeSimilarity,
 	SBCurveViewColourModeEntropy,
@@ -48,6 +48,6 @@ typedef NS_ENUM(NSInteger, SBCurveViewColourMode) {
 - (void) drawRect:(NSRect)bounds;
 - (void) redraw;
 - (void) clearState;
-- (unsigned long) getIndexOfCurrentlyHoveredByte;
+- (NSUInteger) getIndexOfCurrentlyHoveredByte;
 
 @end

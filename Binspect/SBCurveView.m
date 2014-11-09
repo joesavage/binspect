@@ -13,9 +13,9 @@
 
 // The following three Hilbert curve algorithms are based on those shown on Wikipedia.
 // http://en.wikipedia.org/wiki/Hilbert_curve#Applications_and_mapping_algorithms
-+ (unsigned long) getHilbertCurveIndex:(unsigned long)size forCoords:(CGPoint)point {
++ (NSUInteger) getHilbertCurveIndex:(NSUInteger)size forCoords:(CGPoint)point {
 	CGPoint rotation;
-	unsigned long result = 0, temporarySize;
+	NSUInteger result = 0, temporarySize;
 	for (temporarySize = size / 2; temporarySize > 0; temporarySize /= 2) {
 		rotation.x = ((int)point.x & temporarySize) > 0;
 		rotation.y = ((int)point.y & temporarySize) > 0;
@@ -26,9 +26,9 @@
 	return result;
 }
 
-+ (CGPoint) getHilbertCurveCoordinates:(unsigned long)size forIndex:(unsigned long)index {
++ (CGPoint) getHilbertCurveCoordinates:(NSUInteger)size forIndex:(NSUInteger)index {
 	CGPoint rotation, result = CGPointMake(0, 0);
-	unsigned long temporarySize, temporaryIndex = index;
+	NSUInteger temporarySize, temporaryIndex = index;
 	for (temporarySize = 1; temporarySize < size; temporarySize *= 2) {
 		rotation.x = 1 & (temporaryIndex / 2);
 		rotation.y = 1 & (temporaryIndex ^ (int)rotation.x);
@@ -41,7 +41,7 @@
 	return result;
 }
 
-+ (void) rotateHilbertCurveQuadrant:(unsigned long)size by:(CGPoint)rotation forPoint:(CGPoint *)point {
++ (void) rotateHilbertCurveQuadrant:(NSUInteger)size by:(CGPoint)rotation forPoint:(CGPoint *)point {
 	if (rotation.y == 0) {
 		if (rotation.x == 1) {
 			point->x = (size - 1) - point->x;
@@ -55,17 +55,17 @@
 	}
 }
 
-+ (unsigned long) getZigzagCurveIndex:(unsigned long)width forCoords:(CGPoint)point {
-	unsigned long result, rowNumber = point.y;
++ (NSUInteger) getZigzagCurveIndex:(NSUInteger)width forCoords:(CGPoint)point {
+	NSUInteger result, rowNumber = point.y;
 	bool oddRow = (rowNumber % 2 == 1);
 	result = (point.y * width) + (oddRow ? (width - 1) - point.x : point.x);
 	
 	return result;
 }
 
-+ (CGPoint) getZigzagCurveCoordinates:(unsigned long)width forIndex:(unsigned long)index {
++ (CGPoint) getZigzagCurveCoordinates:(NSUInteger)width forIndex:(NSUInteger)index {
 	CGPoint result = CGPointMake(0, 0);
-	unsigned long rowNumber = index / width;
+	NSUInteger rowNumber = index / width;
 	bool oddRow = (rowNumber % 2 == 1);
 	result.x = index % width;
 	result.y = rowNumber;
@@ -74,9 +74,9 @@
 	return result;
 }
 
-- (unsigned long) calculateHilbertChunkWidth:(unsigned long)maxWidth {
+- (NSUInteger) calculateHilbertChunkWidth:(NSUInteger)maxWidth {
 	// Calculate the exact ideal chunk width(/height), and round it up.
-	unsigned long chunkWidth = ceil(sqrt(_data.length));
+	NSUInteger chunkWidth = ceil(sqrt(_data.length));
 	
 	// Round up to the next highest power of 2 (as required for our Hilbert usage)
 	chunkWidth = pow(2, ceil(log2(chunkWidth)));
@@ -95,19 +95,19 @@
 	return chunkWidth;
 }
 
-- (unsigned long) getIndexOfCurrentlyHoveredByte {
-	unsigned long index = 0,
+- (NSUInteger) getIndexOfCurrentlyHoveredByte {
+	NSUInteger index = 0,
 			   maxWidth = _viewBounds.width / _pointSize;
 	
-	_mousePosition.x = (unsigned long)(_mousePosition.x / _pointSize);
-	_mousePosition.y = (unsigned long)((_mousePosition.y - 2.5f + _scrollPosition) / _pointSize); // The 2.5f is a little accuracy adjustment factor. I assume for the little top border that the NSOpenGLView seems to have.
+	_mousePosition.x = (NSUInteger)(_mousePosition.x / _pointSize);
+	_mousePosition.y = (NSUInteger)((_mousePosition.y - 2.5f + _scrollPosition) / _pointSize); // The 2.5f is a little accuracy adjustment factor. I assume for the little top border that the NSOpenGLView seems to have.
 	
 	if (_type == SBCurveViewTypeHilbert) {
-		unsigned long hilbertWidth = [self calculateHilbertChunkWidth:maxWidth],
-					  chunkArea    = (hilbertWidth * hilbertWidth),
-					  chunkIndex   = (unsigned long)(_mousePosition.y / hilbertWidth);
+		NSUInteger hilbertWidth = [self calculateHilbertChunkWidth:maxWidth],
+				   chunkArea    = (hilbertWidth * hilbertWidth),
+				   chunkIndex   = (NSUInteger)(_mousePosition.y / hilbertWidth);
 		CGPoint hilbertPoint = _mousePosition;
-		hilbertPoint.y = (unsigned long)_mousePosition.y % hilbertWidth;
+		hilbertPoint.y = (NSUInteger)_mousePosition.y % hilbertWidth;
 		index = chunkIndex*chunkArea + [SBCurveView getHilbertCurveIndex:chunkArea forCoords:hilbertPoint];
 	} else if (_type == SBCurveViewTypeZigzag) {
 		index = [SBCurveView getZigzagCurveIndex:maxWidth forCoords:_mousePosition];
@@ -130,17 +130,17 @@
 				// In fact, if _pointSize is not of this type then chunking makes the visualisation somewhat ugly.
 				// I wouldn't recommend using this chunking method (and instead enabling horizontal scrolling
 				// of a square curve) for _pointSize values which are not of this type.
-				unsigned long maxWidth   = _viewBounds.width / _pointSize,
-							  chunkWidth = [self calculateHilbertChunkWidth:maxWidth],
-								  chunks = ceilf((float)_data.length / (float)(maxWidth * maxWidth));
+				NSUInteger maxWidth = _viewBounds.width / _pointSize,
+						   chunkWidth = [self calculateHilbertChunkWidth:maxWidth],
+						   chunks = ceilf((float)_data.length / (float)(maxWidth * maxWidth));
 				
 				// Set the vertex array values for each chunk
-				for(int chunk = 0; chunk < chunks; chunk++) {
-					unsigned long currentChunkArea = chunkWidth * chunkWidth,
-								  lastPointCovered = chunkWidth * chunkWidth * chunk;
+				for(NSUInteger chunk = 0; chunk < chunks; chunk++) {
+					NSUInteger currentChunkArea = chunkWidth * chunkWidth,
+							   lastPointCovered = chunkWidth * chunkWidth * chunk;
 					if (chunk + 1 == chunks) currentChunkArea = _data.length - lastPointCovered;
-					for(unsigned long i = 0; i < currentChunkArea; i++) {
-						unsigned long index = lastPointCovered + i;
+					for(NSUInteger i = 0; i < currentChunkArea; i++) {
+						NSUInteger index = lastPointCovered + i;
 						CGPoint point = [SBCurveView getHilbertCurveCoordinates:(chunkWidth * chunkWidth) forIndex:i];
 						
 						point.x = (point.x * _pointSize) + (_pointSize / 2.0f);
@@ -156,7 +156,7 @@
 			}
 		case SBCurveViewTypeZigzag:
 			{
-				for(int i = 0; i < _data.length; i++) {
+				for(NSUInteger i = 0; i < _data.length; i++) {
 					CGPoint point = [SBCurveView getZigzagCurveCoordinates:(_viewBounds.width / _pointSize) forIndex:i];
 					point.x = (point.x * _pointSize) + (_pointSize / 2.0f);
 					point.y = (point.y * _pointSize) + (_pointSize / 2.0f);
@@ -180,8 +180,8 @@
 				// itself was heavily inspired by the work of Cortesi.
 				#include "ColourModeSimilarityPalette.c"
 				
-				const unsigned char *bytes = (const unsigned char*)(_data.bytes);
-				for(int i = 0; i < _data.length; i++) {
+				const unsigned char *bytes = (const unsigned char *)(_data.bytes);
+				for(NSInteger i = 0; i < _data.length; i++) {
 					_colourArray[(3 * i)] = palette[(3 * bytes[i])];
 					_colourArray[(3 * i) + 1] = palette[(3 * bytes[i]) + 1];
 					_colourArray[(3 * i) + 2] = palette[(3 * bytes[i]) + 2];
@@ -191,27 +191,27 @@
 		case SBCurveViewColourModeEntropy:
 			{
 				// TODO: Clean up and properly comment this whole section
-				unsigned long blocksize = 128;
+				NSUInteger blocksize = 128;
 				if (_data.length < blocksize) blocksize = _data.length;
 				
-				long halfBlockSize = (blocksize / 2), previousStartIndex = 0;
+				NSInteger halfBlockSize = (blocksize / 2), previousStartIndex = 0;
 				double logBlockSize = log(blocksize);
 				
-				unsigned long frequencies[256] = {0};
+				NSUInteger frequencies[256] = {0};
 				double entropy = 0.0f;
-				for(long i = 0; i < _data.length; i++) {
-					const unsigned char *bytes = (const unsigned char*)(_data.bytes);
-					long startIndex    = i - halfBlockSize;
+				for(NSInteger i = 0; i < _data.length; i++) {
+					const unsigned char *bytes = (const unsigned char *)(_data.bytes);
+					NSInteger startIndex    = i - halfBlockSize;
 					
 					if (i < halfBlockSize) startIndex = 0;
 					else if (i > (_data.length - 1 - halfBlockSize)) startIndex = _data.length - 1 - halfBlockSize;
 					
 					if (i == 0) {
-						for(unsigned long j = startIndex; j < startIndex + blocksize; j++)
+						for(NSUInteger j = startIndex; j < startIndex + blocksize; j++)
 							frequencies[bytes[j]]++;
 						
 						// Calculate Shannon Entropy
-						for(unsigned int i = 0; i < 256; i++) {
+						for(NSUInteger i = 0; i < 256; i++) {
 							if (frequencies[i] == 0) continue;
 							double p = (double)frequencies[i] / (double)blocksize;
 							entropy -= (p * (log(p) / logBlockSize));
@@ -253,25 +253,25 @@
 		case SBCurveViewColourModeStructural:
 			{
 				// Alternative: absolute cycle size: 128 * 128 * 4 => can be difficult to see distinctions at different zoom sizes.
-				const unsigned int colourRepeatCycleSize = (_viewBounds.width / _pointSize) * (_viewBounds.width / _pointSize) * 2;
+				const NSUInteger colourRepeatCycleSize = (_viewBounds.width / _pointSize) * (_viewBounds.width / _pointSize) * 2;
 				bool repeatingPalette = (_data.length > colourRepeatCycleSize);
 				NSMutableArray *palette = [[NSMutableArray alloc] init];
 				NSColorSpace *rgbSpace = [NSColorSpace sRGBColorSpace];
-				for(int i = 0; i < _data.length; i++) {
+				for(NSUInteger i = 0; i < _data.length; i++) {
 					float percentageComplete = (float)i / (float)_data.length;
 					float hue = percentageComplete;
 					
 					if (repeatingPalette) hue = (float)i / (float)colourRepeatCycleSize;
 					if (repeatingPalette && hue > 1.0f) break;
 					
-					if (hue > 1.0f) hue = (float)hue - (int)hue;
+					if (hue > 1.0f) hue = (float)hue - (NSUInteger)hue;
 					NSColor *colour = [NSColor colorWithCalibratedHue:hue saturation:0.9f brightness:1.0f alpha:1.0f];
 					[colour colorUsingColorSpace:rgbSpace];
 					[palette addObject:colour];
 				}
 				
-				for(int i = 0; i < _data.length; i++) {
-					int paletteIndex = i;
+				for(NSUInteger i = 0; i < _data.length; i++) {
+					NSUInteger paletteIndex = i;
 					if (repeatingPalette) paletteIndex = i % colourRepeatCycleSize;
 					_colourArray[(i * 3)] = [[palette objectAtIndex:paletteIndex] redComponent];
 					_colourArray[(i * 3) + 1] = [[palette objectAtIndex:paletteIndex] greenComponent];
@@ -281,7 +281,7 @@
 			}
 			break;
 		case SBCurveViewColourModeRandom:
-			for(int i = 0; i < (3 * _data.length); i++)
+			for(NSUInteger i = 0; i < (3 * _data.length); i++)
 				_colourArray[i] = rand() / (float)RAND_MAX;
 			break;
 	}
@@ -357,8 +357,8 @@
 }
 
 - (void) setScrollPosition:(float)position {
-	unsigned long minScrollPosition = 0,
-				  maxScrollPosition = ceilf(_data.length / (_viewBounds.width / _pointSize)) * _pointSize;
+	NSUInteger minScrollPosition = 0,
+			   maxScrollPosition = ceilf(_data.length / (_viewBounds.width / _pointSize)) * _pointSize;
 	if (maxScrollPosition >= _viewBounds.height / 4.0f) maxScrollPosition -= (_viewBounds.height / 4.0f);
 	if (position < minScrollPosition) _scrollPosition = minScrollPosition;
 	else if (position > maxScrollPosition) _scrollPosition = maxScrollPosition;
@@ -410,7 +410,7 @@
 	_mousePosition = [self convertPoint:event.locationInWindow fromView:nil];
 	_mousePosition.y = _viewBounds.height - _mousePosition.y;
 	
-	unsigned long currentHoveredByteIndex = [self getIndexOfCurrentlyHoveredByte];
+	NSUInteger currentHoveredByteIndex = [self getIndexOfCurrentlyHoveredByte];
 	if (currentHoveredByteIndex < _data.length)
 		[_delegate curveViewMouseMovedToIndex:currentHoveredByteIndex];
 	else
