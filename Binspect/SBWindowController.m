@@ -260,15 +260,17 @@
 }
 
 - (IBAction) zoomIn:(id)sender {
-	if ([_curveView isValidZoomLevel:_zoomLevel + 1]) _zoomLevel++;
-	[_curveView setZoomLevel:_zoomLevel];
-	[_curveView redraw];
+	if ([_curveView isValidZoomLevel:_zoomLevel + 1]) {
+		[_curveView setZoomLevel:++_zoomLevel];
+		[_curveView redraw];
+	}
 }
 
 - (IBAction) zoomOut:(id)sender {
-	if ([_curveView isValidZoomLevel:_zoomLevel - 1]) _zoomLevel--;
-	[_curveView setZoomLevel:_zoomLevel];
-	[_curveView redraw];
+	if ([_curveView isValidZoomLevel:_zoomLevel - 1]) {
+		[_curveView setZoomLevel:--_zoomLevel];
+		[_curveView redraw];
+	}
 }
 
 - (IBAction) reload:(id)sender {
