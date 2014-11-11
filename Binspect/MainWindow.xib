@@ -14,9 +14,9 @@
                 <outlet property="_fileNameLabel" destination="6Kz-Dt-vgm" id="mAz-67-Ynb"/>
                 <outlet property="_fileSizeHexLabel" destination="DIh-fg-xpr" id="20v-Gf-zhI"/>
                 <outlet property="_fileSizeLabel" destination="afk-aD-aaS" id="UK4-3E-O9n"/>
+                <outlet property="_hexTableView" destination="dAv-c4-1qJ" id="zNl-Ce-jzc"/>
                 <outlet property="_hoveredMemoryAddressLabel" destination="8oX-ld-Ir8" id="Kjk-26-hr4"/>
                 <outlet property="_hoveredRegionMemoryAddressRangeLabel" destination="pGs-dy-gKz" id="yyD-1t-upv"/>
-                <outlet property="_tableView" destination="dAv-c4-1qJ" id="cTL-Z1-hBC"/>
                 <outlet property="window" destination="olO-85-8lA" id="mAy-3T-ede"/>
             </connections>
         </customObject>
@@ -219,7 +219,7 @@
                                     <rect key="frame" x="1" y="119" width="223" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="Xeh-Yu-Sfj">
+                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Xeh-Yu-Sfj">
                                     <rect key="frame" x="224" y="17" width="15" height="102"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>

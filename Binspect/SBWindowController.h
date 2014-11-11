@@ -21,7 +21,7 @@
 	IBOutlet NSProgressIndicator *_curvePanelProgressIndicator;
 	IBOutlet NSTextField         *_fileNameLabel, *_fileSizeLabel, *_fileSizeHexLabel, *_fileEntropyLabel;
 	IBOutlet NSTextField         *_hoveredMemoryAddressLabel, *_hoveredRegionMemoryAddressRangeLabel;
-	IBOutlet NSTableView         *_tableView;
+	IBOutlet NSTableView         *_hexTableView;
 }
 
 - (id) init;
@@ -33,7 +33,7 @@
 - (BOOL) openFile:(NSString *)filename;
 - (void) presentOpenDialog;
 - (void) changeSegmentedControl:(NSSegmentedControl *)segmentedControl toIndex:(NSInteger)index;
-- (void) updateLabels;
+- (void) updateFileLabels;
 - (void) initiateWindowAction;
 - (void) windowDidLoad;
 - (void) windowWillClose:(NSNotification *)notification;
