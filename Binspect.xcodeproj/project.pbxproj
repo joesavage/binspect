@@ -12,7 +12,6 @@
 		D859DABB19F1E39B00137408 /* SBAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D859DABA19F1E39B00137408 /* SBAppDelegate.m */; };
 		D859DABD19F1E39B00137408 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D859DABC19F1E39B00137408 /* Images.xcassets */; };
 		D859DAC019F1E39B00137408 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D859DABE19F1E39B00137408 /* MainMenu.xib */; };
-		D859DACC19F1E39C00137408 /* BinspectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D859DACB19F1E39C00137408 /* BinspectTests.m */; };
 		D87F5C3419FAAA4A00E31BA6 /* SBWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = D87F5C3219FAAA4A00E31BA6 /* SBWindowController.m */; };
 		D8A5E00A19FAD3AC00AC11D7 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8A5E00919FAD3AC00AC11D7 /* MainWindow.xib */; };
 		D8B8DBF41A06B48500EB53B7 /* ColourModeSimilarityPalette.c in Sources */ = {isa = PBXBuildFile; fileRef = D8B8DBF31A06B48500EB53B7 /* ColourModeSimilarityPalette.c */; };
@@ -39,8 +38,6 @@
 		D859DABC19F1E39B00137408 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D859DABF19F1E39B00137408 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		D859DAC519F1E39C00137408 /* BinspectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BinspectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		D859DACA19F1E39C00137408 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D859DACB19F1E39C00137408 /* BinspectTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BinspectTests.m; sourceTree = "<group>"; };
 		D87F5C3119FAAA4A00E31BA6 /* SBWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBWindowController.h; sourceTree = "<group>"; usesTabs = 1; };
 		D87F5C3219FAAA4A00E31BA6 /* SBWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBWindowController.m; sourceTree = "<group>"; usesTabs = 1; };
 		D8A5E00919FAD3AC00AC11D7 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
@@ -78,7 +75,6 @@
 			children = (
 				D859DAB419F1E39B00137408 /* Binspect */,
 				D859DAB319F1E39B00137408 /* Products */,
-				D859DAC819F1E39C00137408 /* BinspectTests */,
 				D859DAB519F1E39B00137408 /* Supporting Files */,
 			);
 			sourceTree = "<group>";
@@ -117,23 +113,6 @@
 			);
 			name = "Supporting Files";
 			path = Binspect;
-			sourceTree = "<group>";
-		};
-		D859DAC819F1E39C00137408 /* BinspectTests */ = {
-			isa = PBXGroup;
-			children = (
-				D859DACB19F1E39C00137408 /* BinspectTests.m */,
-				D859DAC919F1E39C00137408 /* Supporting Files */,
-			);
-			path = BinspectTests;
-			sourceTree = SOURCE_ROOT;
-		};
-		D859DAC919F1E39C00137408 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				D859DACA19F1E39C00137408 /* Info.plist */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		D8F847A01A0D1D9400FA7B5F /* Nibs */ = {
@@ -257,7 +236,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D859DACC19F1E39C00137408 /* BinspectTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
