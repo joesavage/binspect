@@ -54,8 +54,7 @@ typedef NS_ENUM(NSUInteger, SBCurveViewColourMode) {
 - (void) setDataSource:(NSData *)data;
 - (void) prepareOpenGL;
 - (void) reshape;
-- (void) redraw;
-- (void) drawRect: (NSRect)boun;
+- (void) draw;
 - (void) setScrollPosition:(float)position;
 - (void) scrollWheel:(NSEvent *)event;
 - (BOOL) isValidZoomLevel:(NSInteger)zoomLevel;

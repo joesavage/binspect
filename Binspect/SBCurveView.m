@@ -11,6 +11,7 @@
 
 @implementation SBCurveView
 
+// A method invoked when an instance of the view has been loaded from its nib file
 - (void) awakeFromNib {
 	// Track mouse entering, exiting, and movement when our window is the key window
 	NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:self.bounds
@@ -28,12 +29,14 @@
 	[self setCurveColourMode:SBCurveViewColourModeBlank];
 }
 
+// A 'dealloc' method for the class
 - (void) dealloc {
 	[self clearState];
 	[super dealloc];
 }
 
-// The following three Hilbert curve algorithms are based on those shown on Wikipedia.
+// The following three static methods are based on those shown on Wikipedia to
+// convert to and from co-ordinates on 2D Hilbert curve and an index in a 1D array.
 // http://en.wikipedia.org/wiki/Hilbert_curve#Applications_and_mapping_algorithms
 + (NSUInteger) getHilbertCurveIndex:(NSUInteger)size forCoords:(CGPoint)point {
 	CGPoint rotation;
@@ -77,6 +80,8 @@
 	}
 }
 
+// The following two static methods are to convert to and from co-ordinates on a 2D Zigzag
+// curve and an index in a 1D array.
 + (NSUInteger) getZigzagCurveIndex:(NSUInteger)width forCoords:(CGPoint)point {
 	NSUInteger result, rowNumber = point.y;
 	bool oddRow = (rowNumber % 2 == 1);
@@ -96,6 +101,8 @@
 	return result;
 }
 
+// A method to calculate an appropriate Hilbert-curve width (and technically, height, since the
+// curves are square) based on the data length and a maximum width
 - (NSUInteger) calculateHilbertChunkWidth:(NSUInteger)maxWidth {
 	NSUInteger chunkWidth = ceil(sqrt(_data.length)); // Calculate the exact ideal chunk width(/height), and round it up.
 	chunkWidth = pow(2, ceil(log2(chunkWidth))); // Round up to the next highest power of 2 (as required for our Hilbert usage)
@@ -104,14 +111,18 @@
 	return chunkWidth;
 }
 
+// A method to get the index of the byte that the user is currenly hovering over in the view
 - (NSUInteger) getIndexOfCurrentlyHoveredByte {
 	NSUInteger index = 0,
 			   maxWidth = _viewBounds.width / _pointSize;
 	
+	// Adjust the mouse positions to our curve view grid scale, with some adjustments in Y for accuracy
 	_mousePosition.x = (NSUInteger)(_mousePosition.x / _pointSize);
-	_mousePosition.y = (NSUInteger)((_mousePosition.y - 2.5f + _scrollPosition) / _pointSize); // The 2.5f is a little accuracy adjustment factor. I assume for the little top border that the NSOpenGLView seems to have.
+	_mousePosition.y = (NSUInteger)((_mousePosition.y - 2.5f + _scrollPosition) / _pointSize);
 	
 	if (_type == SBCurveViewTypeHilbert) {
+		// For getting the hovered index on a Hilbert curve, the positions need to be 'un-chunked' to get
+		// the correct value from 'getHilbertCurveIndex: for Coords:' which expects a square curve
 		NSUInteger hilbertWidth = [self calculateHilbertChunkWidth:maxWidth],
 				   chunkArea    = (hilbertWidth * hilbertWidth),
 				   chunkIndex   = (NSUInteger)(_mousePosition.y / hilbertWidth);
@@ -125,6 +136,8 @@
 	return index;
 }
 
+// A method to set the curve type to a specific SBCurveViewType, re-generating the _vertexArray mapping of
+// bytes in the file to locations on screen
 - (void) setCurveType:(SBCurveViewType)type {
 	_type = type;
 	switch(_type) {
@@ -148,6 +161,9 @@
 					NSUInteger currentChunkArea = chunkWidth * chunkWidth,
 							   lastPointCovered = chunkWidth * chunkWidth * chunk;
 					if (chunk + 1 == chunks) currentChunkArea = _data.length - lastPointCovered;
+					
+					// For each byte in this chunk, set the position as determined by 'getHilbertCurveCoordinates: forIndex:',
+					// adjusting as appropriate for _pointSize, and for the Y position of this chunk
 					for(NSUInteger i = 0; i < currentChunkArea; i++) {
 						NSUInteger index = lastPointCovered + i;
 						CGPoint point = [SBCurveView getHilbertCurveCoordinates:(chunkWidth * chunkWidth) forIndex:i];
@@ -165,6 +181,8 @@
 			}
 		case SBCurveViewTypeZigzag:
 			{
+				// For each byte, set the position as determined by 'getZigzagCurveCoordinates: forIndex',
+				// adjusting as appropriate for _pointSize
 				for(NSUInteger i = 0; i < _data.length; i++) {
 					CGPoint point = [SBCurveView getZigzagCurveCoordinates:(_viewBounds.width / _pointSize) forIndex:i];
 					point.x = (point.x * _pointSize) + (_pointSize / 2.0f);
@@ -179,6 +197,9 @@
 			}
 	}
 }
+
+// A method to set the curve colouring mode to a specific SBCurveViewColourMode, re-generating the
+// _colourArray mapping of bytes in the file to colours
 - (void) setCurveColourMode:(SBCurveViewColourMode)mode {
 	_colourMode = mode;
 	switch (_colourMode) {
@@ -268,7 +289,8 @@
 		case SBCurveViewColourModeStructural:
 			{
 				// The cycle at which the structural colour pattern should repeat.
-				// [Alt: absolute cycle size: 128 * 128 * 4 => can be difficult to see distinctions at different zoom sizes.]
+				// [ Alternative: absolute cycle size: 128 * 128 * 4. This can make it difficult ]
+				// [ to see distinctions at different zoom sizes, however.                       ]
 				const NSUInteger colourRepeatCycleSize = (_viewBounds.width / _pointSize) * (_viewBounds.width / _pointSize) * 2;
 				bool repeatingPalette = (_data.length > colourRepeatCycleSize); // Whether this palette repeats
 				
@@ -282,7 +304,9 @@
 					if (repeatingPalette) hue = (float)i / (float)colourRepeatCycleSize;
 					if (repeatingPalette && hue > 1.0f) break;
 					
-					if (hue > 1.0f) hue = (float)hue - (NSUInteger)hue;
+					if (hue > 1.0f) hue = (float)hue - (NSUInteger)hue; // Wrap the hue to the range 0.0f - 1.0f
+					
+					// Note: I reckon conversion is slow. Can probably be calculated sufficiently at/by compile time.
 					NSColor *colour = [NSColor colorWithCalibratedHue:hue saturation:0.9f brightness:1.0f alpha:1.0f];
 					[colour colorUsingColorSpace:rgbSpace];
 					[palette addObject:colour];
@@ -301,22 +325,28 @@
 			}
 			break;
 		case SBCurveViewColourModeRandom:
-			// For each byte, generate a random colour.
+			// For each byte, set the colour to a 'randomly' generated colour.
 			for(NSUInteger i = 0; i < (3 * _data.length); i++)
 				_colourArray[i] = rand() / (float)RAND_MAX;
 			break;
 	}
 }
 
+// A method to set/change the data source of the view
 - (void) setDataSource:(NSData *)data {
 	if ([data isEqualToData:_data]) return; // Don't re-set the data source if it's not necessary.
 	
+	// Release the retained memory for the old data pointer, and set the data pointer to the newly
+	// passed pointer, retaining the memory for our usage.
 	[_data release];
 	_data = nil;
 	_data = [data retain];
 	
-	_scrollPosition = 0.0f;
+	_scrollPosition = 0.0f; // Reset the user scroll position
 	
+	// C-style memory management for the vertex and colour arrays.
+	// Free any currently allocated array memory, and 'calloc' (allocate and clear to 0) new arrays
+	// of size 3 * sizeof(datatype) [each vertex and colour have three components (X, Y, Z and R, G, B)]
 	if (_vertexArray != nil) free(_vertexArray);
 	_vertexArray = nil;
 	_vertexArray = (float*)calloc(3 * _data.length, sizeof(float));
@@ -324,23 +354,28 @@
 	_colourArray = nil;
 	_colourArray = (float*)calloc(3 * _data.length, sizeof(float));
 	
+	// Specify the vertex and colour arrays for usage in OpenGL
 	glVertexPointer(3, GL_FLOAT, 0, _vertexArray);
 	glColorPointer(3, GL_FLOAT, 0, _colourArray);
 	
-	
+	// Draw a blank screen to the view
 	[self setCurveType:SBCurveViewTypeBlank];
 	[self setCurveColourMode:SBCurveViewColourModeBlank];
+	[self draw];
+	
+	// Set the curve type and colour mode back to their specified values, ready for drawing
 	[self setCurveType:_type];
 	[self setCurveColourMode:_colourMode];
-	[self redraw];
 }
 
+// An NSOpenGLView method invoked to initialise OpenGL state
 - (void) prepareOpenGL {
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 }
 
+// An NSOpenGLView method invoked when the view's visible rectangle changes
 - (void) reshape {
 	CGSize viewBounds = self.bounds.size;
 	
@@ -348,6 +383,8 @@
 	if (viewBounds.height == _viewBounds.height && viewBounds.width == _viewBounds.width) return;
 	
 	_viewBounds = viewBounds;
+	
+	// Set the OpenGL viewport size and orthographic projection size
 	glViewport(0, 0, _viewBounds.width, _viewBounds.height);
 	glMatrixMode(GL_PROJECTION);
 	glOrtho(0.0f, _viewBounds.width, _viewBounds.height, 0.0f, -1.0f, 1.0f);
@@ -355,18 +392,18 @@
 	glLoadIdentity();
 }
 
-- (void) redraw {
-	[self drawRect:self.bounds];
-}
-
-- (void) drawRect: (NSRect)bounds
+// A method to draw/redraw the contents of the view
+- (void) draw
 {
+	// Clear the colour writing buffer, and load an identity matrix as our transformation matrix
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLoadIdentity();
 	
-	glTranslatef(0.0f, -_scrollPosition, 0.0f); // Translate by the distance scrolled.
+	// Translate by the distance scrolled.
+	glTranslatef(0.0f, -_scrollPosition, 0.0f);
 	
-	if (_type != SBCurveViewTypeBlank) { // Only draw if we're not in the blank curve mode
+	// Only draw if we're not in the blank curve mode
+	if (_type != SBCurveViewTypeBlank) {
 		// Draw visible points only. Hilbert makes this more difficult to calculate, so draw a bit extra both sides.
 		GLsizei sqArea = (_viewBounds.width / _pointSize) * (_viewBounds.width / _pointSize),
 			    drawCount = (_viewBounds.height / _pointSize) * (_viewBounds.width / _pointSize) + sqArea,
@@ -377,30 +414,41 @@
 		// Draw points at the specified indices using the specified GL vertex and colour arrays.
 		glDrawArrays(GL_POINTS, startDrawIndex, drawCount);
 	}
-	glFlush();
+	
+	glFlush(); // Force execution of OpenGL commands
 }
 
+// A method to set the scroll position of the view
 - (void) setScrollPosition:(float)position {
+	// Define the minimum and maximum scroll positions
 	NSUInteger minScrollPosition = 0,
 			   maxScrollPosition = ceilf(_data.length / (_viewBounds.width / _pointSize)) * _pointSize;
+	
+	// Adjust the maximum scroll position such that the user can't scroll to a fully white screen
 	if (maxScrollPosition >= _viewBounds.height / 4.0f) maxScrollPosition -= (_viewBounds.height / 4.0f);
+	
+	// Clamp and set the scroll position as appropriate
 	if (position < minScrollPosition) _scrollPosition = minScrollPosition;
 	else if (position > maxScrollPosition) _scrollPosition = maxScrollPosition;
 	else _scrollPosition = position;
 }
 
+// A method invoked when the user scrolls while on the view
 - (void) scrollWheel:(NSEvent *)event {
 	[self setScrollPosition:(_scrollPosition - event.deltaY * 4.0f)];
-	[self redraw];
+	[self draw];
 }
 
+// A method to check whether a given zoom level is valid
 - (BOOL) isValidZoomLevel:(NSInteger)zoomLevel {
 	NSInteger zoomValue = powf(2, 2 * zoomLevel);
 	return (zoomValue >= 1 && zoomValue <= (_viewBounds.width / 8));
 }
 
+// A method to set the zoom level (i.e. _pointSize) for the view
 - (void) setZoomLevel:(NSInteger)zoomLevel {
 	NSInteger oldPointSize = _pointSize;
+	
 	// The form 2^(2n) is for aesthetics - see comments in the Hilbert chunking code.
 	_pointSize = pow(2, 2 * zoomLevel);
 	glPointSize(_pointSize);
@@ -409,14 +457,19 @@
 	[self setCurveColourMode:_colourMode];
 }
 
+// A method invoked when the user's mouse exits the view
 - (void) mouseExited:(NSEvent *)event {
 	[_delegate curveViewMouseMovedToInvalidIndex];
 }
 
+// A method invoked when the user's mouse is moved in the view
 - (void) mouseMoved:(NSEvent *)event {
+	// Set the _mousePosition class properties to reflect this mouse event, adjusting
+	// the recieved co-ordinates so that the origin is in the /top/ left
 	_mousePosition = [self convertPoint:event.locationInWindow fromView:nil];
 	_mousePosition.y = _viewBounds.height - _mousePosition.y;
 	
+	// Call delegate mouse movement methods as appropriate
 	NSUInteger currentHoveredByteIndex = [self getIndexOfCurrentlyHoveredByte];
 	if (currentHoveredByteIndex < _data.length)
 		[_delegate curveViewMouseMovedToIndex:currentHoveredByteIndex];
@@ -424,11 +477,13 @@
 		[_delegate curveViewMouseMovedToInvalidIndex];
 }
 
+// A method to clear the state of the view so it is ready to be re-used
 - (void) clearState {
+	_scrollPosition = 0.0f; // Reset the user scroll position
+	
+	// Release/free any allocated memory
 	[_data release];
 	_data = nil;
-	_scrollPosition = 0.0f;
-	
 	if (_vertexArray != nil) free(_vertexArray);
 	_vertexArray = nil;
 	if (_colourArray != nil) free(_colourArray);

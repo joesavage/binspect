@@ -126,7 +126,7 @@
 			[_curveView setCurveColourMode:SBCurveViewColourModeStructural];
 	}
 	
-	[_curveView redraw];
+	[_curveView draw];
 	[_curvePanelProgressIndicator stopAnimation:self];
 }
 
@@ -296,7 +296,7 @@
 - (IBAction) zoomIn:(id)sender {
 	if ([_curveView isValidZoomLevel:_zoomLevel + 1]) {
 		[_curveView setZoomLevel:++_zoomLevel];
-		[_curveView redraw];
+		[_curveView draw];
 	}
 }
 
@@ -304,7 +304,7 @@
 - (IBAction) zoomOut:(id)sender {
 	if ([_curveView isValidZoomLevel:_zoomLevel - 1]) {
 		[_curveView setZoomLevel:--_zoomLevel];
-		[_curveView redraw];
+		[_curveView draw];
 	}
 }
 
