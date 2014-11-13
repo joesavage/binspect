@@ -145,6 +145,9 @@
 		fileName = [_filePath componentsSeparatedByString:@"/"].lastObject;
 		fileSize = [NSString stringWithFormat:@"%lu bytes", _data.length];
 		fileSizeHex = [NSString stringWithFormat:@"(0x%06lX)", _data.length];
+		
+		// Note: The shannon entropy like this for the entire file often isn't particularly useful as it varies wildly
+		// depending on the size of the file. Consider changing, removing, or moving to a selection-based statistic.
 		fileEntropy = [NSString stringWithFormat:@"%.02f%%", [SBWindowController calculateShannonEntropy:_data fromIndex:0 forBlockSize:_data.length]*100];
 	}
 	
