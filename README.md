@@ -4,4 +4,4 @@ A Mac application by [Joe Savage](http://www.reinterpretcast.com/) for visualisi
 
 Currently the application is relatively bare-bones to its purpose, simply providing visualisation options via two space-filling curves and three colouring modes. The (slightly over-commented) code is licensed as described in the 'LICENSE' file, under the MIT license.
 
-![Binspect '/bin/ksh' screenshot](./screenshot.png?raw=true "Optional Title")
+![Binspect '/bin/ksh' screenshot](./screenshot.png?raw=true)
