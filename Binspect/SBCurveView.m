@@ -15,9 +15,9 @@
 - (void) awakeFromNib {
 	// Track mouse entering, exiting, and movement when our window is the key window
 	NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:self.bounds
-																options:NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved |NSTrackingActiveInKeyWindow
-																  owner:self
-															   userInfo:nil];
+	                                                            options:NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved |NSTrackingActiveInKeyWindow
+	                                                              owner:self
+	                                                           userInfo:nil];
 	[self addTrackingArea:trackingArea];
 	[trackingArea release];
 	
@@ -114,7 +114,7 @@
 // A method to get the index of the byte that the user is currenly hovering over in the view
 - (NSUInteger) getIndexOfCurrentlyHoveredByte {
 	NSUInteger index = 0,
-			   maxWidth = _viewBounds.width / _pointSize;
+	           maxWidth = _viewBounds.width / _pointSize;
 	
 	// Adjust the mouse positions to our curve view grid scale, with some adjustments in Y for accuracy
 	_mousePosition.x = (NSUInteger)(_mousePosition.x / _pointSize);
@@ -124,8 +124,8 @@
 		// For getting the hovered index on a Hilbert curve, the positions need to be 'un-chunked' to get
 		// the correct value from 'getHilbertCurveIndex: for Coords:' which expects a square curve
 		NSUInteger hilbertWidth = [self calculateHilbertChunkWidth:maxWidth],
-				   chunkArea    = (hilbertWidth * hilbertWidth),
-				   chunkIndex   = (NSUInteger)(_mousePosition.y / hilbertWidth);
+		           chunkArea = (hilbertWidth * hilbertWidth),
+		           chunkIndex = (NSUInteger)(_mousePosition.y / hilbertWidth);
 		CGPoint hilbertPoint = _mousePosition;
 		hilbertPoint.y = (NSUInteger)_mousePosition.y % hilbertWidth;
 		index = chunkIndex*chunkArea + [SBCurveView getHilbertCurveIndex:chunkArea forCoords:hilbertPoint];
@@ -153,13 +153,13 @@
 				// I wouldn't recommend using this chunking method (and instead enabling horizontal scrolling
 				// of a square curve) for _pointSize values which are not of this type.
 				NSUInteger maxWidth = _viewBounds.width / _pointSize,
-						   chunkWidth = [self calculateHilbertChunkWidth:maxWidth],
-						   chunks = ceilf((float)_data.length / (float)(maxWidth * maxWidth));
+				           chunkWidth = [self calculateHilbertChunkWidth:maxWidth],
+				           chunks = ceilf((float)_data.length / (float)(maxWidth * maxWidth));
 				
 				// Set the vertex array values for each chunk
 				for(NSUInteger chunk = 0; chunk < chunks; chunk++) {
 					NSUInteger currentChunkArea = chunkWidth * chunkWidth,
-							   lastPointCovered = chunkWidth * chunkWidth * chunk;
+					           lastPointCovered = chunkWidth * chunkWidth * chunk;
 					if (chunk + 1 == chunks) currentChunkArea = _data.length - lastPointCovered;
 					
 					// For each byte in this chunk, set the position as determined by 'getHilbertCurveCoordinates: forIndex:',
@@ -422,7 +422,7 @@
 - (void) setScrollPosition:(float)position {
 	// Define the minimum and maximum scroll positions
 	NSUInteger minScrollPosition = 0,
-			   maxScrollPosition = ceilf(_data.length / (_viewBounds.width / _pointSize)) * _pointSize;
+	           maxScrollPosition = ceilf(_data.length / (_viewBounds.width / _pointSize)) * _pointSize;
 	
 	// Adjust the maximum scroll position such that the user can't scroll to a fully white screen
 	if (maxScrollPosition >= _viewBounds.height / 4.0f) maxScrollPosition -= (_viewBounds.height / 4.0f);

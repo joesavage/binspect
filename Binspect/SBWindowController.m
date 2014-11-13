@@ -256,8 +256,8 @@
 // A delegate method for _curveView, invoked when the user hovers their mouse over a valid visualised byte in the view.
 - (void) curveViewMouseMovedToIndex:(NSInteger)index {
 	NSUInteger regionStartIndex = index,
-			   regionEndIndex = index + _hoverRegionSize,
-			   maximumDataIndex = _data.length - 1;
+	           regionEndIndex = index + _hoverRegionSize,
+	           maximumDataIndex = _data.length - 1;
 	
 	// If the selected region spans over the end of the data, move the indices back so it doesn't.
 	if (regionEndIndex > maximumDataIndex) {
