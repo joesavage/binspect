@@ -17,16 +17,6 @@
 		D8B8DBF41A06B48500EB53B7 /* ColourModeSimilarityPalette.c in Sources */ = {isa = PBXBuildFile; fileRef = D8B8DBF31A06B48500EB53B7 /* ColourModeSimilarityPalette.c */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		D859DAC619F1E39C00137408 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D859DAAA19F1E39B00137408 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = D859DAB119F1E39B00137408;
-			remoteInfo = Binspect;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		D816EE6C19FC908F00102667 /* SBCurveView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBCurveView.h; sourceTree = "<group>"; usesTabs = 1; };
 		D816EE6D19FC908F00102667 /* SBCurveView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBCurveView.m; sourceTree = "<group>"; usesTabs = 1; };
@@ -37,7 +27,6 @@
 		D859DABA19F1E39B00137408 /* SBAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SBAppDelegate.m; sourceTree = "<group>"; usesTabs = 1; };
 		D859DABC19F1E39B00137408 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D859DABF19F1E39B00137408 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		D859DAC519F1E39C00137408 /* BinspectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BinspectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D87F5C3119FAAA4A00E31BA6 /* SBWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBWindowController.h; sourceTree = "<group>"; usesTabs = 1; };
 		D87F5C3219FAAA4A00E31BA6 /* SBWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBWindowController.m; sourceTree = "<group>"; usesTabs = 1; };
 		D8A5E00919FAD3AC00AC11D7 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
@@ -46,13 +35,6 @@
 
 /* Begin PBXFrameworksBuildPhase section */
 		D859DAAF19F1E39B00137408 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D859DAC219F1E39C00137408 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -84,7 +66,6 @@
 			isa = PBXGroup;
 			children = (
 				D859DAB219F1E39B00137408 /* Binspect.app */,
-				D859DAC519F1E39C00137408 /* BinspectTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -144,24 +125,6 @@
 			productReference = D859DAB219F1E39B00137408 /* Binspect.app */;
 			productType = "com.apple.product-type.application";
 		};
-		D859DAC419F1E39C00137408 /* BinspectTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = D859DAD219F1E39C00137408 /* Build configuration list for PBXNativeTarget "BinspectTests" */;
-			buildPhases = (
-				D859DAC119F1E39C00137408 /* Sources */,
-				D859DAC219F1E39C00137408 /* Frameworks */,
-				D859DAC319F1E39C00137408 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				D859DAC719F1E39C00137408 /* PBXTargetDependency */,
-			);
-			name = BinspectTests;
-			productName = BinspectTests;
-			productReference = D859DAC519F1E39C00137408 /* BinspectTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -173,10 +136,6 @@
 				TargetAttributes = {
 					D859DAB119F1E39B00137408 = {
 						CreatedOnToolsVersion = 6.0.1;
-					};
-					D859DAC419F1E39C00137408 = {
-						CreatedOnToolsVersion = 6.0.1;
-						TestTargetID = D859DAB119F1E39B00137408;
 					};
 				};
 			};
@@ -194,7 +153,6 @@
 			projectRoot = "";
 			targets = (
 				D859DAB119F1E39B00137408 /* Binspect */,
-				D859DAC419F1E39C00137408 /* BinspectTests */,
 			);
 		};
 /* End PBXProject section */
@@ -207,13 +165,6 @@
 				D859DABD19F1E39B00137408 /* Images.xcassets in Resources */,
 				D859DAC019F1E39B00137408 /* MainMenu.xib in Resources */,
 				D8A5E00A19FAD3AC00AC11D7 /* MainWindow.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D859DAC319F1E39C00137408 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,22 +183,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D859DAC119F1E39C00137408 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		D859DAC719F1E39C00137408 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = D859DAB119F1E39B00137408 /* Binspect */;
-			targetProxy = D859DAC619F1E39C00137408 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		D859DABE19F1E39B00137408 /* MainMenu.xib */ = {
@@ -363,42 +299,6 @@
 			};
 			name = Release;
 		};
-		D859DAD319F1E39C00137408 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = BinspectTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_NAME = BinspectTests;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Binspect.app/Contents/MacOS/Binspect";
-			};
-			name = Debug;
-		};
-		D859DAD419F1E39C00137408 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = BinspectTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_NAME = BinspectTests;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Binspect.app/Contents/MacOS/Binspect";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -416,15 +316,6 @@
 			buildConfigurations = (
 				D859DAD019F1E39C00137408 /* Debug */,
 				D859DAD119F1E39C00137408 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		D859DAD219F1E39C00137408 /* Build configuration list for PBXNativeTarget "BinspectTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				D859DAD319F1E39C00137408 /* Debug */,
-				D859DAD419F1E39C00137408 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
