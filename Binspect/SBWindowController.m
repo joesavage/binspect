@@ -124,6 +124,7 @@
 			break;
 		case 2:
 			[_curveView setCurveColourMode:SBCurveViewColourModeStructural];
+			break;
 	}
 	
 	[_curveView draw];
