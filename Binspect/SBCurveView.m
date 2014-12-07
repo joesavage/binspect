@@ -96,7 +96,8 @@
 	bool oddRow = (rowNumber % 2 == 1);
 	result.x = index % width;
 	result.y = rowNumber;
-	if (oddRow) result.x = (width - 1) - result.x;
+	if (oddRow)
+		result.x = (width - 1) - result.x;
 	
 	return result;
 }
@@ -106,7 +107,8 @@
 - (NSUInteger) calculateHilbertChunkWidth:(NSUInteger)maxWidth {
 	NSUInteger chunkWidth = ceil(sqrt(_data.length)); // Calculate the exact ideal chunk width(/height), and round it up.
 	chunkWidth = pow(2, ceil(log2(chunkWidth))); // Round up to the next highest power of 2 (as required for our Hilbert usage)
-	if (chunkWidth > maxWidth) chunkWidth = maxWidth;
+	if (chunkWidth > maxWidth)
+		chunkWidth = maxWidth;
 	
 	return chunkWidth;
 }
@@ -157,14 +159,15 @@
 				           chunks = ceilf((float)_data.length / (float)(maxWidth * maxWidth));
 				
 				// Set the vertex array values for each chunk
-				for(NSUInteger chunk = 0; chunk < chunks; chunk++) {
+				for (NSUInteger chunk = 0; chunk < chunks; chunk++) {
 					NSUInteger currentChunkArea = chunkWidth * chunkWidth,
 					           lastPointCovered = chunkWidth * chunkWidth * chunk;
-					if (chunk + 1 == chunks) currentChunkArea = _data.length - lastPointCovered;
+					if (chunk + 1 == chunks)
+						currentChunkArea = _data.length - lastPointCovered;
 					
 					// For each byte in this chunk, set the position as determined by 'getHilbertCurveCoordinates: forIndex:',
 					// adjusting as appropriate for _pointSize, and for the Y position of this chunk
-					for(NSUInteger i = 0; i < currentChunkArea; i++) {
+					for (NSUInteger i = 0; i < currentChunkArea; i++) {
 						NSUInteger index = lastPointCovered + i;
 						CGPoint point = [SBCurveView getHilbertCurveCoordinates:(chunkWidth * chunkWidth) forIndex:i];
 						
@@ -183,7 +186,7 @@
 			{
 				// For each byte, set the position as determined by 'getZigzagCurveCoordinates: forIndex',
 				// adjusting as appropriate for _pointSize
-				for(NSUInteger i = 0; i < _data.length; i++) {
+				for (NSUInteger i = 0; i < _data.length; i++) {
 					CGPoint point = [SBCurveView getZigzagCurveCoordinates:(_viewBounds.width / _pointSize) forIndex:i];
 					point.x = (point.x * _pointSize) + (_pointSize / 2.0f);
 					point.y = (point.y * _pointSize) + (_pointSize / 2.0f);
@@ -212,7 +215,7 @@
 				const unsigned char *bytes = (const unsigned char *)(_data.bytes);
 				
 				// For each byte, set the RGB colour values to the appropriate colour based on the similarity palette.
-				for(NSInteger i = 0; i < _data.length; i++) {
+				for (NSInteger i = 0; i < _data.length; i++) {
 					_colourArray[(3 * i)] = palette[(3 * bytes[i])];
 					_colourArray[(3 * i) + 1] = palette[(3 * bytes[i]) + 1];
 					_colourArray[(3 * i) + 2] = palette[(3 * bytes[i]) + 2];
@@ -222,7 +225,8 @@
 		case SBCurveViewColourModeEntropy:
 			{
 				NSUInteger blocksize = 128; // The number of bytes around this one which should be factored into the calculation
-				if (_data.length < blocksize) blocksize = _data.length;
+				if (_data.length < blocksize)
+					blocksize = _data.length;
 				
 				NSInteger halfBlockSize = (blocksize / 2), previousStartIndex = 0;
 				double logBlockSize = log(blocksize),
@@ -232,19 +236,21 @@
 				
 				// For each byte, update the 'frequencies' array and modify the 'entropy' result for this block (rolling result),
 				// and then finally set the colour for this byte.
-				for(NSInteger i = 0; i < _data.length; i++) {
+				for (NSInteger i = 0; i < _data.length; i++) {
 					// Calculate the position of this block
 					NSInteger startIndex = i - halfBlockSize;
-					if (i < halfBlockSize) startIndex = 0;
-					else if (i > (_data.length - 1 - halfBlockSize)) startIndex = _data.length - 1 - halfBlockSize;
+					if (i < halfBlockSize)
+						startIndex = 0;
+					else if (i > (_data.length - 1 - halfBlockSize))
+						startIndex = _data.length - 1 - halfBlockSize;
 					
 					if (i == 0) {
 						// Calculate the frequencies and entropy for the first block
-						for(NSUInteger j = startIndex; j < startIndex + blocksize; j++)
+						for (NSUInteger j = startIndex; j < startIndex + blocksize; j++)
 							frequencies[bytes[j]]++;
 						
 						// Standard shannon entropy calculation
-						for(NSUInteger i = 0; i < 256; i++) {
+						for (NSUInteger i = 0; i < 256; i++) {
 							if (frequencies[i] == 0) continue;
 							double p = (double)frequencies[i] / (double)blocksize;
 							entropy -= (p * (log(p) / logBlockSize));
@@ -279,7 +285,8 @@
 					// Note: Entropy values here are squared here to ensure that only the highest entropy areas
 					//       show up noticably in the final colouring. Too much noise isn't useful to the user.
 					float red = 0, blue = pow(entropy, 2);
-					if (entropy > 0.5) red = 4 * pow(entropy - 0.5f, 2);
+					if (entropy > 0.5)
+						red = 4 * pow(entropy - 0.5f, 2);
 					_colourArray[(3 * i)] = red;
 					_colourArray[(3 * i) + 1] = 0.0f;
 					_colourArray[(3 * i) + 2] = blue;
@@ -297,14 +304,17 @@
 				// Set the colour palette (HSL hue cycle -> RGB)
 				NSMutableArray *palette = [[NSMutableArray alloc] init];
 				NSColorSpace *rgbSpace = [NSColorSpace sRGBColorSpace];
-				for(NSUInteger i = 0; i < _data.length; i++) {
+				for (NSUInteger i = 0; i < _data.length; i++) {
 					float percentageComplete = (float)i / (float)_data.length;
 					float hue = percentageComplete;
 					
-					if (repeatingPalette) hue = (float)i / (float)colourRepeatCycleSize;
-					if (repeatingPalette && hue > 1.0f) break;
+					if (repeatingPalette)
+						hue = (float)i / (float)colourRepeatCycleSize;
+					if (repeatingPalette && hue > 1.0f)
+						break;
 					
-					if (hue > 1.0f) hue = (float)hue - (NSUInteger)hue; // Wrap the hue to the range 0.0f - 1.0f
+					if (hue > 1.0f)
+						hue = (float)hue - (NSUInteger)hue; // Wrap the hue to the range 0.0f - 1.0f
 					
 					// Note: I reckon conversion is slow. Can probably be calculated sufficiently at/by compile time.
 					NSColor *colour = [NSColor colorWithCalibratedHue:hue saturation:0.9f brightness:1.0f alpha:1.0f];
@@ -313,9 +323,10 @@
 				}
 				
 				// For each byte, set the colour to the corresponding colour in the generated palette.
-				for(NSUInteger i = 0; i < _data.length; i++) {
+				for (NSUInteger i = 0; i < _data.length; i++) {
 					NSUInteger paletteIndex = i;
-					if (repeatingPalette) paletteIndex = i % colourRepeatCycleSize;
+					if (repeatingPalette)
+						paletteIndex = i % colourRepeatCycleSize;
 					_colourArray[(i * 3)] = [[palette objectAtIndex:paletteIndex] redComponent];
 					_colourArray[(i * 3) + 1] = [[palette objectAtIndex:paletteIndex] greenComponent];
 					_colourArray[(i * 3) + 2] = [[palette objectAtIndex:paletteIndex] blueComponent];
@@ -326,7 +337,7 @@
 			break;
 		case SBCurveViewColourModeRandom:
 			// For each byte, set the colour to a 'randomly' generated colour.
-			for(NSUInteger i = 0; i < (3 * _data.length); i++)
+			for (NSUInteger i = 0; i < (3 * _data.length); i++)
 				_colourArray[i] = rand() / (float)RAND_MAX;
 			break;
 	}
@@ -334,7 +345,8 @@
 
 // A method to set/change the data source of the view
 - (void) setDataSource:(NSData *)data {
-	if ([data isEqualToData:_data]) return; // Don't re-set the data source if it's not necessary.
+	if ([data isEqualToData:_data])
+		return; // Don't re-set the data source if it's not necessary.
 	
 	// Release the retained memory for the old data pointer, and set the data pointer to the newly
 	// passed pointer, retaining the memory for our usage.
@@ -347,10 +359,12 @@
 	// C-style memory management for the vertex and colour arrays.
 	// Free any currently allocated array memory, and 'calloc' (allocate and clear to 0) new arrays
 	// of size 3 * sizeof(datatype) [each vertex and colour have three components (X, Y, Z and R, G, B)]
-	if (_vertexArray != nil) free(_vertexArray);
+	if (_vertexArray != nil)
+		free(_vertexArray);
 	_vertexArray = nil;
 	_vertexArray = (float*)calloc(3 * _data.length, sizeof(float));
-	if (_colourArray != nil) free(_colourArray);
+	if (_colourArray != nil)
+		free(_colourArray);
 	_colourArray = nil;
 	_colourArray = (float*)calloc(3 * _data.length, sizeof(float));
 	
@@ -380,7 +394,8 @@
 	CGSize viewBounds = self.bounds.size;
 	
 	// If a reshape operation isn't necessary, don't perform one.
-	if (viewBounds.height == _viewBounds.height && viewBounds.width == _viewBounds.width) return;
+	if (viewBounds.height == _viewBounds.height && viewBounds.width == _viewBounds.width)
+		return;
 	
 	_viewBounds = viewBounds;
 	
@@ -408,8 +423,10 @@
 		GLsizei sqArea = (_viewBounds.width / _pointSize) * (_viewBounds.width / _pointSize),
 			    drawCount = (_viewBounds.height / _pointSize) * (_viewBounds.width / _pointSize) + sqArea,
 		startDrawIndex = ((_scrollPosition / _pointSize) * (_viewBounds.width / _pointSize)) - sqArea / 2.0f;
-		if (startDrawIndex < 0) startDrawIndex = 0;
-		if ((startDrawIndex + drawCount) > _data.length) drawCount = (GLsizei)_data.length - startDrawIndex;
+		if (startDrawIndex < 0)
+			startDrawIndex = 0;
+		if ((startDrawIndex + drawCount) > _data.length)
+			drawCount = (GLsizei)_data.length - startDrawIndex;
 		
 		// Draw points at the specified indices using the specified GL vertex and colour arrays.
 		glDrawArrays(GL_POINTS, startDrawIndex, drawCount);
@@ -425,12 +442,16 @@
 	           maxScrollPosition = ceilf(_data.length / (_viewBounds.width / _pointSize)) * _pointSize;
 	
 	// Adjust the maximum scroll position such that the user can't scroll to a fully white screen
-	if (maxScrollPosition >= _viewBounds.height / 4.0f) maxScrollPosition -= (_viewBounds.height / 4.0f);
+	if (maxScrollPosition >= _viewBounds.height / 4.0f)
+		maxScrollPosition -= (_viewBounds.height / 4.0f);
 	
 	// Clamp and set the scroll position as appropriate
-	if (position < minScrollPosition) _scrollPosition = minScrollPosition;
-	else if (position > maxScrollPosition) _scrollPosition = maxScrollPosition;
-	else _scrollPosition = position;
+	if (position < minScrollPosition)
+		_scrollPosition = minScrollPosition;
+	else if (position > maxScrollPosition)
+		_scrollPosition = maxScrollPosition;
+	else
+		_scrollPosition = position;
 }
 
 // A method invoked when the user scrolls while on the view
@@ -484,9 +505,11 @@
 	// Release/free any allocated memory
 	[_data release];
 	_data = nil;
-	if (_vertexArray != nil) free(_vertexArray);
+	if (_vertexArray != nil)
+		free(_vertexArray);
 	_vertexArray = nil;
-	if (_colourArray != nil) free(_colourArray);
+	if (_colourArray != nil)
+		free(_colourArray);
 	_colourArray = nil;
 }
 

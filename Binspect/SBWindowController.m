@@ -31,19 +31,22 @@
 
 // A static method to calculate the Shannon Entropy for a block of data, from an index, in an NSData object.
 + (CGFloat) calculateShannonEntropy:(NSData *)data fromIndex:(NSInteger)index forBlockSize:(NSInteger)blocksize {
-	if (data.length < blocksize) blocksize = data.length;
+	if (data.length < blocksize)
+		blocksize = data.length;
 	
 	const unsigned char *bytes = (const unsigned char *)data.bytes;
 	NSInteger halfBlockSize = (blocksize / 2),
 	          startIndex = index - halfBlockSize;
 	
 	// Establish the block beginning and ending indices
-	if (index < halfBlockSize) startIndex = 0;
-	else if (index > (data.length - 1 - halfBlockSize)) startIndex = data.length - 1 - halfBlockSize;
+	if (index < halfBlockSize)
+		startIndex = 0;
+	else if (index > (data.length - 1 - halfBlockSize))
+		startIndex = data.length - 1 - halfBlockSize;
 	
 	// Generate a dictionary of frequencies for the different byte values in the specified block
 	NSMutableDictionary *frequencies = [[NSMutableDictionary alloc] init];
-	for(NSUInteger i = startIndex; i < startIndex + blocksize; i++) {
+	for (NSUInteger i = startIndex; i < startIndex + blocksize; i++) {
 		NSNumber *key = [NSNumber numberWithUnsignedChar:bytes[i]];
 		NSUInteger freq = [[frequencies objectForKey:key] integerValue] + 1;
 		[frequencies setObject:[NSNumber numberWithUnsignedLong:freq] forKey:key];
@@ -52,7 +55,7 @@
 	// Calculate the Shannon Entropy from the frequencies
 	float entropy = 0.0f,
 	logBlockSize = logf(blocksize);
-	for(id frequencyKey in frequencies) {
+	for (id frequencyKey in frequencies) {
 		float p = (float)[[frequencies objectForKey:frequencyKey] integerValue] / (float)blocksize;
 		entropy -= (p * (logf(p) / logBlockSize));
 	}
@@ -63,7 +66,9 @@
 
 // A method to update the window title based on a specified string
 - (NSString *) windowTitleForDocumentDisplayName:(NSString *)displayName {
-	if (displayName.length == 0) return @"Binspect";
+	if (displayName.length == 0)
+		return @"Binspect";
+	
 	displayName = [displayName componentsSeparatedByString:@"/"].lastObject;
 	return [NSString stringWithFormat:@"Binspect — %@", displayName];
 }
@@ -73,7 +78,8 @@
 	// Open the file from the path, checking if it meets the application-handled constraints.
 	// Note: The 'NSMappedRead' option might be useful for big files?
 	NSData *data = [NSData dataWithContentsOfFile:filename];
-	if (data == nil || data.length == 0 || data.length >= NSIntegerMax) return NO;
+	if (data == nil || data.length == 0 || data.length >= NSIntegerMax)
+		return NO;
 	
 	// Add the file path to the 'Open Recent' list for this application
 	[[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:[NSURL fileURLWithPath:filename]];
@@ -159,7 +165,7 @@
 
 // A method called when the window should begin action after standing idle
 - (void) initiateWindowAction {
-	if(_filePath.length == 0) {
+	if (_filePath.length == 0) {
 		// If no file path has been specified, present the open dialog for file selection.
 		[self presentOpenDialog];
 	} else {
@@ -208,7 +214,8 @@
 
 // A delegate method for _hexTableView to get the view that should be used for a specific table cell.
 - (NSView *) tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-	if (_selectionRegionEndIndex - _selectionRegionStartIndex == 0) return nil;
+	if (_selectionRegionEndIndex - _selectionRegionStartIndex == 0)
+		return nil;
 	
 	// Formulate the identifier name for the table view cell in Interface Builder which should be copied for this particular cell.
 	NSString *viewIdentifier = @"hexView";
@@ -226,7 +233,7 @@
 						bytes[_selectionRegionStartIndex + row * 8 + 6], bytes[_selectionRegionStartIndex + row * 8 + 7]];
 	}
 	else {
-		for(unsigned char i = 0; i < 8; i++) {
+		for (unsigned char i = 0; i < 8; i++) {
 			unsigned char value = bytes[_selectionRegionStartIndex + row * 8 + i];
 			resultString = [resultString stringByAppendingFormat:@"%c", (isprint(value) ? value : ' ')];
 		}
@@ -276,7 +283,8 @@
 // A method to handle the action sent from the 'Copy' command in the menu bar
 - (IBAction) copy:(id)sender {
 	// If there is no current selected region, we don't want to do any copying.
-	if (_selectionRegionStartIndex == _selectionRegionEndIndex) return;
+	if (_selectionRegionStartIndex == _selectionRegionEndIndex)
+		return;
 	
 	NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
 	[pasteboard clearContents];
@@ -284,7 +292,7 @@
 	// For each row in the hex table view, add that row's data (in a pretty format) to the string we'll change the clipboard to
 	NSString *copiedString = @"";
 	NSUInteger rowMemoryAddress = _selectionRegionStartIndex;
-	for(NSInteger row = 0; row < _hexTableView.numberOfRows; row++) {
+	for (NSInteger row = 0; row < _hexTableView.numberOfRows; row++) {
 		NSTextField *firstColumnTextField = [[_hexTableView viewAtColumn:0 row:row makeIfNecessary:YES] textField],
 		            *secondColumnTextField = [[_hexTableView viewAtColumn:1 row:row makeIfNecessary:YES] textField];
 		
