@@ -23,7 +23,6 @@
 	// Initialize class properties
 	_data = nil;
 	_scrollPosition = 0.0f;
-	[self setZoomLevel:1];
 	[self setCurveType:SBCurveViewTypeBlank];
 	[self setCurveColourMode:SBCurveViewColourModeBlank];
 }
@@ -386,6 +385,14 @@
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+	
+	// Specify the vertex and colour arrays for usage in OpenGL
+	glVertexPointer(3, GL_FLOAT, 0, _vertexArray);
+	glColorPointer(3, GL_FLOAT, 0, _colourArray);
+	
+	[self reshape];
+	[self setZoomLevel:1];
+	[self draw];
 }
 
 // An NSOpenGLView method invoked when the view's visible rectangle changes
