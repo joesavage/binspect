@@ -32,6 +32,7 @@ The application was developed on a Late 2013 Retina Macbook Pro running El Capit
 - Save generated image
 - Multiple documents windows
 - Fullscreen mode (and window resizes)
+- Visual diffing of two files
 - CLI alias ('binspect')
 - Quick Look extension/generator
 
